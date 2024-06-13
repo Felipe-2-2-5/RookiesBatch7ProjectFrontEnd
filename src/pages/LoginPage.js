@@ -35,7 +35,7 @@ const LoginPage = () => {
   const [newPasswordError, setNewPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [setUserId] = useState(null); // Track user id for password change
-  const { setIsAuthenticated } = useAuthContext(); // Use the useAuthContext hook to access authentication state and setter
+  const { isAuthenticated, setIsAuthenticated } = useAuthContext(); // Use the useAuthContext hook to access authentication state and setter
   const navigate = useNavigate();
   const handleAlertClose = () => {
     setAlertOpen(false);

@@ -1,0 +1,9 @@
+*library: material ui + react-router-dom + axios
+
+- install
+npm install @mui/icons-material @mui/material @emotion/styled @emotion/react
+npm install react-router-dom
+npm install axios
+
+- note:
++ the red color to use for all pages of app is #D6001C

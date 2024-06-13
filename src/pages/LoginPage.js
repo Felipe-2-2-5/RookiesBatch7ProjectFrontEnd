@@ -35,7 +35,7 @@ const LoginPage = () => {
   const [newPasswordError, setNewPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [userId, setUserId] = useState(null); // Track user id for password change
-  const { isAuthenticated, setIsAuthenticated } = useAuthContext(); // Use the useAuthContext hook to access authentication state and setter
+  const { setIsAuthenticated } = useAuthContext(); // Use the useAuthContext hook to access authentication state and setter
   const navigate = useNavigate();
   const handleAlertClose = () => {
     setAlertOpen(false);
@@ -117,15 +117,15 @@ const LoginPage = () => {
 
   const handlePasswordChange = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:5224/api/users/change_password",
-        {
-          id: userId,
-          oldPassword: password, // Use the current password for the old password
-          newPassword: newPassword,
-          confirmPassword: confirmPassword,
-        }
-      );
+      // const response = await axios.post(
+      //   "http://localhost:5224/api/users/change_password",
+      //   {
+      //     id: userId,
+      //     oldPassword: password, // Use the current password for the old password
+      //     newPassword: newPassword,
+      //     confirmPassword: confirmPassword,
+      //   }
+      // );
 
       // Handle success or failure of password change
     } catch (error) {

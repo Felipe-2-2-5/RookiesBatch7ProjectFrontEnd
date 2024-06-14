@@ -1,0 +1,16 @@
+export { HomePage } from "./HomePage";
+export { LoginPage } from "./LoginPage";
+export { ReportPage } from "./ReportPage";
+export { RequestForReturningPage } from "./RequestForReturningPage";
+export { AssetDetail } from "./assets/AssetDetail";
+export { CreateAsset } from "./assets/CreateAsset";
+export { EditAsset } from "./assets/EditAsset";
+export { ManageAssetPage } from "./assets/ManageAssetPage";
+export { AssignmentDetail } from "./assignments/AssignmentDetail";
+export { CreateAssignment } from "./assignments/CreateAssignment";
+export { EditAssignment } from "./assignments/EditAssignment";
+export { ManageAssignmentPage } from "./assignments/ManageAssignmentPage";
+export { CreateUser } from "./users/CreateUser";
+export { EditUser } from "./users/EditUser";
+export { ManageUserPage } from "./users/ManageUserPage";
+export { UserDetail } from "./users/UserDetail";

@@ -59,4 +59,4 @@ jobs:
           app-name: 'test1-assetmanagement'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D76814DC047C4CCCB2DD2184D8260E6C }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_18AE6CA042AD4923A48E2022A5C10199 }}

@@ -96,15 +96,7 @@ const ManageUserPage = () => {
       }));
     }
   };
-  console.log(filterRequest);
-  // const handleOnBlur = () => {
-  //   setFilterRequest((prev) => ({
-  //     ...prev,
-  //     searchTerm: searchTerm,
-  //   }));
-  // };
 
-  // Handle User Detail Dialog
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const handleDetailDialog = async (user) => {
@@ -140,24 +132,31 @@ const ManageUserPage = () => {
       let newSortOrder;
       let newSortColumn;
 
-      if (prev.sortColumn === column) {
-        // Toggle sortOrder
-        if (prev.sortOrder === "descend") {
-          newSortOrder = "";
-          newSortColumn = column;
-        } else if (prev.sortOrder === "") {
+      if (column === "name") {
+        if (prev.sortColumn === "name" && prev.sortOrder === "") {
+          newSortOrder = "descend";
+          newSortColumn = "name";
+        } else if (prev.sortColumn === "name" && prev.sortOrder === "descend") {
           newSortOrder = "";
           newSortColumn = "name";
         } else {
-          // Start with descend order
+          newSortOrder = "descend";
+          newSortColumn = "name";
+        }
+      } else {
+        if (prev.sortColumn === column) {
+          if (prev.sortOrder === "descend") {
+            newSortOrder = "";
+            newSortColumn = column;
+          } else if (prev.sortOrder === "") {
+            newSortOrder = "";
+            newSortColumn = "name";
+          }
+        } else {
           newSortOrder = "descend";
           newSortColumn = column;
         }
-      } else {
-        newSortOrder = "descend";
-        newSortColumn = column;
       }
-
       return {
         ...prev,
         sortColumn: newSortColumn,

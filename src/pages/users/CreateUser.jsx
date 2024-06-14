@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
@@ -24,7 +23,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { removeExtraWhitespace } from "../../utils/TrimValue";
-
+import { CreateUserAPI } from "../../services/users.service";
 const CreateUser = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
@@ -81,7 +80,6 @@ const CreateUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
-    const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
@@ -168,24 +166,24 @@ const CreateUser = () => {
     return day === 6 || day === 0;
   };
 
-  function isValidDate(dateString) {
-    console.log("dateString: " + users.joinedDate);
-    const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-    if (!regex.test(dateString)) {
-      return false;
-    }
-    const parts = dateString.split("/");
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
+  // function isValidDate(dateString) {
+  //   console.log("dateString: " + users.joinedDate);
+  //   const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+  //   if (!regex.test(dateString)) {
+  //     return false;
+  //   }
+  //   const parts = dateString.split("/");
+  //   const day = parseInt(parts[0], 10);
+  //   const month = parseInt(parts[1], 10);
+  //   const year = parseInt(parts[2], 10);
 
-    if (month < 1 || month > 12 || year < 1000 || year > 9999) {
-      return false;
-    }
+  //   if (month < 1 || month > 12 || year < 1000 || year > 9999) {
+  //     return false;
+  //   }
 
-    const daysInMonth = new Date(year, month, 0).getDate();
-    return day > 0 && day <= daysInMonth;
-  }
+  //   const daysInMonth = new Date(year, month, 0).getDate();
+  //   return day > 0 && day <= daysInMonth;
+  // }
 
   useEffect(() => {
     let errorMessage = "";
@@ -262,7 +260,7 @@ const CreateUser = () => {
         if (users.gender) {
           users.gender = +users.gender;
         }
-        const response = await axios.post("http://localhost:7083/api/users", {
+        const response = await CreateUserAPI({
           ...users,
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,

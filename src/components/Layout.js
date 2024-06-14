@@ -13,7 +13,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
@@ -22,7 +21,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
-
+import { ChangePassword, LoginUser } from "../services/Service";
 const Layout = ({ children }) => {
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [newPassword, setNewPassword] = useState("");
@@ -35,12 +34,7 @@ const Layout = ({ children }) => {
   const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && currentUser.isFirst) {
-      setShowLogoutDialog(true);
-    }
-  }, [currentUser.isFirst]);
+  useEffect(() => {}, [currentUser.isFirst]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -72,22 +66,20 @@ const Layout = ({ children }) => {
       const token = localStorage.getItem("token");
       if (token) {
         const userId = currentUser.id;
-        const response1 = await axios.post(
-          "https://localhost:7083/api/users/change_password",
-          {
-            id: userId,
-            oldPassword: oldPassword,
-            newPassword: newPassword,
-            confirmPassword: newPassword,
-          }
-        );
+        const response1 = await ChangePassword({
+          id: userId,
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          confirmPassword: newPassword,
+        });
 
         if (response1.data === true) {
           const username = currentUser.name;
-          const response2 = await axios.post(
-            "https://localhost:7083/api/users/login",
-            { userName: username, password: newPassword }
-          );
+          const response2 = await LoginUser({
+            userName: username,
+            password: newPassword,
+          });
+
           const data = response2.data;
           setIsAuthenticated(true);
           localStorage.setItem("token", data.token);
@@ -115,7 +107,7 @@ const Layout = ({ children }) => {
 
   const handlePasswordBlur = () => {
     setNewPasswordError("");
-    const oldPassword = localStorage.getItem("password");
+    // const oldPassword = localStorage.getItem("password");
     if (!newPassword) {
       setNewPasswordError("New password cannot be empty.");
     }

@@ -24,7 +24,7 @@ export const GetUser = async (id) => {
   return response;
 };
 
-export const CreateUser = async (body) => {
+export const CreateUserAPI = async (body) => {
   const response = await httpClient.post("/users", body);
   return response;
 };

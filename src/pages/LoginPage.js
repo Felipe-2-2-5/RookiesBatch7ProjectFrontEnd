@@ -36,7 +36,7 @@ const LoginPage = () => {
       if (data.flag) {
         setIsAuthenticated(true);
         localStorage.setItem("token", data.token);
-        if (data.i) localStorage.setItem("password", password);
+        localStorage.setItem("password", password);
         navigate(path.home);
       } else {
         setAlertOpen(true);

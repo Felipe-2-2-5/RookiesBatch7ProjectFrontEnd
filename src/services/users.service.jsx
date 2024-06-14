@@ -2,8 +2,8 @@ import { httpClient } from "../httpClient/httpClient";
 
 export const LoginUser = async (body) => {
   try {
-    const response = await httpClient.post("/login", body);
-    localStorage.setItem("token", response.data.token);
+    const response = await httpClient.post("/users/login", body);
+    return response;
   } catch (error) {
     return error;
   }

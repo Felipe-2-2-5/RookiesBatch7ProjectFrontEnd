@@ -209,7 +209,6 @@ const ManageUserPage = () => {
         >
           <FormControl variant="outlined" sx={{ minWidth: 120 }}>
             <InputLabel>Type</InputLabel>
-            {console.log(filterRequest.type)}
             <Select label="Type" value={filterRequest.type} name="type">
               <MenuItem
                 value="Admin"

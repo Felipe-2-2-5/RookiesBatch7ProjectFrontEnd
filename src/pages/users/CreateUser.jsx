@@ -17,6 +17,10 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -24,10 +28,49 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { removeExtraWhitespace } from "../../utils/TrimValue";
 import { CreateUserAPI } from "../../services/users.service";
+
+const PopupNotification = ({
+  open,
+  handleClose,
+  title,
+  content,
+  closeContent,
+}) => {
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      disableBackdropClick
+      disableEscapeKeyDown
+    >
+      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+        {title}
+      </DialogTitle>
+      <DialogContent>
+        <p>{content}</p>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={handleClose}
+          sx={{
+            color: "white",
+            bgcolor: "#D6001C",
+            "&:hover": { bgcolor: "#D6001C" },
+          }}
+        >
+          {closeContent ? closeContent : "Ok"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 const CreateUser = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
   const [error, setError] = useState("");
+  const [openPopup, setOpenPopup] = useState(false);
+
   const [users, setUsers] = useState({
     firstName: "",
     lastName: "",
@@ -40,7 +83,7 @@ const CreateUser = () => {
 
   const [formErrors, setFormErrors] = useState({
     firstName: false,
-    lastName: true,
+    lastName: false,
     dateOfBirth: false,
     gender: false,
     joinedDate: false,
@@ -117,18 +160,6 @@ const CreateUser = () => {
     setUsers({ ...users, [name]: value });
   };
 
-  // const handleNameChange = (event) => {
-  //   let errorMessage = '';
-  //   const { name, value } = event.target;
-  //   setUsers({ ...users, [name]: value });
-  //   if(users.firstName && name === 'firstName' ){
-  //     const isValid = /^[a-zA-Z]{2,20}$/.test(value);
-  //     if(!isValid){
-  //       errorMessage = `First name must contain only alphabetical characters.`;
-  //       setFormErrors({ ...formErrors, [name]: errorMessage });
-
-  //     }
-  //   }  };
   const handleNameChange = (event) => {
     let errorMessage = "";
     const { name, value } = event.target;
@@ -166,25 +197,6 @@ const CreateUser = () => {
     return day === 6 || day === 0;
   };
 
-  // function isValidDate(dateString) {
-  //   console.log("dateString: " + users.joinedDate);
-  //   const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-  //   if (!regex.test(dateString)) {
-  //     return false;
-  //   }
-  //   const parts = dateString.split("/");
-  //   const day = parseInt(parts[0], 10);
-  //   const month = parseInt(parts[1], 10);
-  //   const year = parseInt(parts[2], 10);
-
-  //   if (month < 1 || month > 12 || year < 1000 || year > 9999) {
-  //     return false;
-  //   }
-
-  //   const daysInMonth = new Date(year, month, 0).getDate();
-  //   return day > 0 && day <= daysInMonth;
-  // }
-
   useEffect(() => {
     let errorMessage = "";
     if (touched.joinedDate) {
@@ -206,11 +218,6 @@ const CreateUser = () => {
 
   const errorMessage = React.useMemo(() => {
     switch (error) {
-      // case 'maxDate':
-      // case 'maxDate': {
-      //   return 'Date of birth must less than current day.';
-      // }
-
       case "invalidDate": {
         return "Invalid Date";
       }
@@ -265,9 +272,7 @@ const CreateUser = () => {
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
-        console.log("Response:", response.data);
-        console.log("User created successfully.");
-        navigate("/manage-user");
+        displayPopupNotification();
       } catch (error) {
         console.error("Error:", error);
       }
@@ -275,7 +280,14 @@ const CreateUser = () => {
       console.log("Form has errors. Please fill all required fields.");
     }
   };
+  const displayPopupNotification = () => {
+    setOpenPopup(true);
+  };
 
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+    navigate("/manage-user");
+  };
   return (
     <>
       <Container sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -337,6 +349,7 @@ const CreateUser = () => {
                   placeholder="Last Name"
                   fullWidth
                   name="lastName"
+                  error={formErrors.lastName}
                   value={users.lastName}
                   onBlur={handleLastNameChange}
                   onChange={handleLastNameChange}
@@ -569,6 +582,12 @@ const CreateUser = () => {
           </form>
         </Box>
       </Container>
+      <PopupNotification
+        open={openPopup}
+        handleClose={handleClosePopup}
+        title={"Notification"}
+        content={"Create success"}
+      />
     </>
   );
 };

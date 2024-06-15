@@ -23,7 +23,6 @@ import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
 import { ChangePassword, LoginUser } from "../services/Service";
 const Layout = ({ children }) => {
-  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPasswordError, setNewPasswordError] = useState("");
@@ -33,6 +32,7 @@ const Layout = ({ children }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
   const navigate = useNavigate();
+  const oldPassword = localStorage.getItem("password");
 
   useEffect(() => {}, [currentUser.isFirst]);
 
@@ -41,27 +41,7 @@ const Layout = ({ children }) => {
     navigate("/");
   };
 
-  const handleCloseDialog = () => {
-    setShowLogoutDialog(false);
-  };
-
-  const handlePasswordChange = async () => {
-    const oldPassword = localStorage.getItem("password");
-    const newPasswordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
-    if (newPassword === oldPassword) {
-      setNewPasswordError(
-        "New password must be different from the old password."
-      );
-      return;
-    }
-    if (!newPasswordRegex.test(newPassword)) {
-      setNewPasswordError(
-        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character."
-      );
-      return;
-    }
-
+  const handelSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
@@ -86,20 +66,19 @@ const Layout = ({ children }) => {
           currentUser.isFirst = false;
 
           setNewPassword("");
-          setShowLogoutDialog(false);
           localStorage.removeItem("firstLogin");
           setShowSuccessDialog(true);
           localStorage.removeItem("password");
         } else {
-          setNewPasswordError("Failed to change password. Please try again.");
+          setConfirmPassword("Failed to change password. Please try again.");
         }
       } else {
-        setNewPasswordError("User token not found. Please login again.");
+        setConfirmPassword("User token not found. Please login again.");
         navigate("/");
       }
     } catch (error) {
       console.error("Error:", error);
-      setNewPasswordError(
+      setConfirmPassword(
         "An error occurred while changing password. Please try again later."
       );
     }
@@ -107,13 +86,35 @@ const Layout = ({ children }) => {
 
   const handlePasswordBlur = () => {
     setNewPasswordError("");
-    // const oldPassword = localStorage.getItem("password");
     if (!newPassword) {
       setNewPasswordError("New password cannot be empty.");
     }
   };
+  const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value.trim());
+    setNewPasswordError("");
+    if (!newPassword) {
+      setNewPasswordError("New password cannot be empty.");
+      return;
+    }
+    const newPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
+    if (newPassword === oldPassword) {
+      setNewPasswordError(
+        "New password must be different from the old password."
+      );
+      return;
+    }
+    if (!newPasswordRegex.test(newPassword)) {
+      setNewPasswordError(
+        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character."
+      );
+      return;
+    }
+  };
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value.trim());
 
-  const handleConfirmPassword = () => {
     setConfirmPasswordError("");
     if (!confirmPassword) {
       setConfirmPasswordError("Confirm password cannot be empty.");
@@ -153,7 +154,7 @@ const Layout = ({ children }) => {
 
       <Dialog
         open={currentUser.isFirst}
-        onClose={handleCloseDialog}
+        onClose={!currentUser.isFirst}
         disableBackdropClick
         disableEscapeKeyDown
       >
@@ -171,8 +172,9 @@ const Layout = ({ children }) => {
               type={showNewPassword ? "text" : "password"}
               fullWidth
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value.trim())}
-              onBlur={handlePasswordBlur}
+              onChange={handleNewPasswordChange}
+              onBlur={handleNewPasswordChange}
+              error={newPasswordError}
               required
               InputProps={{
                 endAdornment: (
@@ -206,10 +208,11 @@ const Layout = ({ children }) => {
               label="Confirm Password"
               type={showConfirmPassword ? "text" : "password"}
               fullWidth
+              error={confirmPasswordError}
               required
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value.trim())}
-              onBlur={handleConfirmPassword}
+              onChange={handleConfirmPasswordChange}
+              onBlur={handleConfirmPasswordChange}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -240,7 +243,7 @@ const Layout = ({ children }) => {
         <DialogActions>
           <Button
             disabled={!!newPasswordError || !!confirmPasswordError}
-            onClick={handlePasswordChange}
+            onClick={handelSubmit}
             variant="contained"
             sx={{
               bgcolor: "#D6001C",

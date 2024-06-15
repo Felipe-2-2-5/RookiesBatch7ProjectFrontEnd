@@ -22,7 +22,6 @@ const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    console.log("into auth context");
     const UserData = () => {
       if (token) {
         try {

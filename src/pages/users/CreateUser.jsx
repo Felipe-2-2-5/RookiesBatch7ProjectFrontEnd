@@ -583,7 +583,13 @@ const CreateUser = () => {
                         backgroundColor: "#a50000",
                       },
                     }}
-                    disabled={Object.values(formErrors).some((error) => error)}
+                    disabled={
+                      Object.values(formErrors).some((error) => error) ||
+                      !users.firstName ||
+                      !users.lastName ||
+                      !users.dateOfBirth ||
+                      !users.joinedDate
+                    }
                     onClick={handleSubmit}
                   >
                     Save

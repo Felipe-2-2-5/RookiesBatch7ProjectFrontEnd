@@ -84,12 +84,6 @@ const Layout = ({ children }) => {
     }
   };
 
-  const handlePasswordBlur = () => {
-    setNewPasswordError("");
-    if (!newPassword) {
-      setNewPasswordError("New password cannot be empty.");
-    }
-  };
   const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value.trim());
     setNewPasswordError("");
@@ -153,7 +147,7 @@ const Layout = ({ children }) => {
       <Footer />
 
       <Dialog
-        open={currentUser.isFirst}
+        open={true}
         onClose={!currentUser.isFirst}
         disableBackdropClick
         disableEscapeKeyDown
@@ -242,7 +236,12 @@ const Layout = ({ children }) => {
         </DialogContent>
         <DialogActions>
           <Button
-            disabled={!!newPasswordError || !!confirmPasswordError}
+            disabled={
+              !!newPasswordError ||
+              !!confirmPasswordError ||
+              !newPassword ||
+              !confirmPassword
+            }
             onClick={handelSubmit}
             variant="contained"
             sx={{

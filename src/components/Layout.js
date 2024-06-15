@@ -16,13 +16,14 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { AppRouter } from "../routes/AppRouter";
+import { AdminRoutes } from "../routes";
+import { ChangePassword, LoginUser } from "../services/Service";
 import Footer from "./Footer";
 import Header from "./Header";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
-import { ChangePassword, LoginUser } from "../services/Service";
-const Layout = ({ children }) => {
+
+const Layout = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPasswordError, setNewPasswordError] = useState("");
@@ -35,11 +36,6 @@ const Layout = ({ children }) => {
   const oldPassword = localStorage.getItem("password");
 
   useEffect(() => {}, [currentUser.isFirst]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-  };
 
   const handelSubmit = async () => {
     try {
@@ -129,7 +125,9 @@ const Layout = ({ children }) => {
     <div>
       <CssBaseline />
       <Header />
-      <Box display="flex" p={2}>
+      <Box
+        display="flex"
+        p={2}>
         <Box>
           {isAuthenticated &&
             (currentUser.role === "Admin" ? (
@@ -138,20 +136,27 @@ const Layout = ({ children }) => {
               <VerticalNavbarStaff />
             ))}
         </Box>
-        <Box flexGrow={1} ml={2}>
+        <Box
+          flexGrow={1}
+          ml={2}>
           <main style={{ p: "2" }}>
-            <AppRouter />
+            {/* {isAuthenticated &&
+              (currentUser.role === "Admin" ? (
+                <AdminRoutes />
+              ) : (
+                <StaffRoutes />
+              ))} */}
+            <AdminRoutes />
           </main>
         </Box>
       </Box>
       <Footer />
 
       <Dialog
-        open={true}
+        open={currentUser.isFirst}
         onClose={!currentUser.isFirst}
         disableBackdropClick
-        disableEscapeKeyDown
-      >
+        disableEscapeKeyDown>
         <DialogTitle sx={{ color: "#D6001C" }}>Change Password</DialogTitle>
         <DialogContent>
           <Typography>
@@ -191,7 +196,10 @@ const Layout = ({ children }) => {
               }}
             />
             {newPasswordError && (
-              <Typography color="error" variant="caption" component="div">
+              <Typography
+                color="error"
+                variant="caption"
+                component="div">
                 {newPasswordError}
               </Typography>
             )}
@@ -228,7 +236,10 @@ const Layout = ({ children }) => {
               }}
             />
             {confirmPasswordError && (
-              <Typography color="error" variant="caption" component="div">
+              <Typography
+                color="error"
+                variant="caption"
+                component="div">
                 {confirmPasswordError}
               </Typography>
             )}
@@ -247,8 +258,7 @@ const Layout = ({ children }) => {
             sx={{
               bgcolor: "#D6001C",
               "&:hover": { bgcolor: "#D6001C" },
-            }}
-          >
+            }}>
             Save
           </Button>
         </DialogActions>
@@ -258,8 +268,7 @@ const Layout = ({ children }) => {
         open={showSuccessDialog}
         onClose={() => setShowSuccessDialog(false)}
         disableBackdropClick
-        disableEscapeKeyDown
-      >
+        disableEscapeKeyDown>
         <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold" }}>
           Success
         </DialogTitle>
@@ -273,8 +282,7 @@ const Layout = ({ children }) => {
               color: "white",
               bgcolor: "#D6001C",
               "&:hover": { bgcolor: "#D6001C" },
-            }}
-          >
+            }}>
             OK
           </Button>
         </DialogActions>

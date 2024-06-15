@@ -1,15 +1,17 @@
 import { useRoutes } from "react-router-dom";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
-import ManageAssetPage from "../pages/ManageAssetPage";
-import ManageAssignmentPage from "../pages/ManageAssignmentPage";
-import ManageUserPage from "../pages/ManageUserPage";
-import ReportPage from "../pages/ReportPage";
-import RequestForReturningPage from "../pages/RequestForReturningPage";
-import CreateUser from "../pages/users/CreateUser";
+import {
+  CreateUser,
+  HomePage,
+  LoginPage,
+  ManageAssetPage,
+  ManageAssignmentPage,
+  ManageUserPage,
+  ReportPage,
+  RequestForReturningPage,
+} from "../pages";
 import { path } from "./routeContants";
 
-export const AppRouter = () => {
+export const AdminRoutes = () => {
   const element = useRoutes([
     {
       path: path.home,

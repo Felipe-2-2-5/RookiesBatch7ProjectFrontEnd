@@ -70,6 +70,8 @@ const CreateUser = () => {
   const { currentUser } = useAuthContext();
   const [error, setError] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
+  const [titlePopup, setTitlePopup] = useState(false);
+  const [contentPopup, setContentPopup] = useState(false);
 
   const [users, setUsers] = useState({
     firstName: "",
@@ -255,38 +257,55 @@ const CreateUser = () => {
     event.preventDefault();
     const hasErrors = Object.values(formErrors).some((error) => error);
     if (!hasErrors) {
+      if (!users.location) {
+        users.location = currentUser.locality;
+      }
+      if (users.location) {
+        users.location === "HaNoi"
+          ? (users.location = 1)
+          : (users.location = 0);
+      }
+      if (users.gender) {
+        users.gender = +users.gender;
+      }
       try {
-        if (!users.location) {
-          users.location = currentUser.locality;
-        }
-        if (users.location) {
-          users.location === "HaNoi"
-            ? (users.location = 1)
-            : (users.location = 0);
-        }
-        if (users.gender) {
-          users.gender = +users.gender;
-        }
         const response = await CreateUserAPI({
           ...users,
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
-        displayPopupNotification();
+        if (response) {
+          setTitlePopup("Notifications");
+          setContentPopup(
+            `User ${users.firstName} ${users.lastName} has been created.`
+          );
+          displayPopupNotification();
+          handleClosePopup(true);
+        }
       } catch (error) {
-        console.error("Error:", error);
+        setTitlePopup("Error");
+        setContentPopup(`error: ${error.userMessage}`);
+        displayPopupNotification();
+        handleClosePopup(false);
       }
     } else {
-      console.log("Form has errors. Please fill all required fields.");
+      setTitlePopup("Error");
+      setContentPopup("Form has errors. Please fill all required fields.");
+      displayPopupNotification();
+      handleClosePopup(false);
     }
   };
   const displayPopupNotification = () => {
     setOpenPopup(true);
   };
 
-  const handleClosePopup = () => {
-    setOpenPopup(false);
-    navigate("/manage-user");
+  const handleClosePopup = (bool) => {
+    if (bool) {
+      setOpenPopup(false);
+      navigate("/manage-user");
+    } else {
+      setOpenPopup(false);
+    }
   };
   return (
     <>
@@ -585,8 +604,8 @@ const CreateUser = () => {
       <PopupNotification
         open={openPopup}
         handleClose={handleClosePopup}
-        title={"Notification"}
-        content={"Create success"}
+        title={titlePopup}
+        content={contentPopup}
       />
     </>
   );

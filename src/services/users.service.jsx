@@ -25,8 +25,12 @@ export const GetUser = async (id) => {
 };
 
 export const CreateUserAPI = async (body) => {
-  const response = await httpClient.post("/users", body);
-  return response;
+  try {
+    const response = await httpClient.post("/users", body);
+    return response;
+  } catch (err) {
+    return err;
+  }
 };
 
 export const UpdateUser = async (id, body) => {

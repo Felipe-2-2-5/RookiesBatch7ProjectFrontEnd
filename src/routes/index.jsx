@@ -1,3 +1,3 @@
-export { AppRoutes } from "./AppRoutes";
-export { ReaderRoutes } from "./ReaderRoutes";
+export { AdminRoutes } from "./AdminRoutes";
+export { StaffRoutes } from "./StaffRoutes";
 export { path } from "./routeContants";

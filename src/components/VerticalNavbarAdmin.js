@@ -2,10 +2,8 @@ import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../assets/images/nashTech-logo-red.svg"; // replace with your logo path
-import { useAuthContext } from "../context/AuthContext";
 
 const VerticalNavbarAdmin = () => {
-  const { isAuthenticated } = useAuthContext();
   const location = useLocation();
 
   return (
@@ -22,7 +20,11 @@ const VerticalNavbarAdmin = () => {
           alignItems: "flex-start",
         }}
       >
-        <img src={Logo} alt="Logo" style={{ width: "100px", height: "100px" }} />
+        <img
+          src={Logo}
+          alt="Logo"
+          style={{ width: "100px", height: "100px" }}
+        />
         <Typography variant="h6" style={{ color: "#D6001C" }}>
           <b>Online Asset Management</b>
         </Typography>
@@ -37,10 +39,8 @@ const VerticalNavbarAdmin = () => {
               bgcolor: "#D6001C",
               "& .MuiListItemText-primary": { color: "white" },
             },
-            backgroundColor:
-              location.pathname.startsWith("/home") && "#D6001C",
-            color:
-              location.pathname.startsWith("/home") && "white",
+            backgroundColor: location.pathname.startsWith("/home") && "#D6001C",
+            color: location.pathname.startsWith("/home") && "white",
           }}
         >
           <ListItemText primary={<b>Home</b>} />
@@ -56,8 +56,7 @@ const VerticalNavbarAdmin = () => {
             },
             backgroundColor:
               location.pathname.startsWith("/manage-user") && "#D6001C",
-            color:
-              location.pathname.startsWith("/manage-user") && "white",
+            color: location.pathname.startsWith("/manage-user") && "white",
           }}
         >
           <ListItemText primary={<b>Manage User</b>} />
@@ -89,7 +88,8 @@ const VerticalNavbarAdmin = () => {
             },
             backgroundColor:
               location.pathname.startsWith("/manage-assignment") && "#D6001C",
-            color: location.pathname.startsWith("/manage-assignment") && "white",
+            color:
+              location.pathname.startsWith("/manage-assignment") && "white",
           }}
         >
           <ListItemText primary={<b>Manage Assignment</b>} />
@@ -104,8 +104,10 @@ const VerticalNavbarAdmin = () => {
               "& .MuiListItemText-primary": { color: "white" },
             },
             backgroundColor:
-              location.pathname.startsWith("/request-for-returning") && "#D6001C",
-            color: location.pathname.startsWith("/request-for-returning") && "white",
+              location.pathname.startsWith("/request-for-returning") &&
+              "#D6001C",
+            color:
+              location.pathname.startsWith("/request-for-returning") && "white",
           }}
         >
           <ListItemText primary={<b>Request for Returning</b>} />

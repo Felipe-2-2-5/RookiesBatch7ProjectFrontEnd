@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import {
@@ -18,17 +17,62 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { removeExtraWhitespace } from "../../utils/TrimValue";
+import { CreateUserAPI } from "../../services/users.service";
+
+const PopupNotification = ({
+  open,
+  handleClose,
+  title,
+  content,
+  closeContent,
+}) => {
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      disableBackdropClick
+      disableEscapeKeyDown
+    >
+      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+        {title}
+      </DialogTitle>
+      <DialogContent>
+        <p>{content}</p>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={handleClose}
+          sx={{
+            color: "white",
+            bgcolor: "#D6001C",
+            "&:hover": { bgcolor: "#D6001C" },
+          }}
+        >
+          {closeContent ? closeContent : "Ok"}
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
 
 const CreateUser = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
   const [error, setError] = useState("");
+  const [openPopup, setOpenPopup] = useState(false);
+  const [titlePopup, setTitlePopup] = useState(false);
+  const [contentPopup, setContentPopup] = useState(false);
+
   const [users, setUsers] = useState({
     firstName: "",
     lastName: "",
@@ -41,7 +85,7 @@ const CreateUser = () => {
 
   const [formErrors, setFormErrors] = useState({
     firstName: false,
-    lastName: true,
+    lastName: false,
     dateOfBirth: false,
     gender: false,
     joinedDate: false,
@@ -81,7 +125,6 @@ const CreateUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
-    const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
@@ -119,18 +162,6 @@ const CreateUser = () => {
     setUsers({ ...users, [name]: value });
   };
 
-  // const handleNameChange = (event) => {
-  //   let errorMessage = '';
-  //   const { name, value } = event.target;
-  //   setUsers({ ...users, [name]: value });
-  //   if(users.firstName && name === 'firstName' ){
-  //     const isValid = /^[a-zA-Z]{2,20}$/.test(value);
-  //     if(!isValid){
-  //       errorMessage = `First name must contain only alphabetical characters.`;
-  //       setFormErrors({ ...formErrors, [name]: errorMessage });
-
-  //     }
-  //   }  };
   const handleNameChange = (event) => {
     let errorMessage = "";
     const { name, value } = event.target;
@@ -168,25 +199,6 @@ const CreateUser = () => {
     return day === 6 || day === 0;
   };
 
-  function isValidDate(dateString) {
-    console.log("dateString: " + users.joinedDate);
-    const regex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
-    if (!regex.test(dateString)) {
-      return false;
-    }
-    const parts = dateString.split("/");
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
-
-    if (month < 1 || month > 12 || year < 1000 || year > 9999) {
-      return false;
-    }
-
-    const daysInMonth = new Date(year, month, 0).getDate();
-    return day > 0 && day <= daysInMonth;
-  }
-
   useEffect(() => {
     let errorMessage = "";
     if (touched.joinedDate) {
@@ -208,11 +220,6 @@ const CreateUser = () => {
 
   const errorMessage = React.useMemo(() => {
     switch (error) {
-      // case 'maxDate':
-      // case 'maxDate': {
-      //   return 'Date of birth must less than current day.';
-      // }
-
       case "invalidDate": {
         return "Invalid Date";
       }
@@ -250,34 +257,56 @@ const CreateUser = () => {
     event.preventDefault();
     const hasErrors = Object.values(formErrors).some((error) => error);
     if (!hasErrors) {
+      if (!users.location) {
+        users.location = currentUser.locality;
+      }
+      if (users.location) {
+        users.location === "HaNoi"
+          ? (users.location = 1)
+          : (users.location = 0);
+      }
+      if (users.gender) {
+        users.gender = +users.gender;
+      }
       try {
-        if (!users.location) {
-          users.location = currentUser.locality;
-        }
-        if (users.location) {
-          users.location === "HaNoi"
-            ? (users.location = 1)
-            : (users.location = 0);
-        }
-        if (users.gender) {
-          users.gender = +users.gender;
-        }
-        const response = await axios.post("http://localhost:7083/api/users", {
+        const response = await CreateUserAPI({
           ...users,
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
-        console.log("Response:", response.data);
-        console.log("User created successfully.");
-        navigate("/manage-user");
+        if (response) {
+          setTitlePopup("Notifications");
+          setContentPopup(
+            `User ${users.firstName} ${users.lastName} has been created.`
+          );
+          displayPopupNotification();
+          handleClosePopup(true);
+        }
       } catch (error) {
-        console.error("Error:", error);
+        setTitlePopup("Error");
+        setContentPopup(`error: ${error.userMessage}`);
+        displayPopupNotification();
+        handleClosePopup(false);
       }
     } else {
-      console.log("Form has errors. Please fill all required fields.");
+      setTitlePopup("Error");
+      setContentPopup("Form has errors. Please fill all required fields.");
+      displayPopupNotification();
+      handleClosePopup(false);
     }
   };
+  const displayPopupNotification = () => {
+    setOpenPopup(true);
+  };
 
+  const handleClosePopup = (bool) => {
+    if (bool) {
+      setOpenPopup(false);
+      navigate("/manage-user");
+    } else {
+      setOpenPopup(false);
+    }
+  };
   return (
     <>
       <Container sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -339,6 +368,7 @@ const CreateUser = () => {
                   placeholder="Last Name"
                   fullWidth
                   name="lastName"
+                  error={formErrors.lastName}
                   value={users.lastName}
                   onBlur={handleLastNameChange}
                   onChange={handleLastNameChange}
@@ -571,6 +601,12 @@ const CreateUser = () => {
           </form>
         </Box>
       </Container>
+      <PopupNotification
+        open={openPopup}
+        handleClose={handleClosePopup}
+        title={titlePopup}
+        content={contentPopup}
+      />
     </>
   );
 };

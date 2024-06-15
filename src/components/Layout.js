@@ -13,7 +13,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
@@ -22,9 +21,8 @@ import Footer from "./Footer";
 import Header from "./Header";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
-
+import { ChangePassword, LoginUser } from "../services/Service";
 const Layout = ({ children }) => {
-  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [newPasswordError, setNewPasswordError] = useState("");
@@ -34,25 +32,71 @@ const Layout = ({ children }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
   const navigate = useNavigate();
+  const oldPassword = localStorage.getItem("password");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token && currentUser.isFirst) {
-      setShowLogoutDialog(true);
-    }
-  }, [currentUser.isFirst]);
+  useEffect(() => {}, [currentUser.isFirst]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/");
   };
 
-  const handleCloseDialog = () => {
-    setShowLogoutDialog(false);
+  const handelSubmit = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const userId = currentUser.id;
+        const response1 = await ChangePassword({
+          id: userId,
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+          confirmPassword: newPassword,
+        });
+
+        if (response1.data === true) {
+          const username = currentUser.name;
+          const response2 = await LoginUser({
+            userName: username,
+            password: newPassword,
+          });
+
+          const data = response2.data;
+          setIsAuthenticated(true);
+          localStorage.setItem("token", data.token);
+          currentUser.isFirst = false;
+
+          setNewPassword("");
+          localStorage.removeItem("firstLogin");
+          setShowSuccessDialog(true);
+          localStorage.removeItem("password");
+        } else {
+          setConfirmPassword("Failed to change password. Please try again.");
+        }
+      } else {
+        setConfirmPassword("User token not found. Please login again.");
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setConfirmPassword(
+        "An error occurred while changing password. Please try again later."
+      );
+    }
   };
 
-  const handlePasswordChange = async () => {
-    const oldPassword = localStorage.getItem("password");
+  const handlePasswordBlur = () => {
+    setNewPasswordError("");
+    if (!newPassword) {
+      setNewPasswordError("New password cannot be empty.");
+    }
+  };
+  const handleNewPasswordChange = (event) => {
+    setNewPassword(event.target.value.trim());
+    setNewPasswordError("");
+    if (!newPassword) {
+      setNewPasswordError("New password cannot be empty.");
+      return;
+    }
     const newPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
     if (newPassword === oldPassword) {
@@ -67,61 +111,10 @@ const Layout = ({ children }) => {
       );
       return;
     }
-
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const userId = currentUser.id;
-        const response1 = await axios.post(
-          "https://localhost:7083/api/users/change_password",
-          {
-            id: userId,
-            oldPassword: oldPassword,
-            newPassword: newPassword,
-            confirmPassword: newPassword,
-          }
-        );
-
-        if (response1.data === true) {
-          const username = currentUser.name;
-          const response2 = await axios.post(
-            "https://localhost:7083/api/users/login",
-            { userName: username, password: newPassword }
-          );
-          const data = response2.data;
-          setIsAuthenticated(true);
-          localStorage.setItem("token", data.token);
-          currentUser.isFirst = false;
-
-          setNewPassword("");
-          setShowLogoutDialog(false);
-          localStorage.removeItem("firstLogin");
-          setShowSuccessDialog(true);
-          localStorage.removeItem("password");
-        } else {
-          setNewPasswordError("Failed to change password. Please try again.");
-        }
-      } else {
-        setNewPasswordError("User token not found. Please login again.");
-        navigate("/");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setNewPasswordError(
-        "An error occurred while changing password. Please try again later."
-      );
-    }
   };
+  const handleConfirmPasswordChange = (event) => {
+    setConfirmPassword(event.target.value.trim());
 
-  const handlePasswordBlur = () => {
-    setNewPasswordError("");
-    const oldPassword = localStorage.getItem("password");
-    if (!newPassword) {
-      setNewPasswordError("New password cannot be empty.");
-    }
-  };
-
-  const handleConfirmPassword = () => {
     setConfirmPasswordError("");
     if (!confirmPassword) {
       setConfirmPasswordError("Confirm password cannot be empty.");
@@ -161,7 +154,7 @@ const Layout = ({ children }) => {
 
       <Dialog
         open={currentUser.isFirst}
-        onClose={handleCloseDialog}
+        onClose={!currentUser.isFirst}
         disableBackdropClick
         disableEscapeKeyDown
       >
@@ -179,8 +172,9 @@ const Layout = ({ children }) => {
               type={showNewPassword ? "text" : "password"}
               fullWidth
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value.trim())}
-              onBlur={handlePasswordBlur}
+              onChange={handleNewPasswordChange}
+              onBlur={handleNewPasswordChange}
+              error={newPasswordError}
               required
               InputProps={{
                 endAdornment: (
@@ -214,10 +208,11 @@ const Layout = ({ children }) => {
               label="Confirm Password"
               type={showConfirmPassword ? "text" : "password"}
               fullWidth
+              error={confirmPasswordError}
               required
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value.trim())}
-              onBlur={handleConfirmPassword}
+              onChange={handleConfirmPasswordChange}
+              onBlur={handleConfirmPasswordChange}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -248,7 +243,7 @@ const Layout = ({ children }) => {
         <DialogActions>
           <Button
             disabled={!!newPasswordError || !!confirmPasswordError}
-            onClick={handlePasswordChange}
+            onClick={handelSubmit}
             variant="contained"
             sx={{
               bgcolor: "#D6001C",

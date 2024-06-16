@@ -41,7 +41,6 @@ const Layout = () => {
       localStorage.removeItem("token");
     }
   }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
-
   const handelSubmit = async () => {
     try {
       const token = localStorage.getItem("token");

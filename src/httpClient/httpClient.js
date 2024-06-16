@@ -4,8 +4,8 @@ import { EventEmitter } from "events";
 
 export const popupEventEmitter = new EventEmitter();
 
-const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
-// const baseURL = "https://localhost:7083/api";
+// const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
+const baseURL = "https://localhost:7083/api";
 // process.env.REACT_APP_API_BASE_URL || "https://localhost:7083/api";
 
 const instance = axios.create({
@@ -43,8 +43,7 @@ instance.interceptors.response.use(
         } else if (err.response.status === 404) {
           errorMessage = "Resource not found";
         } else {
-          errorMessage =
-            "An error occured while processing your request. Please try again later.";
+          errorMessage = err.response.userMessage;
         }
         popupEventEmitter.emit("showPopup", errorMessage);
         return Promise.reject(err.response.data);

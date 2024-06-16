@@ -28,7 +28,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { removeExtraWhitespace } from "../../utils/TrimValue";
 import { CreateUserAPI } from "../../services/users.service";
-
 const PopupNotification = ({
   open,
   handleClose,
@@ -77,7 +76,7 @@ const CreateUser = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: null,
-    gender: 1,
+    gender: 2,
     joinedDate: null,
     type: 0,
     location: localStorage.getItem("location"),
@@ -139,6 +138,10 @@ const CreateUser = () => {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must not exceed 20 characters.`;
+    }
+    const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
+    if (!isValid) {
+      errorMessage = `Last name must contain only alphabetical characters and whitespace.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -427,7 +430,7 @@ const CreateUser = () => {
                   row
                 >
                   <FormControlLabel
-                    value={1}
+                    value={2}
                     control={
                       <Radio
                         sx={{
@@ -439,7 +442,7 @@ const CreateUser = () => {
                     label="Female"
                   />
                   <FormControlLabel
-                    value={2}
+                    value={1}
                     control={
                       <Radio
                         sx={{

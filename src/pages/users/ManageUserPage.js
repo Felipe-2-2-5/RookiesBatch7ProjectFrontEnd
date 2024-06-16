@@ -71,8 +71,6 @@ const ManageUserPage = () => {
     setTotalCount(res.data.totalCount);
 
     const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
-    console.log(userCreated);
-    console.log(fetchedUsers);
     if (userCreated) {
       setUser([userCreated, ...fetchedUsers]);
       sessionStorage.removeItem("user_created");

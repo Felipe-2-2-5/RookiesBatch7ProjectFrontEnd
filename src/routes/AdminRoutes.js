@@ -1,4 +1,5 @@
 import { useRoutes } from "react-router-dom";
+import RequireAuth from "../components/RequiredAuth";
 import {
   CreateUser,
   HomePage,
@@ -31,12 +32,20 @@ export const AdminRoutes = () => {
     },
     {
       path: path.users,
-      element: <ManageUserPage />,
+      element: (
+        <RequireAuth>
+          <ManageUserPage />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {
       path: path.userCreate,
-      element: <CreateUser />,
+      element: (
+        <RequireAuth>
+          <CreateUser />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {

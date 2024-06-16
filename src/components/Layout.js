@@ -20,6 +20,7 @@ import { AdminRoutes } from "../routes";
 import { ChangePassword, LoginUser } from "../services/users.service";
 import Footer from "./Footer";
 import Header from "./Header";
+import PopupNotification from "./PopupNotification";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
 
@@ -34,6 +35,8 @@ const Layout = () => {
   const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
   const navigate = useNavigate();
   const oldPassword = localStorage.getItem("password");
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (new Date(currentUser.expires * 1000) < new Date()) {
@@ -70,17 +73,20 @@ const Layout = () => {
           setShowSuccessDialog(true);
           localStorage.removeItem("password");
         } else {
-          setConfirmPassword("Failed to change password. Please try again.");
+          setErrorMessage("Failed to change password. Please try again.");
+          setShowErrorDialog(true);
         }
       } else {
-        setConfirmPassword("User token not found. Please login again.");
+        setErrorMessage("User token not found. Please login again.");
+        setShowErrorDialog(true);
         navigate("/");
       }
     } catch (error) {
       console.error("Error:", error);
-      setConfirmPassword(
+      setErrorMessage(
         "An error occurred while changing password. Please try again later."
       );
+      setShowErrorDialog(true);
     }
   };
 
@@ -129,7 +135,9 @@ const Layout = () => {
     <div>
       <CssBaseline />
       <Header />
-      <Box display="flex" p={2}>
+      <Box
+        display="flex"
+        p={2}>
         <Box>
           {isAuthenticated &&
             (currentUser.role === "Admin" ? (
@@ -138,7 +146,9 @@ const Layout = () => {
               <VerticalNavbarStaff />
             ))}
         </Box>
-        <Box flexGrow={1} ml={2}>
+        <Box
+          flexGrow={1}
+          ml={2}>
           <main style={{ p: "2" }}>
             {/* {isAuthenticated &&
               (currentUser.role === "Admin" ? (
@@ -156,8 +166,7 @@ const Layout = () => {
         open={currentUser.isFirst}
         onClose={!currentUser.isFirst}
         disableBackdropClick
-        disableEscapeKeyDown
-      >
+        disableEscapeKeyDown>
         <DialogTitle sx={{ color: "#D6001C" }}>Change Password</DialogTitle>
         <DialogContent>
           <Typography>
@@ -197,7 +206,10 @@ const Layout = () => {
               }}
             />
             {newPasswordError && (
-              <Typography color="error" variant="caption" component="div">
+              <Typography
+                color="error"
+                variant="caption"
+                component="div">
                 {newPasswordError}
               </Typography>
             )}
@@ -234,7 +246,10 @@ const Layout = () => {
               }}
             />
             {confirmPasswordError && (
-              <Typography color="error" variant="caption" component="div">
+              <Typography
+                color="error"
+                variant="caption"
+                component="div">
                 {confirmPasswordError}
               </Typography>
             )}
@@ -253,8 +268,7 @@ const Layout = () => {
             sx={{
               bgcolor: "#D6001C",
               "&:hover": { bgcolor: "#D6001C" },
-            }}
-          >
+            }}>
             Save
           </Button>
         </DialogActions>
@@ -264,8 +278,7 @@ const Layout = () => {
         open={showSuccessDialog}
         onClose={() => setShowSuccessDialog(false)}
         disableBackdropClick
-        disableEscapeKeyDown
-      >
+        disableEscapeKeyDown>
         <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold" }}>
           Success
         </DialogTitle>
@@ -279,12 +292,17 @@ const Layout = () => {
               color: "white",
               bgcolor: "#D6001C",
               "&:hover": { bgcolor: "#D6001C" },
-            }}
-          >
+            }}>
             OK
           </Button>
         </DialogActions>
       </Dialog>
+      <PopupNotification
+        open={showErrorDialog}
+        title="Error"
+        message={errorMessage}
+        handleClose={() => setShowErrorDialog(false)}
+      />
     </div>
   );
 };

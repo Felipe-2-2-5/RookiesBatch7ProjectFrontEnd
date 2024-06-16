@@ -1,4 +1,3 @@
-// pages/RequestForReturningPage.js
 import { Typography } from "@mui/material";
 import React from "react";
 
@@ -8,8 +7,7 @@ const RequestForReturningPage = () => {
       <Typography
         variant="h5"
         component="h2"
-        style={{ color: "#D6001C", fontWeight: "bold" }}
-      >
+        style={{ color: "#D6001C", fontWeight: "bold" }}>
         Request for Returning
       </Typography>
       <p>This is the Request for Returning page.</p>

@@ -44,10 +44,10 @@ instance.interceptors.response.use(
         }
       }
     } catch (error) {
-      console.error(error);
       alert(
         "An error occured while processing your request. Please try again later."
       );
+      return Promise.reject(error.response.data);
     }
   }
 );

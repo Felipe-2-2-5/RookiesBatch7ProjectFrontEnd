@@ -2,13 +2,20 @@ import { httpClient } from "../httpClient/httpClient";
 
 export const LoginUser = async (body) => {
   try {
-    const response = await httpClient.post("/login", body);
-    localStorage.setItem("token", response.data.token);
+    const response = await httpClient.post("/users/login", body);
+    return response;
   } catch (error) {
     return error;
   }
 };
-
+export const ChangePassword = async (body) => {
+  try {
+    const response = await httpClient.post("/users/change_password", body);
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
 export const FilterRequest = async (body) => {
   const response = await httpClient.post("/users/filter", body);
   return response;
@@ -24,9 +31,13 @@ export const GetUser = async (id) => {
   return response;
 };
 
-export const CreateUser = async (body) => {
-  const response = await httpClient.post("/users", body);
-  return response;
+export const CreateUserAPI = async (body) => {
+  try {
+    const response = await httpClient.post("/users", body);
+    return response;
+  } catch (err) {
+    return err;
+  }
 };
 
 export const UpdateUser = async (id, body) => {

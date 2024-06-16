@@ -1,7 +1,7 @@
-export { Breadcrumbs } from "./BreadCrumb";
-export { Footer } from "./Footer";
-export { Header } from "./Header";
-export { Layout } from "./Layout";
-export { RequiredAuth } from "./RequiredAuth";
-export { VerticalNavbarAdmin } from "./VerticalNavbarAdmin";
-export { VerticalNavbarStaff } from "./VerticalNavbarStaff";
+// export { default as Breadcrumbs } from "./Breadcrumbs";
+// export { default as Footer } from "./Footer";
+// export { default as Header } from "./Header";
+// export { default as Layout } from "./Layout";
+// export { default as RequiredAuth } from "./RequiredAuth";
+// export { default as VerticalNavbarAdmin } from "./VerticalNavbarAdmin";
+// export { default as VerticalNavbarStaff } from "./VerticalNavbarStaff";

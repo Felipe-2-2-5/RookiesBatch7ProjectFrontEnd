@@ -38,11 +38,6 @@ const Header = () => {
       <Toolbar sx={{ justifyContent: "space-between" }}>
         <Box>
           <Breadcrumbs separator=" > ">
-            {/* <Typography
-              color="textPrimary"
-              sx={{ fontSize: "1.2em", fontWeight: "bold", color: "#fff" }}>
-              {currentUser.role.toUpperCase()}
-            </Typography> */}
             <Typography
               color="textPrimary"
               sx={{ fontSize: "1.2em", fontWeight: "bold", color: "#fff" }}>

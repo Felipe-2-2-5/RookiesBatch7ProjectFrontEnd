@@ -1,47 +1,63 @@
 import { useRoutes } from "react-router-dom";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
-import ManageAssetPage from "../pages/ManageAssetPage";
-import ManageAssignmentPage from "../pages/ManageAssignmentPage";
-import ManageUserPage from "../pages/ManageUserPage";
-import ReportPage from "../pages/ReportPage";
-import RequestForReturningPage from "../pages/RequestForReturningPage";
-import CreateUser from "../pages/users/CreateUser";
+import {
+  CreateUser,
+  HomePage,
+  LoginPage,
+  ManageAssetPage,
+  ManageAssignmentPage,
+  ManageUserPage,
+  NotFound,
+  ReportPage,
+  RequestForReturningPage,
+} from "../pages";
 import { path } from "./routeContants";
 
-export const AppRouter = () => {
+export const AdminRoutes = () => {
   const element = useRoutes([
+    {
+      path: path.default,
+      element: <HomePage />,
+      errorElement: <NotFound />,
+    },
     {
       path: path.home,
       element: <HomePage />,
+      errorElement: <NotFound />,
     },
     {
       path: path.login,
       element: <LoginPage />,
+      errorElement: <NotFound />,
     },
     {
       path: path.users,
       element: <ManageUserPage />,
+      errorElement: <NotFound />,
     },
     {
       path: path.userCreate,
       element: <CreateUser />,
+      errorElement: <NotFound />,
     },
     {
       path: path.assets,
       element: <ManageAssetPage />,
+      errorElement: <NotFound />,
     },
     {
       path: path.assignments,
       element: <ManageAssignmentPage />,
+      errorElement: <NotFound />,
     },
     {
       path: path.requestForReturning,
       element: <RequestForReturningPage />,
+      errorElement: <NotFound />,
     },
     {
       path: path.report,
       element: <ReportPage />,
+      errorElement: <NotFound />,
     },
   ]);
   return element;

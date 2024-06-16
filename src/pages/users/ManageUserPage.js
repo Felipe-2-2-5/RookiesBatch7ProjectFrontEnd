@@ -35,9 +35,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { FilterRequest, GetDetailedUser } from "../services/Service";
-import { path } from "../routes/routeContants";
-
+import { path } from "../../routes/routeContants";
+import { GetUser, FilterRequest } from "../../services/users.service";
 //reformat code from 	2017-09-18T00:00:00 to 19/08/2017
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -80,6 +79,11 @@ const ManageUserPage = () => {
   };
 
   useEffect(() => {
+    const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
+    if (userCreated) {
+      setUser((prevUsers) => [userCreated, ...prevUsers]); // Add userCreated to the beginning of the list
+      sessionStorage.removeItem("user_created");
+    }
     getUsers(filterRequest);
   }, [filterRequest]);
 
@@ -100,8 +104,8 @@ const ManageUserPage = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const handleDetailDialog = async (user) => {
-    const res = await GetDetailedUser(user.id);
-    setSelectedUser(res);
+    const res = await GetUser(user.id);
+    setSelectedUser(res.data);
     setDialogOpen(true);
   };
   const handleDialogClose = () => {
@@ -209,7 +213,6 @@ const ManageUserPage = () => {
         >
           <FormControl variant="outlined" sx={{ minWidth: 120 }}>
             <InputLabel>Type</InputLabel>
-            {console.log(filterRequest.type)}
             <Select label="Type" value={filterRequest.type} name="type">
               <MenuItem
                 value="Admin"

@@ -40,7 +40,7 @@ const Layout = () => {
       setIsAuthenticated(false);
       localStorage.removeItem("token");
     }
-  }, [currentUser.isFirst]);
+  }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
 
   const handelSubmit = async () => {
     try {

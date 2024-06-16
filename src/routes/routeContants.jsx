@@ -1,4 +1,5 @@
 export const path = {
+  default: "/",
   home: "/home",
   login: "/login",
 

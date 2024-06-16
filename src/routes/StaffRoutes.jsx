@@ -6,6 +6,11 @@ import { path } from "./";
 export const StaffRoutes = () => {
   const element = useRoutes([
     {
+      path: path.default,
+      element: <HomePage />,
+      errorElement: <NotFound />,
+    },
+    {
       path: path.home,
       element: <HomePage />,
       errorElement: <NotFound />,

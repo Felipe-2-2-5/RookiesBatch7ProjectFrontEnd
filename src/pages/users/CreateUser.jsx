@@ -274,38 +274,33 @@ const CreateUser = () => {
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
+        console.log(response);
         if (response) {
+          sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
             `User ${users.firstName} ${users.lastName} has been created.`
           );
           displayPopupNotification();
-          handleClosePopup(true);
         }
       } catch (error) {
         setTitlePopup("Error");
         setContentPopup(`error: ${error.userMessage}`);
         displayPopupNotification();
-        handleClosePopup(false);
       }
     } else {
       setTitlePopup("Error");
       setContentPopup("Form has errors. Please fill all required fields.");
       displayPopupNotification();
-      handleClosePopup(false);
     }
   };
   const displayPopupNotification = () => {
     setOpenPopup(true);
   };
 
-  const handleClosePopup = (bool) => {
-    if (bool) {
-      setOpenPopup(false);
-      navigate("/manage-user");
-    } else {
-      setOpenPopup(false);
-    }
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+    navigate("/manage-user");
   };
   return (
     <>

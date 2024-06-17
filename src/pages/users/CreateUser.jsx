@@ -27,6 +27,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { CreateUserAPI } from "../../services/users.service";
+
 const PopupNotification = ({
   open,
   handleClose,
@@ -75,7 +76,7 @@ const CreateUser = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: null,
-    gender: 2,
+    gender: 1,
     joinedDate: null,
     type: 0,
     location: localStorage.getItem("location"),
@@ -96,34 +97,41 @@ const CreateUser = () => {
     joinedDate: false,
   });
 
+
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
+    const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } is required`;
-      return;
-    } else if (trimmedValue.length < 2) {
+    }
+    else if (trimmedValue.length < 2) {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must be at least 2 characters long.`;
-      return;
     } else if (trimmedValue.length > 20) {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must not exceed 20 characters.`;
-      return;
     }
-    const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
-    if (!isValid) {
-      errorMessage = `Last name must contain only alphabetical characters and whitespace.`;
+    else if(!isValid){
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }  must contain only alphabetical characters and spaces.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
+  };
+
+  const handleLastNameBlur = (event) => {
+    const { name, value } = event.target;
+    const trimmedValue = value.trim();
+    setUsers({ ...users, [name]: trimmedValue });
   };
 
   const handleTypeChange = (event) => {
@@ -163,7 +171,6 @@ const CreateUser = () => {
     }
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
-
   const handleLocationChange = (event) => {
     const { name, value } = event.target;
     setUsers({ ...users, [name]: value });
@@ -193,8 +200,7 @@ const CreateUser = () => {
       if (dob && joined < dob) {
         errorMessage = "Joined date must be after date of birth.";
       } else if (isWeekend(joined)) {
-        errorMessage =
-          "Joined date is Saturday or Sunday. Please select a different date.";
+        errorMessage = "Joined date is Saturday or Sunday. Please select a different date";
       }
     }
 
@@ -219,10 +225,6 @@ const CreateUser = () => {
   useEffect(() => {
     let errorMessage = "";
     if (touched.dateOfBirth) {
-      // if (!users.dateOfBirth) {
-      //   errorMessage = "Date of birth is required.";
-      // }
-
       const dob = new Date(users.dateOfBirth);
       const age = Math.floor(
         (Date.now() - dob) / (365.25 * 24 * 60 * 60 * 1000)
@@ -351,7 +353,7 @@ const CreateUser = () => {
                   name="lastName"
                   error={formErrors.lastName}
                   value={users.lastName}
-                  onBlur={handleLastNameChange}
+                  onBlur={handleLastNameBlur}
                   onChange={handleLastNameChange}
                 />
                 {formErrors.lastName && (
@@ -388,35 +390,7 @@ const CreateUser = () => {
                         {...params}
                         fullWidth
                         margin="dense"
-                        error={formErrors.dateOfBirth && touched.dateOfBirth}
-                        sx={{
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": {
-                              borderColor:
-                                formErrors.dateOfBirth && touched.dateOfBirth
-                                  ? "red"
-                                  : "inherit",
-                            },
-                            "&:hover fieldset": {
-                              borderColor:
-                                formErrors.dateOfBirth && touched.dateOfBirth
-                                  ? "red"
-                                  : "inherit",
-                            },
-                            "&.Mui-focused fieldset": {
-                              borderColor:
-                                formErrors.dateOfBirth && touched.dateOfBirth
-                                  ? "red"
-                                  : "#000",
-                            },
-                          },
-                          "& .MuiFormLabel-root": {
-                            color:
-                              formErrors.dateOfBirth && touched.dateOfBirth
-                                ? "red"
-                                : "inherit",
-                          },
-                        }}
+                        error={!!formErrors.dateOfBirth && touched.dateOfBirth}
                       />
                     )}
                   />
@@ -441,7 +415,7 @@ const CreateUser = () => {
                   row
                 >
                   <FormControlLabel
-                    value={2}
+                    value={1}
                     control={
                       <Radio
                         sx={{
@@ -453,7 +427,7 @@ const CreateUser = () => {
                     label="Female"
                   />
                   <FormControlLabel
-                    value={1}
+                    value={2}
                     control={
                       <Radio
                         sx={{
@@ -497,7 +471,8 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        error={formErrors.joinedDate && touched.joinedDate}
+                        // error={!!formErrors.joinedDate}
+                        error={!!formErrors.joinedDate && touched.joinedDate}
                       />
                     )}
                   />

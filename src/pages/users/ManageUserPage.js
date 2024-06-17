@@ -37,6 +37,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { path } from "../../routes/routeContants";
 import { GetUser, FilterRequest } from "../../services/users.service";
+import { GenderEnum } from "../../enum/genderEnum";
 //reformat code from 	2017-09-18T00:00:00 to 19/08/2017
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -50,14 +51,6 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
     cursor: "pointer",
   },
 }));
-
-// Enum for gender
-const GenderEnum = {
-  0: "Unknown",
-  1: "Male",
-  2: "Female",
-  3: "Other",
-};
 
 const ManageUserPage = () => {
   const navigate = useNavigate();
@@ -74,16 +67,19 @@ const ManageUserPage = () => {
   const [users, setUser] = useState([]);
   const getUsers = async (filterRequest) => {
     const res = await FilterRequest(filterRequest);
-    setUser(res.data.data);
+    const fetchedUsers = res.data.data;
     setTotalCount(res.data.totalCount);
+
+    const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
+    if (userCreated) {
+      setUser([userCreated, ...fetchedUsers]);
+      sessionStorage.removeItem("user_created");
+    } else {
+      setUser(fetchedUsers);
+    }
   };
 
   useEffect(() => {
-    const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
-    if (userCreated) {
-      setUser((prevUsers) => [userCreated, ...prevUsers]); // Add userCreated to the beginning of the list
-      sessionStorage.removeItem("user_created");
-    }
     getUsers(filterRequest);
   }, [filterRequest]);
 
@@ -453,7 +449,7 @@ const ManageUserPage = () => {
           <DialogTitle
             sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
           >
-            Detailed Assignment Information
+            Detailed User Information
             <IconButton
               aria-label="close"
               onClick={handleDialogClose}

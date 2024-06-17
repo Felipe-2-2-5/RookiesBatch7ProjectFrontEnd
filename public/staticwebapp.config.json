@@ -1,0 +1,13 @@
+{
+    "navigationFallback": {
+       "rewrite": "/index.html",
+       "exclude": ["/static/media/*.{png,jpg,jpeg,gif,bmp}",   "/static/css/*"]
+    },
+    "mimeTypes": {
+        ".json": "text/json"
+    },
+    "globalHeaders": {
+      "Access-Control-Allow-Origin": "https://test1-team2rookiesbatch7.azurewebsites.net",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS"
+    }
+}

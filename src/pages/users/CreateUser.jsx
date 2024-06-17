@@ -26,7 +26,6 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
-import { removeExtraWhitespace } from "../../utils/TrimValue";
 import { CreateUserAPI } from "../../services/users.service";
 
 const PopupNotification = ({
@@ -103,7 +102,7 @@ const CreateUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
-    const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
+    const isValid = /^[a-zA-Z]+( [a-zA-Z]+)*$/.test(trimmedValue.trim());
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {

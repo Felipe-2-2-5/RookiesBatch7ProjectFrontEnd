@@ -101,7 +101,8 @@ const LoginPage = () => {
           </Typography>
           <form onSubmit={handleLogin}>
             <TextField
-              label="Username"
+              // label="Username"
+              placeholder="Username"
               variant="outlined"
               value={username}
               onChange={(e) =>
@@ -122,9 +123,11 @@ const LoginPage = () => {
                   "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
               }}
+              autoComplete="off"
             />
             <TextField
-              label="Password"
+              // label="Password"
+              placeholder="Password"
               variant="outlined"
               type={showPassword ? "text" : "password"}
               value={password}
@@ -163,6 +166,7 @@ const LoginPage = () => {
                   "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
               }}
+              autoComplete="off"
             />
             <Button
               type="submit"

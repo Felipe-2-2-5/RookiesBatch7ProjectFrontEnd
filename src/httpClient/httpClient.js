@@ -43,8 +43,7 @@ instance.interceptors.response.use(
         } else if (err.response.status === 404) {
           errorMessage = "Resource not found";
         } else {
-          errorMessage =
-            "An error occured while processing your request. Please try again later.";
+          errorMessage = err.response.userMessage;
         }
         popupEventEmitter.emit("showPopup", errorMessage);
         return Promise.reject(err.response.data);

@@ -9,7 +9,7 @@ export const popupEventEmitter = new EventEmitter();
 // process.env.REACT_APP_API_BASE_URL || "https://localhost:7083/api";
 
 const instance = axios.create({
-
+  baseURL: baseURL,
   headers: {
     "Content-Type": "application/json",
   },

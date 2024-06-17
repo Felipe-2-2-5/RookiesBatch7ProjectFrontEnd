@@ -138,7 +138,7 @@ const Layout = () => {
       <Box
         display="flex"
         p={2}>
-        <Box>
+        <Box flexBasis="20%">
           {isAuthenticated &&
             (currentUser.role === "Admin" ? (
               <VerticalNavbarAdmin />
@@ -147,7 +147,8 @@ const Layout = () => {
             ))}
         </Box>
         <Box
-          flexGrow={1}
+          // flexGrow={1}
+          flexBasis="80%"
           ml={2}>
           <main style={{ p: "2" }}>
             {/* {isAuthenticated &&

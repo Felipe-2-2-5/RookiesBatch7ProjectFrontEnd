@@ -110,14 +110,8 @@ const CreateUser = () => {
         name.charAt(0).toUpperCase() + name.slice(1)
       } is required`;
     }
-    else if (trimmedValue.length < 2) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must be at least 2 characters long.`;
-    } else if (trimmedValue.length > 20) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must not exceed 20 characters.`;
+    else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
+      errorMessage = "The length of Lastname should be 2-20 characters.";
     }
     else if(!isValid){
       errorMessage = `${
@@ -129,9 +123,16 @@ const CreateUser = () => {
   };
 
   const handleLastNameBlur = (event) => {
+    let errorMessage = "";
     const { name, value } = event.target;
     const trimmedValue = value.trim();
+    if (trimmedValue.trim() === "") {
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
+    }
     setUsers({ ...users, [name]: trimmedValue });
+    setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
   const handleTypeChange = (event) => {
@@ -181,6 +182,7 @@ const CreateUser = () => {
     setTouched({ ...touched, [name]: true });
   };
 
+
   const formatDate = (date) => {
     if (!date) return "";
     return format(date, "dd/MM/yyyy");
@@ -196,8 +198,10 @@ const CreateUser = () => {
     if (touched.joinedDate) {
       const joined = new Date(users.joinedDate);
       const dob = new Date(users.dateOfBirth);
-
-      if (dob && joined < dob) {
+      if(!users.joinedDate){
+        errorMessage = "Joined date is required";
+      }
+      else if (dob && joined < dob) {
         errorMessage = "Joined date must be after date of birth.";
       } else if (isWeekend(joined)) {
         errorMessage = "Joined date is Saturday or Sunday. Please select a different date";
@@ -215,12 +219,12 @@ const CreateUser = () => {
       case "invalidDate": {
         return "Invalid Date";
       }
-
       default: {
         return "";
       }
     }
   }, [error]);
+  
 
   useEffect(() => {
     let errorMessage = "";
@@ -229,8 +233,10 @@ const CreateUser = () => {
       const age = Math.floor(
         (Date.now() - dob) / (365.25 * 24 * 60 * 60 * 1000)
       );
-
-      if (age < 18) {
+      if(!users.dateOfBirth){
+        errorMessage = "Date of Birth is required";
+      }
+      else if (age < 18) {
         errorMessage = "User is under 18. Please select a different date.";
       }
     }
@@ -239,7 +245,8 @@ const CreateUser = () => {
       ...prevErrors,
       dateOfBirth: errorMessage,
     }));
-  }, [users.dateOfBirth, touched.dateOfBirth]);
+    console.log("formError message: "+ formErrors.dateOfBirth);
+  }, [users.dateOfBirth, touched.dateOfBirth, formErrors.dateOfBirth]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -366,21 +373,24 @@ const CreateUser = () => {
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={9} >
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     onError={(newError) => setError(newError)}
                     slotProps={{
                       textField: {
                         helperText: errorMessage,
+                        error: formErrors.dateOfBirth && touched.dateOfBirth,
                       },
                     }}
                     sx={{
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": { borderColor: "#000" },
+                      "&.Mui-focused fieldset": { borderColor: "#000" },
                       },
-                    }}
+                      }}
+                    
+                    
                     format="dd/MM/yyyy"
                     label="Date Of Birth"
                     value={users.dateOfBirth}
@@ -390,7 +400,8 @@ const CreateUser = () => {
                         {...params}
                         fullWidth
                         margin="dense"
-                        error={!!formErrors.dateOfBirth && touched.dateOfBirth}
+                        required
+                        error={formErrors.dateOfBirth && touched.dateOfBirth}
                       />
                     )}
                   />
@@ -453,6 +464,7 @@ const CreateUser = () => {
                     slotProps={{
                       textField: {
                         helperText: errorMessage,
+                        error: formErrors.joinedDate && touched.joinedDate,
                       },
                     }}
                     sx={{
@@ -471,8 +483,7 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        // error={!!formErrors.joinedDate}
-                        error={!!formErrors.joinedDate && touched.joinedDate}
+                        error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />

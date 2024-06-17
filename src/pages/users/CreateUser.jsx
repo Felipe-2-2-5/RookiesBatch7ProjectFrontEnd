@@ -27,7 +27,6 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { CreateUserAPI } from "../../services/users.service";
-
 const PopupNotification = ({
   open,
   handleClose,
@@ -76,7 +75,7 @@ const CreateUser = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: null,
-    gender: 1,
+    gender: 2,
     joinedDate: null,
     type: 0,
     location: localStorage.getItem("location"),
@@ -114,6 +113,7 @@ const CreateUser = () => {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must be at least 2 characters long.`;
+      return;
     } else if (trimmedValue.length > 20) {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
@@ -157,8 +157,20 @@ const CreateUser = () => {
     let { name, value } = event.target;
     let trimmedValue = value.replace(/[^a-zA-Z]/g, "");
     const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
+    let { name, value } = event.target;
+    let trimmedValue = value.replace(/[^a-zA-Z]/g, "");
+    const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
 
     setUsers({ ...users, [name]: trimmedValue });
+    if (value.trim() === "") {
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
+    } else if (value.length > 20 || value.length < 2) {
+      console.log("sting length: " + value.length);
+      errorMessage = "The length of Firstname should be 2-20 characters.";
+    } else if (!isValid) {
+      errorMessage = `First name must contain only alphabetical characters.`;
     if (value.trim() === "") {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
@@ -323,6 +335,7 @@ const CreateUser = () => {
                   }}
                   placeholder="First Name"
                   onBlur={handleNameChange}
+                  onBlur={handleNameChange}
                   fullWidth
                   name="firstName"
                   value={users.firstName}
@@ -415,7 +428,7 @@ const CreateUser = () => {
                   row
                 >
                   <FormControlLabel
-                    value={1}
+                    value={2}
                     control={
                       <Radio
                         sx={{
@@ -427,7 +440,7 @@ const CreateUser = () => {
                     label="Female"
                   />
                   <FormControlLabel
-                    value={2}
+                    value={1}
                     control={
                       <Radio
                         sx={{

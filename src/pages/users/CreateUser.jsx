@@ -26,7 +26,6 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
-import { removeExtraWhitespace } from "../../utils/TrimValue";
 import { CreateUserAPI } from "../../services/users.service";
 
 const PopupNotification = ({

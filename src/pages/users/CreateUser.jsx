@@ -97,29 +97,6 @@ const CreateUser = () => {
     joinedDate: false,
   });
 
-  const handleChange = (event) => {
-    let { name, value } = event.target;
-
-    let errorMessage = "";
-    if (value.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
-    } else if (value.length < 2) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must be at least 2 characters long.`;
-    } else if (value.length > 20) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must not exceed 20 characters.`;
-    }
-
-    value = removeExtraWhitespace(value);
-    setUsers({ ...users, [name]: value });
-    setFormErrors({ ...formErrors, [name]: errorMessage });
-  };
-
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");

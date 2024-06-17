@@ -26,7 +26,6 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
-import { removeExtraWhitespace } from "../../utils/TrimValue";
 import { CreateUserAPI } from "../../services/users.service";
 const PopupNotification = ({
   open,
@@ -97,29 +96,6 @@ const CreateUser = () => {
     joinedDate: false,
   });
 
-  const handleChange = (event) => {
-    let { name, value } = event.target;
-
-    let errorMessage = "";
-    if (value.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
-    } else if (value.length < 2) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must be at least 2 characters long.`;
-    } else if (value.length > 20) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must not exceed 20 characters.`;
-    }
-
-    value = removeExtraWhitespace(value);
-    setUsers({ ...users, [name]: value });
-    setFormErrors({ ...formErrors, [name]: errorMessage });
-  };
-
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
@@ -130,14 +106,17 @@ const CreateUser = () => {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } is required`;
+      return;
     } else if (trimmedValue.length < 2) {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must be at least 2 characters long.`;
+      return;
     } else if (trimmedValue.length > 20) {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must not exceed 20 characters.`;
+      return;
     }
     const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
     if (!isValid) {
@@ -167,18 +146,21 @@ const CreateUser = () => {
 
   const handleNameChange = (event) => {
     let errorMessage = "";
-    const { name, value } = event.target;
-    const trimmedValue = value.replace(/[^a-zA-Z]/g, ""); // Remove all non-alphabetical characters
+    let { name, value } = event.target;
+    let trimmedValue = value.replace(/[^a-zA-Z]/g, "");
+    const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
 
     setUsers({ ...users, [name]: trimmedValue });
-
-    if (name === "firstName") {
-      const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
-      if (!isValid) {
-        errorMessage = `First name must contain only alphabetical characters.`;
-      }
+    if (value.trim() === "") {
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
+    } else if (value.length > 20 || value.length < 2) {
+      console.log("sting length: " + value.length);
+      errorMessage = "The length of Firstname should be 2-20 characters.";
+    } else if (!isValid) {
+      errorMessage = `First name must contain only alphabetical characters.`;
     }
-
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
@@ -211,7 +193,8 @@ const CreateUser = () => {
       if (dob && joined < dob) {
         errorMessage = "Joined date must be after date of birth.";
       } else if (isWeekend(joined)) {
-        errorMessage = "Joined date must not be on a weekend.";
+        errorMessage =
+          "Joined date is Saturday or Sunday. Please select a different date.";
       }
     }
 
@@ -337,7 +320,7 @@ const CreateUser = () => {
                     },
                   }}
                   placeholder="First Name"
-                  onBlur={handleChange}
+                  onBlur={handleNameChange}
                   fullWidth
                   name="firstName"
                   value={users.firstName}
@@ -406,6 +389,34 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         error={formErrors.dateOfBirth && touched.dateOfBirth}
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": {
+                              borderColor:
+                                formErrors.dateOfBirth && touched.dateOfBirth
+                                  ? "red"
+                                  : "inherit",
+                            },
+                            "&:hover fieldset": {
+                              borderColor:
+                                formErrors.dateOfBirth && touched.dateOfBirth
+                                  ? "red"
+                                  : "inherit",
+                            },
+                            "&.Mui-focused fieldset": {
+                              borderColor:
+                                formErrors.dateOfBirth && touched.dateOfBirth
+                                  ? "red"
+                                  : "#000",
+                            },
+                          },
+                          "& .MuiFormLabel-root": {
+                            color:
+                              formErrors.dateOfBirth && touched.dateOfBirth
+                                ? "red"
+                                : "inherit",
+                          },
+                        }}
                       />
                     )}
                   />

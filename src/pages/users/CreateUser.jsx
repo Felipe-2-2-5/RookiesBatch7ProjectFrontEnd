@@ -98,40 +98,20 @@ const CreateUser = () => {
     joinedDate: false,
   });
 
-  const handleChange = (event) => {
-    let { name, value } = event.target;
-
-    let errorMessage = "";
-    if (value.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
-    } else if (value.length < 2) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must be at least 2 characters long.`;
-    } else if (value.length > 20) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must not exceed 20 characters.`;
-    }
-
-    value = removeExtraWhitespace(value);
-    setUsers({ ...users, [name]: value });
-    setFormErrors({ ...formErrors, [name]: errorMessage });
-  };
 
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
+    const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } is required`;
-    } else if (trimmedValue.length < 2) {
+    }
+    else if (trimmedValue.length < 2) {
       errorMessage = `${
         name.charAt(0).toUpperCase() + name.slice(1)
       } must be at least 2 characters long.`;
@@ -140,8 +120,19 @@ const CreateUser = () => {
         name.charAt(0).toUpperCase() + name.slice(1)
       } must not exceed 20 characters.`;
     }
+    else if(!isValid){
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }  must contain only alphabetical characters and spaces.`;
+    }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
+  };
+
+  const handleLastNameBlur = (event) => {
+    const { name, value } = event.target;
+    const trimmedValue = value.trim();
+    setUsers({ ...users, [name]: trimmedValue });
   };
 
   const handleTypeChange = (event) => {
@@ -164,21 +155,23 @@ const CreateUser = () => {
 
   const handleNameChange = (event) => {
     let errorMessage = "";
-    const { name, value } = event.target;
-    const trimmedValue = value.replace(/[^a-zA-Z]/g, ""); // Remove all non-alphabetical characters
+    let { name, value } = event.target;
+    let trimmedValue = value.replace(/[^a-zA-Z]/g, "");
+    const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
 
     setUsers({ ...users, [name]: trimmedValue });
-
-    if (name === "firstName") {
-      const isValid = /^[a-zA-Z]{2,20}$/.test(trimmedValue);
-      if (!isValid) {
-        errorMessage = `First name must contain only alphabetical characters.`;
-      }
+    if (value.trim() === "") {
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
+    } else if (value.length > 20 || value.length < 2) {
+      console.log("sting length: " + value.length);
+      errorMessage = "The length of Firstname should be 2-20 characters.";
+    } else if (!isValid) {
+      errorMessage = `First name must contain only alphabetical characters.`;
     }
-
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
-
   const handleLocationChange = (event) => {
     const { name, value } = event.target;
     setUsers({ ...users, [name]: value });
@@ -208,7 +201,7 @@ const CreateUser = () => {
       if (dob && joined < dob) {
         errorMessage = "Joined date must be after date of birth.";
       } else if (isWeekend(joined)) {
-        errorMessage = "Joined date must not be on a weekend.";
+        errorMessage = "Joined date is Saturday or Sunday. Please select a different date";
       }
     }
 
@@ -233,10 +226,6 @@ const CreateUser = () => {
   useEffect(() => {
     let errorMessage = "";
     if (touched.dateOfBirth) {
-      // if (!users.dateOfBirth) {
-      //   errorMessage = "Date of birth is required.";
-      // }
-
       const dob = new Date(users.dateOfBirth);
       const age = Math.floor(
         (Date.now() - dob) / (365.25 * 24 * 60 * 60 * 1000)
@@ -334,7 +323,7 @@ const CreateUser = () => {
                     },
                   }}
                   placeholder="First Name"
-                  onBlur={handleChange}
+                  onBlur={handleNameChange}
                   fullWidth
                   name="firstName"
                   value={users.firstName}
@@ -365,7 +354,7 @@ const CreateUser = () => {
                   name="lastName"
                   error={formErrors.lastName}
                   value={users.lastName}
-                  onBlur={handleLastNameChange}
+                  onBlur={handleLastNameBlur}
                   onChange={handleLastNameChange}
                 />
                 {formErrors.lastName && (
@@ -402,7 +391,7 @@ const CreateUser = () => {
                         {...params}
                         fullWidth
                         margin="dense"
-                        error={formErrors.dateOfBirth && touched.dateOfBirth}
+                        error={!!formErrors.dateOfBirth && touched.dateOfBirth}
                       />
                     )}
                   />
@@ -483,7 +472,8 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        error={formErrors.joinedDate && touched.joinedDate}
+                        // error={!!formErrors.joinedDate}
+                        error={!!formErrors.joinedDate && touched.joinedDate}
                       />
                     )}
                   />

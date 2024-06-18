@@ -16,7 +16,7 @@ import {
   InputAdornment,
   Dialog,
   DialogTitle,
-  DialogContent
+  DialogContent,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -25,7 +25,7 @@ import {
   ArrowDropUp as ArrowDropUpIcon,
   FilterAlt as FilterIcon,
   Search as SearchIcon,
-  DisabledByDefault as CloseIcon
+  DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { path } from "../../routes/routeContants";
@@ -34,17 +34,77 @@ const ManageAssetPage = () => {
   const navigate = useNavigate();
 
   // Sample data for assets
-  const [assets, setAssets] = useState([
-    { id: 1, code: "A001", name: "Asset 1", category: "Category A", state: "Active" },
-    { id: 2, code: "A002", name: "Asset 2", category: "Category B", state: "Inactive" },
-    { id: 3, code: "A003", name: "Asset 3", category: "Category A", state: "Active" },
-    { id: 4, code: "A004", name: "Asset 4", category: "Category B", state: "Inactive" },
-    { id: 5, code: "A005", name: "Asset 5", category: "Category A", state: "Active" },
-    { id: 6, code: "A006", name: "Asset 6", category: "Category B", state: "Inactive" },
-    { id: 7, code: "A007", name: "Asset 7", category: "Category A", state: "Active" },
-    { id: 8, code: "A008", name: "Asset 8", category: "Category B", state: "Inactive" },
-    { id: 9, code: "A009", name: "Asset 9", category: "Category A", state: "Active" },
-    { id: 10, code: "A010", name: "Asset 10", category: "Category B", state: "Inactive" },
+  const [assets] = useState([
+    {
+      id: 1,
+      code: "A001",
+      name: "Asset 1",
+      category: "Category A",
+      state: "Active",
+    },
+    {
+      id: 2,
+      code: "A002",
+      name: "Asset 2",
+      category: "Category B",
+      state: "Inactive",
+    },
+    {
+      id: 3,
+      code: "A003",
+      name: "Asset 3",
+      category: "Category A",
+      state: "Active",
+    },
+    {
+      id: 4,
+      code: "A004",
+      name: "Asset 4",
+      category: "Category B",
+      state: "Inactive",
+    },
+    {
+      id: 5,
+      code: "A005",
+      name: "Asset 5",
+      category: "Category A",
+      state: "Active",
+    },
+    {
+      id: 6,
+      code: "A006",
+      name: "Asset 6",
+      category: "Category B",
+      state: "Inactive",
+    },
+    {
+      id: 7,
+      code: "A007",
+      name: "Asset 7",
+      category: "Category A",
+      state: "Active",
+    },
+    {
+      id: 8,
+      code: "A008",
+      name: "Asset 8",
+      category: "Category B",
+      state: "Inactive",
+    },
+    {
+      id: 9,
+      code: "A009",
+      name: "Asset 9",
+      category: "Category A",
+      state: "Active",
+    },
+    {
+      id: 10,
+      code: "A010",
+      name: "Asset 10",
+      category: "Category B",
+      state: "Inactive",
+    },
     // Add more assets as needed
   ]);
 
@@ -110,7 +170,11 @@ const ManageAssetPage = () => {
 
   return (
     <>
-      <Typography variant="h5" component="h2" style={{ color: "#D6001C", fontWeight: "bold", marginBottom: 20 }}>
+      <Typography
+        variant="h5"
+        component="h2"
+        style={{ color: "#D6001C", fontWeight: "bold", marginBottom: 20 }}
+      >
         Asset List
       </Typography>
 
@@ -135,7 +199,7 @@ const ManageAssetPage = () => {
                 "& .MuiSelect-icon": {
                   color: "transparent",
                 },
-                width: '70%'
+                width: "70%",
               }}
               InputProps={{
                 endAdornment: (
@@ -168,7 +232,7 @@ const ManageAssetPage = () => {
                 "& .MuiSelect-icon": {
                   color: "transparent",
                 },
-                width: '70%'
+                width: "70%",
               }}
               InputProps={{
                 endAdornment: (
@@ -197,7 +261,7 @@ const ManageAssetPage = () => {
                 "& .MuiOutlinedInput-root": {
                   "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
-                width: '120%'
+                width: "120%",
               }}
               InputProps={{
                 endAdornment: (
@@ -243,7 +307,11 @@ const ManageAssetPage = () => {
                   Asset Code
                   {sortBy === "code" ? (
                     <IconButton size="small">
-                      {sortOrder === "asc" ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                      {sortOrder === "asc" ? (
+                        <ArrowDropUpIcon />
+                      ) : (
+                        <ArrowDropDownIcon />
+                      )}
                     </IconButton>
                   ) : (
                     <IconButton size="small">
@@ -260,7 +328,11 @@ const ManageAssetPage = () => {
                   Asset Name
                   {sortBy === "name" ? (
                     <IconButton size="small">
-                      {sortOrder === "asc" ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                      {sortOrder === "asc" ? (
+                        <ArrowDropUpIcon />
+                      ) : (
+                        <ArrowDropDownIcon />
+                      )}
                     </IconButton>
                   ) : (
                     <IconButton size="small">
@@ -277,7 +349,11 @@ const ManageAssetPage = () => {
                   Category
                   {sortBy === "category" ? (
                     <IconButton size="small">
-                      {sortOrder === "asc" ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                      {sortOrder === "asc" ? (
+                        <ArrowDropUpIcon />
+                      ) : (
+                        <ArrowDropDownIcon />
+                      )}
                     </IconButton>
                   ) : (
                     <IconButton size="small">
@@ -294,7 +370,11 @@ const ManageAssetPage = () => {
                   State
                   {sortBy === "state" ? (
                     <IconButton size="small">
-                      {sortOrder === "asc" ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                      {sortOrder === "asc" ? (
+                        <ArrowDropUpIcon />
+                      ) : (
+                        <ArrowDropDownIcon />
+                      )}
                     </IconButton>
                   ) : (
                     <IconButton size="small">
@@ -303,7 +383,9 @@ const ManageAssetPage = () => {
                   )}
                 </div>
               </TableCell>
-              <TableCell style={{ fontWeight: "bold", width: "15%" }}></TableCell>
+              <TableCell
+                style={{ fontWeight: "bold", width: "15%" }}
+              ></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -344,10 +426,10 @@ const ManageAssetPage = () => {
             bgcolor: "grey.300",
             color: "#D6001C",
             fontWeight: "bold",
-            borderBottom: '1px solid black', // Adding bottom border
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+            borderBottom: "1px solid black", // Adding bottom border
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           Detailed Asset Information
@@ -364,10 +446,10 @@ const ManageAssetPage = () => {
         </DialogTitle>
         <DialogContent
           sx={{
-            borderTop: '1px solid black',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
+            borderTop: "1px solid black",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           <Grid container spacing={2}>
@@ -375,28 +457,36 @@ const ManageAssetPage = () => {
               <Typography variant="body1">Asset Code</Typography>
             </Grid>
             <Grid item xs={7}>
-              <Typography variant="body1">{selectedAsset && selectedAsset.code}</Typography>
+              <Typography variant="body1">
+                {selectedAsset && selectedAsset.code}
+              </Typography>
             </Grid>
 
             <Grid item xs={5}>
               <Typography variant="body1">Asset Name</Typography>
             </Grid>
             <Grid item xs={7}>
-              <Typography variant="body1">{selectedAsset && selectedAsset.name}</Typography>
+              <Typography variant="body1">
+                {selectedAsset && selectedAsset.name}
+              </Typography>
             </Grid>
 
             <Grid item xs={5}>
               <Typography variant="body1">Category</Typography>
             </Grid>
             <Grid item xs={7}>
-              <Typography variant="body1">{selectedAsset && selectedAsset.category}</Typography>
+              <Typography variant="body1">
+                {selectedAsset && selectedAsset.category}
+              </Typography>
             </Grid>
 
             <Grid item xs={5}>
               <Typography variant="body1">State</Typography>
             </Grid>
             <Grid item xs={7}>
-              <Typography variant="body1">{selectedAsset && selectedAsset.state}</Typography>
+              <Typography variant="body1">
+                {selectedAsset && selectedAsset.state}
+              </Typography>
             </Grid>
           </Grid>
         </DialogContent>

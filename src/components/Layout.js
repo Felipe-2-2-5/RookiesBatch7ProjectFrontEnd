@@ -98,7 +98,7 @@ const Layout = () => {
       return;
     }
     const newPasswordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*?])[A-Za-z\d!@#$%&*?]{8,16}$/;
     if (newPassword === oldPassword) {
       setNewPasswordError(
         "New password must be different from the old password."

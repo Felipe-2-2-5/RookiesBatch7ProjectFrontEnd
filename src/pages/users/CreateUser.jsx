@@ -28,7 +28,6 @@ import PopupNotification from "../../components/PopupNotification";
 const CreateUser = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
-  const [error, setError] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
@@ -140,6 +139,11 @@ const CreateUser = () => {
     setTouched({ ...touched, [name]: true });
   };
 
+  const handleDateBlur = (name, date) => {
+    // setUsers({ ...users, [name]: date });
+    setTouched({ ...touched, [name]: true });
+  };
+
   const formatDate = (date) => {
     if (!date) return "";
     return format(date, "dd/MM/yyyy");
@@ -162,6 +166,8 @@ const CreateUser = () => {
       } else if (isWeekend(joined)) {
         errorMessage =
           "Joined date is Saturday or Sunday. Please select a different date";
+      } else if (isNaN(joined.getTime())) {
+        errorMessage = "Invalid date";
       }
     }
 
@@ -170,17 +176,6 @@ const CreateUser = () => {
       joinedDate: errorMessage,
     }));
   }, [users.joinedDate, users.dateOfBirth, touched.joinedDate]);
-
-  const errorMessage = React.useMemo(() => {
-    switch (error) {
-      case "invalidDate": {
-        return "Invalid Date";
-      }
-      default: {
-        return "";
-      }
-    }
-  }, [error]);
 
   useEffect(() => {
     let errorMessage = "";
@@ -193,6 +188,8 @@ const CreateUser = () => {
         errorMessage = "Date of Birth is required";
       } else if (age < 18) {
         errorMessage = "User is under 18. Please select a different date.";
+      } else if (isNaN(dob.getTime())) {
+        errorMessage = "Invalid date";
       }
     }
 
@@ -244,6 +241,7 @@ const CreateUser = () => {
       displayPopupNotification();
     }
   };
+
   const displayPopupNotification = () => {
     setOpenPopup(true);
   };
@@ -331,13 +329,13 @@ const CreateUser = () => {
               <Grid item xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
-                    onError={(newError) => setError(newError)}
                     slotProps={{
                       textField: {
-                        helperText: errorMessage,
                         error: formErrors.dateOfBirth && touched.dateOfBirth,
+                        onBlur: () => handleDateBlur("dateOfBirth"),
                       },
                     }}
+                    // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
@@ -413,11 +411,10 @@ const CreateUser = () => {
               <Grid item xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
-                    onError={(newError) => setError(newError)}
                     slotProps={{
                       textField: {
-                        helperText: errorMessage,
                         error: formErrors.joinedDate && touched.joinedDate,
+                        onBlur: () => handleDateBlur("joinedDate"),
                       },
                     }}
                     sx={{
@@ -436,9 +433,7 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        error={
-                          formErrors.joinedDate !== "" && touched.joinedDate
-                        }
+                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />

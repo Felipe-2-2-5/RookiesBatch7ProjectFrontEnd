@@ -12,6 +12,8 @@ import {
   RequestForReturningPage,
 } from "../pages";
 import { path } from "./routeContants";
+import CreateAssignment from "../pages/assignments/CreateAssignment";
+import DialogUserList from "../components/DialogUserList";
 import CreateAsset from "../pages/assets/CreateAsset";
 
 export const AdminRoutes = () => {
@@ -47,6 +49,20 @@ export const AdminRoutes = () => {
           <CreateUser />
         </RequireAuth>
       ),
+      errorElement: <NotFound />,
+    },
+    {
+      path: path.assignmentCreate,
+      element: (
+        <RequireAuth>
+          <CreateAssignment />
+        </RequireAuth>
+      ),
+      errorElement: <NotFound />,
+    },
+    {
+      path: "/dialog",
+      element: <DialogUserList />,
       errorElement: <NotFound />,
     },
     {

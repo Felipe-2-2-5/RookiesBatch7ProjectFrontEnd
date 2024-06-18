@@ -67,7 +67,6 @@ const PopupNotification = ({
 const CreateUser = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuthContext();
-  const [error, setError] = useState("");
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
@@ -182,6 +181,10 @@ const CreateUser = () => {
     setTouched({ ...touched, [name]: true });
   };
 
+  const handleDateBlur = (name, date) => {
+    // setUsers({ ...users, [name]: date });
+    setTouched({ ...touched, [name]: true });
+  };
 
   const formatDate = (date) => {
     if (!date) return "";
@@ -198,32 +201,22 @@ const CreateUser = () => {
     if (touched.joinedDate) {
       const joined = new Date(users.joinedDate);
       const dob = new Date(users.dateOfBirth);
-      if(!users.joinedDate){
+      if (!users.joinedDate) {
         errorMessage = "Joined date is required";
-      }
-      else if (dob && joined < dob) {
+      } else if (dob && joined < dob) {
         errorMessage = "Joined date must be after date of birth.";
       } else if (isWeekend(joined)) {
         errorMessage = "Joined date is Saturday or Sunday. Please select a different date";
+      } else if (isNaN(joined.getTime())) {
+        errorMessage = "Invalid date";
       }
     }
-
+  
     setFormErrors((prevErrors) => ({
       ...prevErrors,
       joinedDate: errorMessage,
     }));
   }, [users.joinedDate, users.dateOfBirth, touched.joinedDate]);
-
-  const errorMessage = React.useMemo(() => {
-    switch (error) {
-      case "invalidDate": {
-        return "Invalid Date";
-      }
-      default: {
-        return "";
-      }
-    }
-  }, [error]);
   
 
   useEffect(() => {
@@ -238,6 +231,9 @@ const CreateUser = () => {
       }
       else if (age < 18) {
         errorMessage = "User is under 18. Please select a different date.";
+      }
+      else if (isNaN(dob.getTime())) {
+        errorMessage = "Invalid date";
       }
     }
 
@@ -289,6 +285,7 @@ const CreateUser = () => {
       displayPopupNotification();
     }
   };
+
   const displayPopupNotification = () => {
     setOpenPopup(true);
   };
@@ -376,13 +373,13 @@ const CreateUser = () => {
               <Grid item xs={9} >
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
-                    onError={(newError) => setError(newError)}
                     slotProps={{
                       textField: {
-                        helperText: errorMessage,
-                        error: formErrors.dateOfBirth && touched.dateOfBirth,
+                        error: formErrors.dateOfBirth && touched.dateOfBirth ,
+                        onBlur: () => handleDateBlur('dateOfBirth'),
                       },
                     }}
+                    // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
@@ -460,11 +457,10 @@ const CreateUser = () => {
               <Grid item xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
-                    onError={(newError) => setError(newError)}
                     slotProps={{
                       textField: {
-                        helperText: errorMessage,
-                        error: formErrors.joinedDate && touched.joinedDate,
+                        error:  formErrors.joinedDate && touched.joinedDate,
+                        onBlur: () => handleDateBlur('joinedDate'),
                       },
                     }}
                     sx={{
@@ -483,7 +479,7 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        error={formErrors.joinedDate !== "" && touched.joinedDate}
+                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />

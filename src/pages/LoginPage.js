@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { path } from "../routes/routeContants";
 import { LoginUser } from "../services/users.service";
+import { jwtDecode } from "jwt-decode";
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -36,7 +37,11 @@ const LoginPage = () => {
       if (data.flag) {
         setIsAuthenticated(true);
         localStorage.setItem("token", data.token);
-        localStorage.setItem("password", password);
+        const decodedToken = jwtDecode(data.token);
+        const isFirst = (decodedToken.FirstLogin === "True");
+        if (isFirst) {
+          localStorage.setItem("password", password);
+        }
         navigate(path.home);
       } else {
         setAlertOpen(true);
@@ -96,7 +101,8 @@ const LoginPage = () => {
           </Typography>
           <form onSubmit={handleLogin}>
             <TextField
-              label="Username"
+              // label="Username"
+              placeholder="Username"
               variant="outlined"
               value={username}
               onChange={(e) =>
@@ -117,9 +123,11 @@ const LoginPage = () => {
                   "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
               }}
+              autoComplete="off"
             />
             <TextField
-              label="Password"
+              // label="Password"
+              placeholder="Password"
               variant="outlined"
               type={showPassword ? "text" : "password"}
               value={password}
@@ -158,6 +166,7 @@ const LoginPage = () => {
                   "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
               }}
+              autoComplete="off"
             />
             <Button
               type="submit"

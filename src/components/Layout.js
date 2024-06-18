@@ -110,7 +110,7 @@ const Layout = () => {
     }
 
     if (!newPasswordRegex.test(newPasswordValue)) {
-      setNewPasswordError("New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.");
+      setNewPasswordError("New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character ( only include !, @, #, $, %, &, *, ?).");
       return;
     }
 

@@ -94,12 +94,12 @@ const Layout = () => {
     const newPasswordValue = event.target.value.trim();
     setNewPassword(newPasswordValue);
     setNewPasswordError("");
-  
+
     if (!newPasswordValue) {
       setNewPasswordError("New password cannot be empty.");
       return;
     }
-  
+
     const newPasswordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%&*?])[A-Za-z\d!@#$%&*?]{8,16}$/;
     if (newPassword === oldPassword) {
@@ -108,35 +108,35 @@ const Layout = () => {
       );
       return;
     }
-  
+
     if (!newPasswordRegex.test(newPasswordValue)) {
       setNewPasswordError("New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character.");
       return;
     }
-  
+
     // Clear the error if all conditions are satisfied
     setNewPasswordError("");
   };
-  
+
   const handleConfirmPasswordChange = (event) => {
     const confirmPwd = event.target.value.trim();
     setConfirmPassword(confirmPwd);
     setConfirmPasswordError("");
-  
+
     if (!confirmPwd) {
       setConfirmPasswordError("Confirm password cannot be empty.");
       return;
     }
-  
+
     if (confirmPwd !== newPassword) {
       setConfirmPasswordError("Passwords do not match. Please re-enter.");
       return;
     }
-  
+
     // Clear the error if passwords match
     setConfirmPasswordError("");
   };
-  
+
 
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);
@@ -153,7 +153,7 @@ const Layout = () => {
       <Box
         display="flex"
         p={2}>
-        <Box flexBasis="20%">
+        <Box >
           {isAuthenticated &&
             (currentUser.role === "Admin" ? (
               <VerticalNavbarAdmin />
@@ -162,8 +162,7 @@ const Layout = () => {
             ))}
         </Box>
         <Box
-          // flexGrow={1}
-          flexBasis="80%"
+          flexGrow={1}
           ml={2}>
           <main style={{ p: "2" }}>
             {/* {isAuthenticated &&

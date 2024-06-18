@@ -12,6 +12,7 @@ import {
   RequestForReturningPage,
 } from "../pages";
 import { path } from "./routeContants";
+import CreateAsset from "../pages/assets/CreateAsset";
 
 export const AdminRoutes = () => {
   const element = useRoutes([
@@ -51,6 +52,15 @@ export const AdminRoutes = () => {
     {
       path: path.assets,
       element: <ManageAssetPage />,
+      errorElement: <NotFound />,
+    },
+    {
+      path: path.assetCreate,
+      element: (
+        <RequireAuth>
+          <CreateAsset />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {

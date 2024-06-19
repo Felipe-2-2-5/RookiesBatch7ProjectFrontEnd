@@ -1,29 +1,27 @@
-import React, { useState, useEffect, useRef } from "react";
+import { ArrowDropDown, ArrowDropUp, Search } from "@mui/icons-material";
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Box,
-  Typography,
-  TextField,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
   IconButton,
   InputAdornment,
+  Pagination,
   Paper,
+  Radio,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Button,
-  CircularProgress,
-  Radio,
-  Pagination,
+  TextField,
+  Typography,
+
   styled,
 } from "@mui/material";
-import { Search, ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
-import { useNavigate } from "react-router";
+import React, { useEffect, useRef, useState } from "react";
 import { FilterRequest } from "../services/users.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -50,8 +48,7 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
-  const navigate = useNavigate();
+const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, selectedAsset, setSelectedAsset }) => {
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -63,8 +60,7 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
     pageSize: "20",
     type: "",
   });
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [users, setUsers] = useState([]);
+  const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
     Number.isNaN(totalCount) || totalCount === 0
@@ -80,10 +76,10 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
 
     const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
     if (userCreated) {
-      setUsers([userCreated, ...fetchedUsers]);
+      setAssets([userCreated, ...fetchedUsers]);
       sessionStorage.removeItem("user_created");
     } else {
-      setUsers(fetchedUsers);
+      setAssets(fetchedUsers);
     }
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -113,27 +109,29 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
+      setSearchTerm(trimmedSearchTerm);
       handleSearch();
     }
   };
 
   const handleSearchClick = () => {
+    setSearchTerm(trimmedSearchTerm);
     handleSearch();
   };
 
-  const handleSelectUser = (user) => {
-    setSelectedUser(user);
+  const handleSelectAsset = (asset) => {
+    setSelectedAsset(asset);
   };
 
   const handleSave = () => {
-    if (selectedUser) {
-      onSelect(selectedUser);
-      setVisibleDialog(false);
+    if (selectedAsset) {
+      onSelect(selectedAsset);
+      setVisibleAssetDialog(false);
     }
   };
 
   const handleCancel = () => {
-    setVisibleDialog(false);
+    setVisibleAssetDialog(false);
   };
 
   const handlePageChange = (e, value) => {
@@ -189,11 +187,31 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
   };
 
   return (
-    <Dialog open={visibleDialog} fullWidth maxWidth="md">
+    <Dialog
+      open={visibleAssetDialog}
+      PaperProps={{
+        style: {
+          position: "absolute",
+          top: "15%",
+          left: "48%",
+          width: "45%",
+          maxHeight: "80vh",
+          overflowY: "auto",
+        },
+      }}
+    >
       <Paper elevation={3} style={{ padding: "20px" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
-          <Typography variant="h6" sx={{ color: "#D6001C" }}>
-            Select a User
+          <Typography
+            variant="h5"
+            sx={{
+              mb: 2,
+              color: "#d32f2f",
+              fontWeight: "bold",
+              fontSize: "20px",
+            }}
+          >
+            Select Asset
           </Typography>
           <TextField
             variant="outlined"
@@ -214,7 +232,7 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
           />
         </Box>
         <TableContainer component={Paper}>
-          <Box ref={scrollRef} sx={{ overflow: "auto", height: "400px" }}>
+          <Box ref={scrollRef} sx={{ overflow: "auto", maxHeight: "400px" }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -276,25 +294,31 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
-                ) : users.length === 0 ? (
+                ) : assets.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={4} align="center">
-                      No users found
+                      No assets found
                     </TableCell>
                   </TableRow>
                 ) : (
-                  users.map((user, index) => (
-                    <CustomTableRow key={index} onClick={() => handleSelectUser(user)}>
+                  assets.map((asset, index) => (
+                    <CustomTableRow key={index} onClick={() => handleSelectAsset(asset)}>
                       <TableCell>
                         <Radio
-                          checked={selectedUser?.staffCode === user.staffCode}
-                          onChange={() => handleSelectUser(user)}
-                          value={user.staffCode}
+                          sx={{
+                            color: "#000",
+                            "&.Mui-checked": { color: "#d32f2f" },
+                          }}
+                          checked={selectedAsset?.staffCode === asset.staffCode}
+                          onChange={() => handleSelectAsset(asset)}
+                          value={asset.staffCode}
                         />
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{user.staffCode}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{user.userName}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{user.type === 0 ? "Staff" : "Admin"}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>{asset.staffCode}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>
+                        {asset.firstName + " " + asset.lastName}
+                      </TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>{asset.type === 0 ? "Staff" : "Admin"}</TableCell>
                     </CustomTableRow>
                   ))
                 )}
@@ -321,21 +345,31 @@ const DialogAssetList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
           />
         </Box>
       </Paper>
-      <DialogActions>
+      <DialogActions
+        sx={{
+          position: "sticky",
+          bottom: 0,
+          padding: "16px",
+          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "8px",
+        }}
+      >
         <Button
           variant="contained"
           onClick={handleSave}
+          disabled={!selectedAsset}
           sx={{
             backgroundColor: "#d32f2f",
             "&:hover": {
               backgroundColor: "#a50000",
             },
           }}
-          disabled={!selectedUser}
         >
           Save
         </Button>
-        <Button variant="outlined" color="secondary" onClick={handleCancel}>
+        <Button variant="outlined" onClick={handleCancel} color="secondary">
           Cancel
         </Button>
       </DialogActions>

@@ -505,7 +505,7 @@ const CreateUser = () => {
                     disabled={users.type === 0}
                   >
                     <MenuItem value="HaNoi">Ha Noi</MenuItem>
-                    <MenuItem value="HCM">Ho Chi Minh</MenuItem>
+                    <MenuItem value="HoChiMinh">Ho Chi Minh</MenuItem>
                   </Select>
                   {formErrors.location && (
                     <FormHelperText error>{formErrors.location}</FormHelperText>

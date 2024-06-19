@@ -48,6 +48,7 @@ const CategoryForm = (visibleDialog, setVisibleDialog) => {
   return (
     <Dialog
       open={visibleDialog}
+      onclose={!visibleDialog}
       PaperProps={{
         style: {
           position: "absolute",

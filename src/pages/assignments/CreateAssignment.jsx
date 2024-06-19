@@ -1,4 +1,4 @@
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from "@mui/icons-material/Search";
 import {
   Box,
   Button,
@@ -11,15 +11,15 @@ import {
   Dialog,
   DialogContent,
   DialogActions,
-  DialogTitle
-} from '@mui/material';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+  DialogTitle,
+} from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { vi } from 'date-fns/locale';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DialogUserList from '../../components/DialogUserList';
-import DialogAssetList from '../../components/DialogAssetList';
+import { vi } from "date-fns/locale";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import DialogUserList from "../../components/DialogUserList";
+import DialogAssetList from "../../components/DialogAssetList";
 
 const PopupNotification = ({
   open,
@@ -69,13 +69,13 @@ const CreateAssignment = () => {
     user: null,
     asset: null,
     assignedDate: Date.now(),
-    note: ''
+    note: "",
   });
   const [formErrors, setFormErrors] = useState({
     user: false,
     asset: false,
     assignedDate: false,
-    note: false
+    note: false,
   });
   const [touched, setTouched] = useState({
     assignedDate: false,
@@ -84,8 +84,8 @@ const CreateAssignment = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (name === 'note' && value.length > 600) {
-      errorMessage = 'Note must not exceed 600 characters';
+    if (name === "note" && value.length > 600) {
+      errorMessage = "Note must not exceed 600 characters";
     }
 
     setAssignments({ ...assignments, [name]: value });
@@ -98,11 +98,10 @@ const CreateAssignment = () => {
     if (touched.assignedDate) {
       if (!assignments.assignedDate) {
         errorMessage = "Assigned date is required";
-      }
-      else if (assignments.assignedDate > currentDate) {
-        errorMessage = "Cannot select Assigned Date in the past. Please select another date.";
-      }
-      else if (isNaN(assignments.assignedDate.getTime())) {
+      } else if (assignments.assignedDate > currentDate) {
+        errorMessage =
+          "Cannot select Assigned Date in the past. Please select another date.";
+      } else if (isNaN(assignments.assignedDate.getTime())) {
         errorMessage = "Invalid date";
       }
     }
@@ -117,7 +116,6 @@ const CreateAssignment = () => {
     setAssignments({ ...assignments, [name]: date });
     setTouched({ ...touched, [name]: true });
   };
-
 
   const handleDateBlur = (name, date) => {
     setTouched({ ...touched, [name]: true });
@@ -197,7 +195,15 @@ const CreateAssignment = () => {
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={1}>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <Typography onClick={handleUserDialogOpen}>
                   User
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
@@ -215,7 +221,11 @@ const CreateAssignment = () => {
                   placeholder="User"
                   fullWidth
                   name="user"
-                  value={assignments.user ? `${assignments.user.firstName} ${assignments.user.lastName}` : ''}
+                  value={
+                    assignments.user
+                      ? `${assignments.user.firstName} ${assignments.user.lastName}`
+                      : ""
+                  }
                   onClick={handleUserDialogOpen}
                   margin="dense"
                   error={formErrors.user}
@@ -231,7 +241,15 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.user}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <Typography onClick={() => setVisibleAssetDialog(true)}>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
@@ -244,7 +262,7 @@ const CreateAssignment = () => {
                     "& .MuiOutlinedInput-root": {
                       "&.Mui-focused fieldset": { borderColor: "#000" },
                     },
-                    "&:hover": { cursor: "pointer" }
+                    "&:hover": { cursor: "pointer" },
                   }}
                   placeholder="Asset"
                   fullWidth
@@ -271,13 +289,13 @@ const CreateAssignment = () => {
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9} >
+              <Grid item xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     slotProps={{
                       textField: {
                         error: formErrors.assignedDate && touched.assignedDate,
-                        onBlur: () => handleDateBlur('assignedDate'),
+                        onBlur: () => handleDateBlur("assignedDate"),
                       },
                     }}
                     sx={{
@@ -396,7 +414,6 @@ const CreateAssignment = () => {
         handleClose={handleClosePopup}
         title={titlePopup}
         content={contentPopup}
-
       />
     </>
   );

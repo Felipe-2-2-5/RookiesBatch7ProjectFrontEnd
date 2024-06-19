@@ -14,6 +14,7 @@ import {
 import { path } from "./routeContants";
 import CreateAssignment from "../pages/assignments/CreateAssignment";
 import DialogUserList from "../components/DialogUserList";
+import CreateAsset from "../pages/assets/CreateAsset";
 
 export const AdminRoutes = () => {
   const element = useRoutes([
@@ -61,14 +62,21 @@ export const AdminRoutes = () => {
     },
     {
       path: "/dialog",
-      element: (
-          <DialogUserList />
-      ),
+      element: <DialogUserList />,
       errorElement: <NotFound />,
     },
     {
       path: path.assets,
       element: <ManageAssetPage />,
+      errorElement: <NotFound />,
+    },
+    {
+      path: path.assetCreate,
+      element: (
+        <RequireAuth>
+          <CreateAsset />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {

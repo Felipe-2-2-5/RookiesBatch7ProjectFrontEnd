@@ -25,7 +25,6 @@ import PopupNotification from "../../components/PopupNotification";
 const CreateAsset = () => {
   const [categories, setCategories] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
-  const [category, setCategory] = useState(null);
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
@@ -48,21 +47,17 @@ const CreateAsset = () => {
     installedDate: null,
     state: 0,
   });
-
+  const fetchCategories = async () => {
+    const res = await GetCategories(); // Corrected function name
+    setCategories(res.data);
+  };
   useEffect(() => {
-    const fetchCategories = async () => {
-      const res = await GetCategories(); // Corrected function name
-      setCategories(res.data);
-    };
     fetchCategories();
-    if (category && category !== asset.category) {
-      setAsset({
-        ...asset,
-        category: category,
-      });
-    }
-  }, [category, asset]);
-
+  }, []);
+  const handleNewCategory = (category) => {
+    setAsset({ ...asset, category: category });
+    fetchCategories();
+  };
   const handleNameBlur = (event) => {
     let errorMessage = "";
     const { name, value } = event.target;
@@ -152,7 +147,6 @@ const CreateAsset = () => {
     return format(date, "dd/MM/yyyy");
   };
   const handleCategoryChange = (category) => {
-    setCategory(null);
     let errorMessage = "";
     if (!category) {
       errorMessage = `Category is required`;
@@ -463,7 +457,7 @@ const CreateAsset = () => {
             <CategoryForm
               visibleDialog={isVisible}
               setVisibleDialog={setIsVisible}
-              setCategory={setCategory}
+              setCategory={handleNewCategory}
             />
           )}
         </Box>

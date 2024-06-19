@@ -7,7 +7,11 @@ import {
     Grid,
     IconButton,
     TextField,
-    Typography
+    Typography,
+    Dialog,
+    DialogContent,
+    DialogActions,
+    DialogTitle
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -16,14 +20,52 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DialogUserList from '../../components/DialogUserList';
 
+const PopupNotification = ({
+    open,
+    handleClose,
+    title,
+    content,
+    closeContent,
+  }) => {
+    return (
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        disableBackdropClick
+        disableEscapeKeyDown
+      >
+        <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+          {title}
+        </DialogTitle>
+        <DialogContent>
+          <p>{content}</p>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleClose}
+            sx={{
+              color: "white",
+              bgcolor: "#D6001C",
+              "&:hover": { bgcolor: "#D6001C" },
+            }}
+          >
+            {closeContent ? closeContent : "Ok"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
 const CreateAssignment = () => {
   const navigate = useNavigate();
-  const [visibleDialog, setVisibleDialog
-
-  ] = useState(false);
+  const [visibleDialog, setVisibleDialog] = useState(false);
+  const [openPopup, setOpenPopup] = useState(false);
+  const [titlePopup, setTitlePopup] = useState(false);
+  const [contentPopup, setContentPopup] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [assignments, setAssignments] = useState({
-    user: '',
-    asset: '',
+    user: null,
+    asset: null,
     assignedDate: Date.now(),
     note: ''
   });
@@ -37,19 +79,26 @@ const CreateAssignment = () => {
     assignedDate: false,
   });
 
-  const handleSubmit = async (event) => {
-  };
-
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setAssignments({ ...assignments, [name]: value });
+    let errorMessage = "";
+    if (name === 'note' && value.length > 600) {
+        errorMessage = 'Note must not exceed 600 characters';
+      }
+  
+      setAssignments({ ...assignments, [name]: value });
+      setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
   useEffect(() => {
     let errorMessage = "";
+    const currentDate = Date.now();
     if (touched.assignedDate) {
       if(!assignments.assignedDate){
         errorMessage = "Assigned date is required";
+      }
+      else if(assignments.assignedDate > currentDate){
+        errorMessage = "Cannot select Assigned Date in the past. Please select another date.";
       }
       else if (isNaN(assignments.assignedDate.getTime())) {
         errorMessage = "Invalid date";
@@ -68,7 +117,7 @@ const CreateAssignment = () => {
   };
 
 
-  const handleDateBlur = (name, date) => {
+  const handleDateBlur = (name) => {
     setTouched({ ...touched, [name]: true });
   };
 
@@ -81,14 +130,63 @@ const CreateAssignment = () => {
   };
 
   const handleUserSelect = (user) => {
+    setSelectedUser(user);
     setAssignments((prev) => ({
       ...prev,
-      user: user.name,
+      user: user,
     }));
     handleUserDialogClose();
   };
 
+  const handleNoteBlur = (event) => {
+    const { name, value } = event.target;
+    const trimmedValue = value.trim();
+
+    setAssignments({ ...assignments, [name]: trimmedValue });
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const hasErrors = Object.values(formErrors).some((error) => error);
+    if (!hasErrors) {
+      try {
+        // const response = await CreateUserAPI({
+        //   ...users,
+        //   dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
+        //   joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+        // });
+        // console.log(response);
+        // if (response) {
+        //   sessionStorage.setItem("user_created", JSON.stringify(response.data));
+        //   setTitlePopup("Notifications");
+        //   setContentPopup(
+        //     `User ${users.firstName} ${users.lastName} has been created.`
+        //   );
+        //   displayPopupNotification();
+        // }
+      } catch (error) {
+        setTitlePopup("Error");
+        setContentPopup(`error: ${error.userMessage}`);
+        displayPopupNotification();
+      }
+    } else {
+      setTitlePopup("Error");
+      setContentPopup("Form has errors. Please fill all required fields.");
+      displayPopupNotification();
+    }
+  };
+
+  const displayPopupNotification = () => {
+    setOpenPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+    navigate("/manage-user");
+  };
+
   return (
+    <>
     <Container sx={{ display: "flex", justifyContent: "center", my: 4 }}>
         <Box sx={{ width: "60%", borderRadius: 1, p: 1 }}>
         <Typography
@@ -104,50 +202,47 @@ const CreateAssignment = () => {
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing = {1}>
-
-  <Grid item xs={3} sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-    <Typography onClick={handleUserDialogOpen}>
-      User
-      <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
-    </Typography>
-  </Grid>
-  <Grid item xs={9}>
-    <TextField
-      sx={{
-        "& label.Mui-focused": { color: "#000" },
-        "& .MuiOutlinedInput-root": {
-          "&.Mui-focused fieldset": { borderColor: "#000" },
-        },
-        "&:hover": { cursor: "pointer" }, 
-      }}
-      placeholder="User"
-      fullWidth
-      name="user"
-      value={assignments.user}
-      onClick={handleUserDialogOpen} 
-      margin="dense"
-      error={formErrors.user}
-      InputProps={{
-        endAdornment: (
-          <IconButton onClick={handleUserDialogOpen}>
-            <SearchIcon />
-          </IconButton>
-        ),
-      }}
-    />
-    {formErrors.user && (
-      <FormHelperText error>{formErrors.user}</FormHelperText>
-    )}
-  </Grid>
-
-
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                <Typography onClick={handleUserDialogOpen}>
+                  User
+                  <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
+                </Typography>
+              </Grid>
+              <Grid item xs={9}>
+                <TextField
+                  sx={{
+                    "& label.Mui-focused": { color: "#000" },
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": { borderColor: "#000" },
+                    },
+                    "&:hover": { cursor: "pointer" }, 
+                  }}
+                  placeholder="User"
+                  fullWidth
+                  name="user"
+                  value={assignments.user ? `${assignments.user.firstName} ${assignments.user.lastName}` : ''}
+                  onClick={handleUserDialogOpen} 
+                  margin="dense"
+                  error={formErrors.user}
+                  InputProps={{
+                    endAdornment: (
+                      <IconButton onClick={handleUserDialogOpen}>
+                        <SearchIcon />
+                      </IconButton>
+                    ),
+                  }}
+                />
+                {formErrors.user && (
+                  <FormHelperText error>{formErrors.user}</FormHelperText>
+                )}
+              </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-            <Grid item xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -156,11 +251,9 @@ const CreateAssignment = () => {
                     },
                   }}
                   placeholder="Asset"
-                //   onBlur={handleSearchChange}
                   fullWidth
                   name="asset"
                   value={assignments.asset}
-                //   onChange={handleSearchChange}
                   margin="dense"
                   error={formErrors.asset}
                   InputProps={{
@@ -170,15 +263,14 @@ const CreateAssignment = () => {
                       </IconButton>
                     ),
                   }}
-    
                 />
-                {formErrors.user && (
+                {formErrors.asset && (
                   <FormHelperText error>{formErrors.asset}</FormHelperText>
                 )}
               </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
-                  Date Of Birth
+                  Assigned Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
@@ -191,15 +283,12 @@ const CreateAssignment = () => {
                         onBlur: () => handleDateBlur('assignedDate'),
                       },
                     }}
-                    // onBlur={(date) => handleDateChange("assignedDate", date)}
                     sx={{
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                       "&.Mui-focused fieldset": { borderColor: "#000" },
                       },
-                      }}
-                    
-                    
+                    }}
                     format="dd/MM/yyyy"
                     label="Assigned Date"
                     value={assignments.assignedDate}
@@ -220,14 +309,14 @@ const CreateAssignment = () => {
                     {formErrors.assignedDate}
                   </FormHelperText>
                 )}
-                </Grid>
+              </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Note
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-            <Grid item xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -238,19 +327,18 @@ const CreateAssignment = () => {
                   rows={4}
                   multiline
                   placeholder="Note"
-                  // onBlur={handleChange}
                   fullWidth
                   name="note"
                   value={assignments.note}
                   onChange={handleChange}
                   margin="dense"
                   error={formErrors.note}
+                  onBlur={handleNoteBlur}
                 />
                 {formErrors.note && (
                   <FormHelperText error>{formErrors.note}</FormHelperText>
                 )}
               </Grid>
-              
               <Grid item xs={12}>
                 <Box
                   sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
@@ -284,17 +372,27 @@ const CreateAssignment = () => {
                   </Button>
                 </Box>
               </Grid>
-              </Grid>
+            </Grid>
           </form>
-
-        {visibleDialog &&           
-        <DialogUserList
-          visibleDialog={visibleDialog}
-          setVisibleDialog={setVisibleDialog}
-          onSelect={handleUserSelect}
-        />}
+          {visibleDialog && (
+            <DialogUserList
+              visibleDialog={visibleDialog}
+              setVisibleDialog={setVisibleDialog}
+              onSelect={handleUserSelect}
+              selectedUser={selectedUser}
+              setSelectedUser={setSelectedUser}
+            />
+          )}
         </Box>
     </Container>
+    <PopupNotification
+      open={openPopup}
+      handleClose={handleClosePopup}
+      title={titlePopup}
+      content={contentPopup}
+
+    />
+    </>
   );
 };
 

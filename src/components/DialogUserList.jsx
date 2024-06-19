@@ -48,7 +48,7 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
+const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog,selectedUser, setSelectedUser }) => {
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -60,7 +60,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
     pageSize: "20",
     type: "",
   });
-  const [selectedUser, setSelectedUser] = useState(null);
   const [users, setUsers] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -193,9 +192,8 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog }) => {
     PaperProps={{
       style: {
         position: "absolute",
-        top: "15%",
-        left: "48%",
-        width: "45%",
+        top: "15%%",
+        width: "60%",
         maxHeight: "80vh",  
         overflowY: "auto",   
       },

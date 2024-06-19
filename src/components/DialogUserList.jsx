@@ -18,7 +18,7 @@ import {
   TableRow,
   TextField,
   Typography,
-  
+
   styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
@@ -48,7 +48,7 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog,selectedUser, setSelectedUser }) => {
+const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUser, setSelectedUser }) => {
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -188,17 +188,17 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog,selectedUser
 
   return (
     <Dialog
-    open={visibleDialog}
-    PaperProps={{
-      style: {
-        position: "absolute",
-        top: "15%%",
-        width: "60%",
-        maxHeight: "80vh",  
-        overflowY: "auto",   
-      },
-    }}
-  >
+      open={visibleDialog}
+      PaperProps={{
+        style: {
+          position: "absolute",
+          top: "15%%",
+          width: "60%",
+          maxHeight: "80vh",
+          overflowY: "auto",
+        },
+      }}
+    >
       <Paper elevation={3} style={{ padding: "20px" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
           <Typography
@@ -315,8 +315,8 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog,selectedUser
                       </TableCell>
                       <TableCell sx={{ textAlign: "center" }}>{user.staffCode}</TableCell>
                       <TableCell sx={{ textAlign: "center" }}>
-                            {user.firstName + " " + user.lastName}
-                          </TableCell>
+                        {user.firstName + " " + user.lastName}
+                      </TableCell>
                       <TableCell sx={{ textAlign: "center" }}>{user.type === 0 ? "Staff" : "Admin"}</TableCell>
                     </CustomTableRow>
                   ))
@@ -344,7 +344,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog,selectedUser
           />
         </Box>
       </Paper>
-        <DialogActions
+      <DialogActions
         sx={{
           position: "sticky",
           bottom: 0,
@@ -359,14 +359,16 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog,selectedUser
           variant="contained"
           onClick={handleSave}
           disabled={!selectedUser}
-          sx={{            backgroundColor: "#d32f2f",
+          sx={{
+            backgroundColor: "#d32f2f",
             "&:hover": {
               backgroundColor: "#a50000",
-            },}}
+            },
+          }}
         >
           Save
         </Button>
-        <Button variant="outlined" onClick={handleCancel} color="secondary"> 
+        <Button variant="outlined" onClick={handleCancel} color="secondary">
           Cancel
         </Button>
       </DialogActions>

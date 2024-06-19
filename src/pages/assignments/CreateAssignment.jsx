@@ -39,12 +39,20 @@ const CreateAssignment = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    let errorMessage = "";
+    if (name === 'note' && value.length > 600) {
+      errorMessage = 'Note must not exceed 600 characters';
+    }
+
     setAssignments({ ...assignments, [name]: value });
+    setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
   useEffect(() => {
     let errorMessage = "";
+    const currentDate = Date.now();
     if (touched.assignedDate) {
+      if (!assignments.assignedDate) {
       if (!assignments.assignedDate) {
         errorMessage = "Assigned date is required";
       } else if (isNaN(assignments.assignedDate.getTime())) {
@@ -72,15 +80,56 @@ const CreateAssignment = () => {
   };
 
   const handleUserDialogClose = () => {
-    setVisibleDialog(false);
+    setVisibleAssetDialog(false);
   };
 
   const handleUserSelect = (user) => {
+    setSelectedUser(user);
     setAssignments((prev) => ({
       ...prev,
-      user: user.name,
+      user: user,
     }));
     handleUserDialogClose();
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const hasErrors = Object.values(formErrors).some((error) => error);
+    if (!hasErrors) {
+      try {
+        // const response = await CreateUserAPI({
+        //   ...users,
+        //   dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
+        //   joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+        // });
+        // console.log(response);
+        // if (response) {
+        //   sessionStorage.setItem("user_created", JSON.stringify(response.data));
+        //   setTitlePopup("Notifications");
+        //   setContentPopup(
+        //     `User ${users.firstName} ${users.lastName} has been created.`
+        //   );
+        //   displayPopupNotification();
+        // }
+      } catch (error) {
+        setTitlePopup("Error");
+        setContentPopup(`error: ${error.userMessage}`);
+        displayPopupNotification();
+      }
+    } else {
+      setTitlePopup("Error");
+      setContentPopup("Form has errors. Please fill all required fields.");
+      displayPopupNotification();
+    }
+  };
+
+  const displayPopupNotification = () => {
+    setOpenPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setOpenPopup(false);
+    navigate("/manage-user");
   };
 
   return (

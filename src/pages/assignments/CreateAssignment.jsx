@@ -1,33 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import SearchIcon from '@mui/icons-material/Search';
 import {
-  Container,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  IconButton,
-  Paper,
-  FormHelperText,
-  Grid,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-
+    Box,
+    Button,
+    Container,
+    FormHelperText,
+    Grid,
+    IconButton,
+    TextField,
+    Typography
 } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import SearchIcon from '@mui/icons-material/Search';
 import { vi } from 'date-fns/locale';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DialogUserList from '../../components/DialogUserList';
 
@@ -36,8 +21,6 @@ const CreateAssignment = () => {
   const [visibleDialog, setVisibleDialog
 
   ] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
-  const [selectedUser, setSelectedUser] = useState(null);
   const [assignments, setAssignments] = useState({
     user: '',
     asset: '',
@@ -54,18 +37,8 @@ const CreateAssignment = () => {
     assignedDate: false,
   });
 
-  const usersList = [
-    { code: 'SD1901', name: 'An Nguyen Thuy', type: 'Staff' },
-    { code: 'SD1234', name: 'An Tran Van', type: 'Staff' },
-    { code: 'SD0971', name: 'Binh Nguyen Van', type: 'Admin' },
-    // Add more users as needed
-  ];
-
   const handleSubmit = async (event) => {
   };
-
-  const handleSearchChange = async (event) => {
-  }
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -108,7 +81,6 @@ const CreateAssignment = () => {
   };
 
   const handleUserSelect = (user) => {
-    setSelectedUser(user);
     setAssignments((prev) => ({
       ...prev,
       user: user.name,
@@ -184,11 +156,11 @@ const CreateAssignment = () => {
                     },
                   }}
                   placeholder="Asset"
-                  onBlur={handleSearchChange}
+                //   onBlur={handleSearchChange}
                   fullWidth
                   name="asset"
                   value={assignments.asset}
-                  onChange={handleSearchChange}
+                //   onChange={handleSearchChange}
                   margin="dense"
                   error={formErrors.asset}
                   InputProps={{

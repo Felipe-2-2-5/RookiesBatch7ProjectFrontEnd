@@ -55,7 +55,7 @@ const CreateAsset = () => {
       setCategories(res.data);
     };
     fetchCategories();
-    if (category) {
+    if (category && category !== asset.category) {
       setAsset({
         ...asset,
         category: category,

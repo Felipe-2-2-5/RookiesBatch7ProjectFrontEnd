@@ -23,10 +23,12 @@ import CategoryForm from "./CategoryForm";
 
 const CreateAsset = () => {
   const [categories, setCategories] = useState([]);
-  const [openCategoryForm, setOpenCategoryForm] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleOpenCategoryForm = () => {
-    setOpenCategoryForm(true);
+  const handleIsVisible = () => {
+    if (!isVisible) {
+      setIsVisible(true);
+    }
   };
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({
@@ -231,7 +233,6 @@ const CreateAsset = () => {
                   }
                   onChange={(e, value) => {
                     if (value && value.isButton) {
-                      handleOpenCategoryForm();
                     } else {
                       handleCategoryChange(value);
                     }
@@ -242,7 +243,6 @@ const CreateAsset = () => {
                         {...props}
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleOpenCategoryForm();
                         }}
                         style={{ display: "flex", justifyContent: "center" }}
                       >
@@ -250,7 +250,7 @@ const CreateAsset = () => {
                           title="Add Category"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleOpenCategoryForm();
+                            handleIsVisible();
                           }}
                           sx={{
                             color: "black",
@@ -436,7 +436,12 @@ const CreateAsset = () => {
               </Grid>
             </Grid>
           </form>
-          {openCategoryForm && <CategoryForm />}
+          {isVisible && (
+            <CategoryForm
+              visibleDialog={isVisible}
+              setVisibleDialog={setIsVisible}
+            />
+          )}
         </Box>
       </Container>
     </>

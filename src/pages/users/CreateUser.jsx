@@ -423,7 +423,7 @@ const CreateUser = () => {
                   row
                 >
                   <FormControlLabel
-                    value={1}
+                    value={2}
                     control={
                       <Radio
                         sx={{
@@ -435,7 +435,7 @@ const CreateUser = () => {
                     label="Female"
                   />
                   <FormControlLabel
-                    value={2}
+                    value={1}
                     control={
                       <Radio
                         sx={{
@@ -552,7 +552,7 @@ const CreateUser = () => {
                     disabled={users.type === 0}
                   >
                     <MenuItem value="HaNoi">Ha Noi</MenuItem>
-                    <MenuItem value="HCM">Ho Chi Minh</MenuItem>
+                    <MenuItem value="HoChiMinh">Ho Chi Minh</MenuItem>
                   </Select>
                   {formErrors.location && (
                     <FormHelperText error>{formErrors.location}</FormHelperText>

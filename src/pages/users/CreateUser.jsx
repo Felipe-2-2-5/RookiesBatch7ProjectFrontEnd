@@ -220,7 +220,6 @@ const CreateUser = () => {
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
-        console.log(response);
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");

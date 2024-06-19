@@ -382,7 +382,7 @@ const CreateAssignment = () => {
 
           {visibleAssetDialog && (
             <DialogAssetList
-              visibleAsset={visibleAssetDialog}
+              visibleAssetDialog={visibleAssetDialog}
               setVisibleAssetDialog={setVisibleAssetDialog}
               onSelect={handleUserSelect}
               selectedAsset={selectedUser}

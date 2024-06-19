@@ -141,21 +141,49 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     }));
   };
 
+  // const handleHeaderClick = (column) => {
+  //   setFilterRequest((prev) => {
+  //     let newSortOrder = prev.sortOrder;
+  //     if (column === prev.sortColumn) {
+  //       if (prev.sortOrder === "") {
+  //         newSortOrder = "descend";
+  //       } else if (prev.sortOrder === "descend") {
+  //         newSortOrder = "";
+  //       }
+  //     } else {
+  //       newSortOrder = "";
+  //     }
+  //     return {
+  //       ...prev,
+  //       sortColumn: column,
+  //       sortOrder: newSortOrder,
+  //     };
+  //   });
+  // };
   const handleHeaderClick = (column) => {
     setFilterRequest((prev) => {
-      let newSortOrder = prev.sortOrder;
+      let newSortOrder;
+      let newSortColumn;
+
       if (column === prev.sortColumn) {
         if (prev.sortOrder === "") {
           newSortOrder = "descend";
+          newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
+          newSortColumn = "name";
+        } else {
+          newSortOrder = "";
+          newSortColumn = column;
         }
       } else {
         newSortOrder = "";
+        newSortColumn = column;
       }
+
       return {
         ...prev,
-        sortColumn: column,
+        sortColumn: newSortColumn,
         sortOrder: newSortOrder,
       };
     });
@@ -193,8 +221,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
         style: {
           position: "absolute",
           top: "15%",
-          left: "48%",
-          width: "45%",
+          width: "60%",
           maxHeight: "80vh",
           overflowY: "auto",
         },

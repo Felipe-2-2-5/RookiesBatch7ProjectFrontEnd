@@ -75,7 +75,7 @@ const CreateUser = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: null,
-    gender: 1,
+    gender: 2,
     joinedDate: null,
     type: 0,
     location: localStorage.getItem("location"),

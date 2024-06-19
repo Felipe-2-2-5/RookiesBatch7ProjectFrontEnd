@@ -192,9 +192,8 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
       PaperProps={{
         style: {
           position: "absolute",
-          top: "15%",
-          left: "48%",
-          width: "45%",
+          top: "15%%",
+          width: "60%",
           maxHeight: "80vh",
           overflowY: "auto",
         },

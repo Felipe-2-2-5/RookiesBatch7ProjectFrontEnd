@@ -36,7 +36,7 @@ const CreateUser = () => {
     firstName: "",
     lastName: "",
     dateOfBirth: null,
-    gender: 1,
+    gender: 2,
     joinedDate: null,
     type: 0,
     location: localStorage.getItem("location"),
@@ -197,7 +197,6 @@ const CreateUser = () => {
       ...prevErrors,
       dateOfBirth: errorMessage,
     }));
-    console.log("formError message: " + formErrors.dateOfBirth);
   }, [users.dateOfBirth, touched.dateOfBirth, formErrors.dateOfBirth]);
 
   const handleSubmit = async (event) => {
@@ -377,7 +376,7 @@ const CreateUser = () => {
                   row
                 >
                   <FormControlLabel
-                    value={1}
+                    value={2}
                     control={
                       <Radio
                         sx={{
@@ -389,7 +388,7 @@ const CreateUser = () => {
                     label="Female"
                   />
                   <FormControlLabel
-                    value={2}
+                    value={1}
                     control={
                       <Radio
                         sx={{

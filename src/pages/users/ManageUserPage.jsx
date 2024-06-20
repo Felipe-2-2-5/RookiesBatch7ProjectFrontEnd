@@ -74,7 +74,7 @@ const ManageUserPage = () => {
   });
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
-    Number.isNaN(totalCount) || totalCount === 0
+    Number.isNaN(totalCount) || Number.isNaN(pageSize) || totalCount === 0
       ? 1
       : Math.ceil(totalCount / pageSize);
   const [users, setUser] = useState([]);

@@ -110,7 +110,9 @@ const Layout = () => {
     }
 
     if (!newPasswordRegex.test(newPasswordValue)) {
-      setNewPasswordError("New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character ( only include !, @, #, $, %, &, *, ?).");
+      setNewPasswordError(
+        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character ( only include !, @, #, $, %, &, *, ?)."
+      );
       return;
     }
 
@@ -137,7 +139,6 @@ const Layout = () => {
     setConfirmPasswordError("");
   };
 
-
   const toggleNewPasswordVisibility = () => {
     setShowNewPassword(!showNewPassword);
   };
@@ -153,7 +154,7 @@ const Layout = () => {
       <Box
         display="flex"
         p={2}>
-        <Box >
+        <Box>
           {isAuthenticated &&
             (currentUser.role === "Admin" ? (
               <VerticalNavbarAdmin />
@@ -180,7 +181,7 @@ const Layout = () => {
       <Dialog
         open={currentUser.isFirst}
         onClose={!currentUser.isFirst}
-        disableBackdropClick
+        disablebackdropclick="true"
         disableEscapeKeyDown>
         <DialogTitle sx={{ color: "#D6001C" }}>Change Password</DialogTitle>
         <DialogContent>

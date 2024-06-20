@@ -1,4 +1,9 @@
-import { httpClient } from "../httpClient/httpClient";
+import { httpClient } from "../httpClient/httpClient"
+
+export const AssetFilterRequest = async (body) => {
+  const response = await httpClient.post("/assets/filter", body);
+  return response;
+}
 
 export const GetAssets = async () => {
   const response = await httpClient.get("/assets");
@@ -7,6 +12,7 @@ export const GetAssets = async () => {
 
 export const GetAsset = async (id) => {
   const response = await httpClient.get(`/assets/${id}`);
+  console.log(response);
   return response;
 };
 

@@ -89,42 +89,51 @@ const ManageAssignmentPage = () => {
 
   const getAssignments = async (filterRequest) => {
     const res = await FilterAssignment(filterRequest);
-    let fetchedAssigments = res.data.data.$values;
+    let fetchedAssignments = res?.data?.data;
 
     if (res.status === 200) {
-      setAssignments(res.data.data.$values);
-      setTotalCount(res.data.totalCount);
+      let fetchedAssignments = res.data.data;
+
+      if (filterRequest.state !== "" && filterRequest.state !== "All") {
+        fetchedAssignments = fetchedAssignments.filter(
+          (assignment) => assignment.state === filterRequest.state
+        );
+      }
+
+      if (filterRequest.searchTerm !== "") {
+        const searchTerm = filterRequest.searchTerm || "";
+        fetchedAssignments = fetchedAssignments.filter(
+          (assignment) =>
+            assignment.asset.assetName.includes(searchTerm) ||
+            assignment.asset.assetCode.includes(searchTerm) ||
+            assignment.assignedTo.userName.includes(searchTerm)
+        );
+      }
+
+      if (filterRequest.fromDate && filterRequest.toDate) {
+        const fromDate = new Date(filterRequest.fromDate);
+        const toDate = new Date(filterRequest.toDate);
+        toDate.setHours(23, 59, 59, 999);
+
+        fetchedAssignments = fetchedAssignments.filter((assignment) => {
+          const assignmentDate = new Date(assignment.assignedDate);
+          return assignmentDate >= fromDate && assignmentDate <= toDate;
+        });
+      }
+
+      setAssignments(fetchedAssignments);
+      setTotalCount(fetchedAssignments.length);
     } else {
       setAssignments([]);
       setTotalCount(0);
     }
 
-    if (filterRequest.state !== "" && filterRequest.state !== "All") {
-      fetchedAssigments = fetchedAssigments.filter(
-        (assignment) => assignment.state === filterRequest.state
-      );
-    }
-
-    if (filterRequest.searchTerm !== "") {
-      const searchTerm = filterRequest.searchTerm || "";
-      fetchedAssigments = fetchedAssigments.filter(
-        (assignment) =>
-          assignment.asset.assetName.includes(searchTerm) ||
-          assignment.asset.assetCode.includes(searchTerm) ||
-          assignment.assignedTo.userName.includes(searchTerm)
-      );
-    }
-
-    if (filterRequest.fromDate && filterRequest.toDate) {
-      const fromDate = new Date(filterRequest.fromDate);
-      const toDate = new Date(filterRequest.toDate);
-      toDate.setHours(23, 59, 59, 999);
-
-      fetchedAssigments = fetchedAssigments.filter((assignment) => {
-        const assignmentDate = new Date(assignment.assignedDate);
-        return assignmentDate >= fromDate && assignmentDate <= toDate;
-      });
-    }
+    // if (filterRequest.state !== "" && filterRequest.state !== "All") {
+    //   fetchedAssignments = fetchedAssignments.filter(
+    //     (assignment) => assignment.state === filterRequest.state
+    //   );
+    //   setAssignments(fetchedAssignments);
+    // }
 
     if (
       filterRequest.sortOrder !== "" &&
@@ -141,7 +150,11 @@ const ManageAssignmentPage = () => {
 
       const sortColumn = sortColumnMap[filterRequest.sortColumn];
 
-      fetchedAssigments.sort((a, b) => {
+      let fetchedAssignmentsArray = Array.isArray(res?.data?.data)
+        ? res?.data?.data
+        : [];
+
+      fetchedAssignmentsArray.sort((a, b) => {
         if (a[sortColumn] < b[sortColumn]) {
           return filterRequest.sortOrder.toLowerCase() === "descend" ? 1 : -1;
         }
@@ -155,10 +168,10 @@ const ManageAssignmentPage = () => {
         localStorage.getItem("assignmentCreated")
       );
       if (assignmentCreated) {
-        setAssignments([assignmentCreated, ...fetchedAssigments]);
+        setAssignments([assignmentCreated, ...fetchedAssignments]);
         sessionStorage.removeItem("assignmentCreated");
       } else {
-        setAssignments(fetchedAssigments);
+        setAssignments(fetchedAssignments);
       }
 
       if (scrollRef.current) {
@@ -170,7 +183,7 @@ const ManageAssignmentPage = () => {
       setLoading(false);
     }
 
-    setTotalCount(fetchedAssigments.length);
+    setTotalCount(fetchedAssignments.length);
   };
 
   useEffect(() => {
@@ -223,7 +236,7 @@ const ManageAssignmentPage = () => {
       state: selectedState === "All" ? "" : selectedState,
       searchTerm: "",
       sortColumn: "date",
-      sortOrder: "",
+      sortOrder: "descend",
       page: 1,
     }));
   };

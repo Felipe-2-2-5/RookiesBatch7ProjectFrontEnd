@@ -331,7 +331,7 @@ const CreateAssignment = () => {
               </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
-                  Date Of Birth
+                  Assigned Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
@@ -374,7 +374,6 @@ const CreateAssignment = () => {
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Note
-                  <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
               <Grid item xs={9}>

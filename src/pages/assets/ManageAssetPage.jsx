@@ -51,7 +51,7 @@ const ManageAssetPage = () => {
     state: "",
     category: "",
     searchTerm: "",
-    sortColumn: "name",
+    sortColumn: "assetname",
     sortOrder: "",
     page: 1,
     pageSize: "20",

@@ -71,7 +71,8 @@ const CreateAssignment = () => {
   const [assignments, setAssignments] = useState({
     user: null,
     asset: null,
-    assignedDate: Date.now(),
+    // assignedDate: Date.now(),
+    assignedDate : new Date(),
     note: "",
   });
   const [formErrors, setFormErrors] = useState({
@@ -82,6 +83,8 @@ const CreateAssignment = () => {
   });
   const [touched, setTouched] = useState({
     assignedDate: false,
+    user:false,
+    asset: false
   });
 
   const handleChange = (event) => {
@@ -96,15 +99,18 @@ const CreateAssignment = () => {
   };
 
   useEffect(() => {
+    console.log("date.now" + new Date());
+    console.log("assignments.assignedDate" + assignments.assignedDate);
     let errorMessage = "";
-    const currentDate = Date.now();
+    const currentDate = formatDate(new Date());
+    const assignedDateFormat = formatDate(assignments.assignedDate);
     if (touched.assignedDate) {
       if (!assignments.assignedDate) {
         errorMessage = "Assigned date is required";
-      } else if (assignments.assignedDate > currentDate) {
+      } else if (assignedDateFormat < currentDate) {
         errorMessage =
           "Cannot select Assigned Date in the past. Please select another date.";
-      } else if (isNaN(assignments.assignedDate.getTime())) {
+      }else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
         errorMessage = "Invalid date";
       }
     }
@@ -114,6 +120,28 @@ const CreateAssignment = () => {
       assignedDate: errorMessage,
     }));
   }, [assignments.assignedDate, touched.assignedDate]);
+
+  useEffect(() => {
+    let errorMessage = "";
+    if(touched.user &&  !selectedUser){
+      errorMessage = "User is required";
+    }
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      user: errorMessage,
+    }));
+  }, [visibleDialog, selectedUser, touched.user]);
+
+  useEffect(() => {
+    let errorMessage = "";
+    if(touched.asset &&  !selectedAsset){
+      errorMessage = "Asset is required";
+    }
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      asset: errorMessage,
+    }));
+  }, [visibleAssetDialog, selectedAsset, touched.asset]);
 
   const handleDateChange = (name, date) => {
     setAssignments({ ...assignments, [name]: date });
@@ -130,14 +158,17 @@ const CreateAssignment = () => {
   };
 
   const handleUserDialogOpen = () => {
+    setTouched({ ...touched, user: true });
     setVisibleDialog(true);
   };
+
 
   const handleUserDialogClose = () => {
     setVisibleDialog(false);
   };
 
   const handleAssetDialogOpen = () => {
+    setTouched({ ...touched, asset: true });
     setVisibleAssetDialog(true);
   };
 
@@ -167,8 +198,6 @@ const CreateAssignment = () => {
   // console.log(assignments.user.id);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const hasErrors = Object.values(formErrors).some((error) => error);
-    if (!hasErrors) {
       try {
         const response = await CreateAssignmentAPI({
 
@@ -183,20 +212,22 @@ const CreateAssignment = () => {
           sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
-            `Asset: ${assignments.asset.name} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
+            `Asset: ${assignments.asset.assetName} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
           );
+          navigate("manage-assignment")
           displayPopupNotification();
         }
       } catch (error) {
         setTitlePopup("Error");
-        setContentPopup(`error: ${error.userMessage}`);
+        setContentPopup(`error: ${error.DevMessage}`);
         displayPopupNotification();
-      }
-    } else {
-      setTitlePopup("Error");
-      setContentPopup("Form has errors. Please fill all required fields.");
-      displayPopupNotification();
-    }
+      
+    } 
+    // else {
+    //   setTitlePopup("Error");
+    //   setContentPopup("Form has errors. Please fill all required fields.");
+    //   displayPopupNotification();
+    // }
   };
 
   const displayPopupNotification = () => {
@@ -205,7 +236,7 @@ const CreateAssignment = () => {
 
   const handleClosePopup = () => {
     setOpenPopup(false);
-    navigate("/manage-user");
+    navigate("/manage-assignmnet");
   };
 
   return (

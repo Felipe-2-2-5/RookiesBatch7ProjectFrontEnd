@@ -59,7 +59,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     page: 1,
     pageSize: "20",
     category: "",
-    state: ""
+    state: "Available"
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;

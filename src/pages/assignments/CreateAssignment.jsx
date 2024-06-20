@@ -71,7 +71,7 @@ const CreateAssignment = () => {
   const [assignments, setAssignments] = useState({
     user: null,
     asset: null,
-    assignedDate: Date.now(),
+    assignedDate: new Date(),
     note: "",
   });
   const [formErrors, setFormErrors] = useState({
@@ -104,7 +104,7 @@ const CreateAssignment = () => {
       } else if (assignments.assignedDate > currentDate) {
         errorMessage =
           "Cannot select Assigned Date in the past. Please select another date.";
-      } else if (isNaN(assignments.assignedDate.getTime())) {
+      } else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
         errorMessage = "Invalid date";
       }
     }
@@ -167,37 +167,31 @@ const CreateAssignment = () => {
   // console.log(assignments.user.id);
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const hasErrors = Object.values(formErrors).some((error) => error);
-    if (!hasErrors) {
-      try {
-        const response = await CreateAssignmentAPI({
 
-          //custom input to match backend 
-          assignedToId: assignments.user.id,
-          assetId: assignments.asset.id,
-          assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
-          note: assignments.note
-        });
+    try {
+      const response = await CreateAssignmentAPI({
 
-        if (response) {
-          sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
-          setTitlePopup("Notifications");
-          setContentPopup(
-            `Asset: ${assignments.asset.name} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
-          );
-          displayPopupNotification();
-        }
-      } catch (error) {
-        setTitlePopup("Error");
-        setContentPopup(`error: ${error.userMessage}`);
-        displayPopupNotification();
+        //custom input to match backend 
+        assignedToId: assignments.user.id,
+        assetId: assignments.asset.id,
+        assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
+        note: assignments.note
+      });
+
+      if (response.status === 200) {
+        sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
+        setTitlePopup("Notifications");
+        setContentPopup(
+          `Asset: ${assignments.asset.assetName} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
+        );
+        displayPopupNotification()
       }
-    } else {
+    } catch (error) {
       setTitlePopup("Error");
-      setContentPopup("Form has errors. Please fill all required fields.");
-      displayPopupNotification();
+      setContentPopup(`error: ${error.DevMessage}`);
+      displayPopupNotification()
     }
-  };
+  }
 
   const displayPopupNotification = () => {
     setOpenPopup(true);
@@ -431,12 +425,12 @@ const CreateAssignment = () => {
           )}
         </Box>
       </Container>
-      <PopupNotification
+      {/* <PopupNotification
         open={openPopup}
         handleClose={handleClosePopup}
         title={titlePopup}
         content={contentPopup}
-      />
+      /> */}
     </>
   );
 };

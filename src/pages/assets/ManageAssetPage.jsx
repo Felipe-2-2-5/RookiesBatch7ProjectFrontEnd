@@ -51,7 +51,7 @@ const ManageAssetPage = () => {
     state: "",
     category: "",
     searchTerm: "",
-    sortColumn: "name",
+    sortColumn: "assetname",
     sortOrder: "",
     page: 1,
     pageSize: "20",
@@ -153,7 +153,7 @@ const ManageAssetPage = () => {
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
       searchTerm: "",
-      sortColumn: "name",
+      sortColumn: "assetname",
       sortOrder: "",
       page: 1,
     }));
@@ -165,7 +165,7 @@ const ManageAssetPage = () => {
       ...prevState,
       category: selectedCategory === "All" ? "" : selectedCategory,
       searchTerm: "",
-      sortColumn: "name",
+      sortColumn: "assetname",
       sortOrder: "",
       page: 1,
     }));
@@ -182,7 +182,7 @@ const ManageAssetPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "name";
+          newSortColumn = "assetname";
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -406,20 +406,20 @@ const ManageAssetPage = () => {
               <TableRow>
                 <TableCell
                   style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                  onClick={() => handleHeaderClick("code")}
+                  onClick={() => handleHeaderClick("assetcode")}
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
                     Asset Code
-                    {getSortIcon("code")}
+                    {getSortIcon("assetcode")}
                   </div>
                 </TableCell>
                 <TableCell
                   style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
-                  onClick={() => handleHeaderClick("name")}
+                  onClick={() => handleHeaderClick("assetname")}
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
                     Asset Name
-                    {getSortIcon("name")}
+                    {getSortIcon("assetname")}
                   </div>
                 </TableCell>
                 <TableCell

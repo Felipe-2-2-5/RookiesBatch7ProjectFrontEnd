@@ -201,34 +201,27 @@ const CreateAssignment = () => {
       try {
         const response = await CreateAssignmentAPI({
 
-          //custom input to match backend 
-          assignedToId: assignments.user.id,
-          assetId: assignments.asset.id,
-          assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
-          note: assignments.note
-        });
+        //custom input to match backend 
+        assignedToId: assignments.user.id,
+        assetId: assignments.asset.id,
+        assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
+        note: assignments.note
+      });
 
-        if (response) {
-          sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
-          setTitlePopup("Notifications");
-          setContentPopup(
-            `Asset: ${assignments.asset.assetName} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
-          );
-          navigate("manage-assignment")
-          displayPopupNotification();
-        }
-      } catch (error) {
-        setTitlePopup("Error");
-        setContentPopup(`error: ${error.DevMessage}`);
-        displayPopupNotification();
-      
-    } 
-    // else {
-    //   setTitlePopup("Error");
-    //   setContentPopup("Form has errors. Please fill all required fields.");
-    //   displayPopupNotification();
-    // }
-  };
+      if (response.status === 200) {
+        sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
+        setTitlePopup("Notifications");
+        setContentPopup(
+          `Asset: ${assignments.asset.assetName} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
+        );
+        displayPopupNotification()
+      }
+    } catch (error) {
+      setTitlePopup("Error");
+      setContentPopup(`error: ${error.DevMessage}`);
+      displayPopupNotification()
+    }
+  }
 
   const displayPopupNotification = () => {
     setOpenPopup(true);

@@ -56,12 +56,12 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 
 const tableHead = {
   width: "15%",
-  textAlign: "center"
-}
+  textAlign: "center",
+};
 
 const ManageUserPage = () => {
   const navigate = useNavigate();
-  const scrollRef = useRef(null)
+  const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState();
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
@@ -73,7 +73,10 @@ const ManageUserPage = () => {
     type: "",
   });
   const pageSize = filterRequest.pageSize || 1;
-  const pageCount = Number.isNaN(totalCount) || totalCount === 0 ? 1 : Math.ceil(totalCount / pageSize);
+  const pageCount =
+    Number.isNaN(totalCount) || totalCount === 0
+      ? 1
+      : Math.ceil(totalCount / pageSize);
   const [users, setUser] = useState([]);
   const getUsers = async (filterRequest) => {
     const res = await FilterRequest(filterRequest);
@@ -91,10 +94,10 @@ const ManageUserPage = () => {
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
         top: 0,
-        behavior: "smooth"
-      })
+        behavior: "smooth",
+      });
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -103,7 +106,7 @@ const ManageUserPage = () => {
 
   //Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
-  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, ' ');
+  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -116,13 +119,13 @@ const ManageUserPage = () => {
   };
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      setSearchTerm(trimmedSearchTerm)
-      handleSearch()
+      setSearchTerm(trimmedSearchTerm);
+      handleSearch();
     }
   };
   const handleSearchClick = () => {
-    setSearchTerm(trimmedSearchTerm)
-    handleSearch()
+    setSearchTerm(trimmedSearchTerm);
+    handleSearch();
   };
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -186,15 +189,15 @@ const ManageUserPage = () => {
 
   //custom Table head Arrow Up
   const CustomArrowDropUp = styled(ArrowDropUp)(({ theme }) => ({
-    '& path': {
-      d: 'path("m7 20 5-5 5 5z")'
-    }
+    "& path": {
+      d: 'path("m7 20 5-5 5 5z")',
+    },
   }));
   //custom Table head Arrow Down
   const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
-    '& path': {
-      d: 'path("m7 0 5 5 5-5z")'
-    }
+    "& path": {
+      d: 'path("m7 0 5 5 5-5z")',
+    },
   }));
 
   const getSortIcon = (column) => {
@@ -209,7 +212,7 @@ const ManageUserPage = () => {
       if (filterRequest.sortOrder === "descend") {
         return (
           <div style={iconStyle}>
-            <CustomArrowDropUp sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
             <CustomArrowDropDown />
           </div>
         );
@@ -218,7 +221,7 @@ const ManageUserPage = () => {
         return (
           <div style={iconStyle}>
             <CustomArrowDropUp />
-            <CustomArrowDropDown sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
           </div>
         );
       }
@@ -238,21 +241,26 @@ const ManageUserPage = () => {
           padding: "20px",
           width: "90%",
           height: "calc(100vh - 150px)",
-        }}
-      >
-        <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>User List</h2>
+        }}>
+        <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
+          User List
+        </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
-        >
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <FormControl
             variant="outlined"
-            sx={{ minWidth: 120 }} >
-            <InputLabel >Type</InputLabel>
+            sx={{ minWidth: 120 }}>
+            <InputLabel>Type</InputLabel>
             <Select
               label="Type"
               value={filterRequest.type === "" ? "All" : filterRequest.type}
               name="type"
-              IconComponent={(props) => <FilterAltOutlined {...props} style={{ transform: "none" }} />}
+              IconComponent={(props) => (
+                <FilterAltOutlined
+                  {...props}
+                  style={{ transform: "none" }}
+                />
+              )}
               onChange={handleTypeChange}>
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Admin">Admin</MenuItem>
@@ -272,10 +280,11 @@ const ManageUserPage = () => {
                 <InputAdornment position="end">
                   <IconButton
                     sx={{
-                      '&:hover': {
-                        backgroundColor: "#bcbcbc"
+                      "&:hover": {
+                        backgroundColor: "#bcbcbc",
                       },
-                    }} onClick={handleSearchClick}>
+                    }}
+                    onClick={handleSearchClick}>
                     <Search />
                   </IconButton>
                 </InputAdornment>
@@ -286,17 +295,24 @@ const ManageUserPage = () => {
           <Button
             variant="contained"
             sx={{ backgroundColor: "#D6001C", height: "56px" }}
-            onClick={() => navigate(path.userCreate)}
-          >
+            onClick={() => navigate(path.userCreate)}>
             Create new user
           </Button>
         </Box>
-        <TableContainer component={Paper} sx={{ height: "calc(100% - 180px)", position: "relative" }}>
-          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
+        <TableContainer
+          component={Paper}
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
+          <Sheet
+            ref={scrollRef}
+            sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
-                sx={{ position: "sticky", top: 0, backgroundColor: "white", zIndex: 1 }}
-              >
+                sx={{
+                  position: "sticky",
+                  top: 0,
+                  backgroundColor: "white",
+                  zIndex: 1,
+                }}>
                 <TableRow>
                   <TableCell sx={tableHead}>
                     <Button
@@ -309,8 +325,7 @@ const ManageUserPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}
-                    >
+                      }}>
                       Staff Code
                     </Button>
                   </TableCell>
@@ -325,8 +340,7 @@ const ManageUserPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}
-                    >
+                      }}>
                       Full Name
                     </Button>
                   </TableCell>
@@ -338,8 +352,7 @@ const ManageUserPage = () => {
                       color: "black",
                       padding: "16px",
                     }}
-                    style={tableHead}
-                  >
+                    style={tableHead}>
                     Username
                   </TableCell>
                   <TableCell sx={tableHead}>
@@ -353,8 +366,7 @@ const ManageUserPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}
-                    >
+                      }}>
                       Joined Date
                     </Button>
                   </TableCell>
@@ -369,8 +381,7 @@ const ManageUserPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}
-                    >
+                      }}>
                       Type
                     </Button>
                   </TableCell>
@@ -382,15 +393,16 @@ const ManageUserPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}
-                  ></TableCell>
+                    }}></TableCell>
                 </TableRow>
               </TableHead>
 
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
+                    <TableCell
+                      colSpan={6}
+                      sx={{ textAlign: "center", padding: "28px" }}>
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -405,47 +417,54 @@ const ManageUserPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}
-                        >
+                          }}>
                           No user found
                         </TableCell>
                       </TableRow>
                     ) : (
                       users.map((user, index) => (
-                        <CustomTableRow key={index} onClick={() => handleDetailDialog(user)}>
-                          <TableCell sx={{ textAlign: "center" }}>{user.staffCode}</TableCell>
+                        <CustomTableRow
+                          key={index}
+                          onClick={() => handleDetailDialog(user)}>
+                          <TableCell sx={{ textAlign: "center" }}>
+                            {user.staffCode}
+                          </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
                             {user.firstName + " " + user.lastName}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>{user.userName}</TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>{formatDate(user.joinedDate)}</TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>{user.type === 0 ? "Staff" : "Admin"}</TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>
+                            {user.userName}
+                          </TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>
+                            {formatDate(user.joinedDate)}
+                          </TableCell>
+                          <TableCell sx={{ textAlign: "center" }}>
+                            {user.type === 0 ? "Staff" : "Admin"}
+                          </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
                             <IconButton
                               sx={{
-                                '&:hover': {
-                                  backgroundColor: "#bcbcbc"
+                                "&:hover": {
+                                  backgroundColor: "#bcbcbc",
                                 },
                               }}
                               onClick={(e) => {
                                 // Prevent showing popup
-                                e.stopPropagation()
-                              }}
-                            >
+                                e.stopPropagation();
+                              }}>
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
                               sx={{
                                 color: "#D6001C",
-                                '&:hover': {
-                                  backgroundColor: "#bcbcbc"
+                                "&:hover": {
+                                  backgroundColor: "#bcbcbc",
                                 },
                               }}
                               onClick={(e) => {
                                 // Prevent showing popup
-                                e.stopPropagation()
-                              }}
-                            >
+                                e.stopPropagation();
+                              }}>
                               <CancelTwoTone />
                             </IconButton>
                           </TableCell>
@@ -455,7 +474,6 @@ const ManageUserPage = () => {
                   </>
                 )}
               </TableBody>
-
             </Table>
           </Sheet>
         </TableContainer>
@@ -464,8 +482,7 @@ const ManageUserPage = () => {
             display: "flex",
             justifyContent: "flex-end",
             paddingTop: "10px",
-          }}
-        >
+          }}>
           <Pagination
             count={pageCount}
             variant="outlined"
@@ -487,10 +504,11 @@ const ManageUserPage = () => {
 
       {/* Dialog show user detailed information */}
       {selectedUser && (
-        <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleDialogClose}>
           <DialogTitle
-            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
-          >
+            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}>
             Detailed User Information
             <IconButton
               aria-label="close"
@@ -500,81 +518,110 @@ const ManageUserPage = () => {
                 right: 10,
                 top: 12,
                 color: "#D6001C",
-              }}
-            >
+              }}>
               <DisabledByDefaultTwoTone />
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
+            <Grid
+              container
+              spacing={2}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Staff Code:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.staffCode}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Full Name:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">{`${selectedUser.firstName} ${selectedUser.lastName}`}</Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Username:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">{selectedUser.userName}</Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Date of Birth:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {formatDate(selectedUser.dateOfBirth)}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Gender:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {GenderEnum[selectedUser.gender]}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Type:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.type === 0 ? "Staff" : "Admin"}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Location:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.location === 0 ? "Ho Chi Minh" : "Ha Noi"}
                 </Typography>
@@ -582,7 +629,9 @@ const ManageUserPage = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDialogClose} sx={{ color: "#D6001C" }}>
+            <Button
+              onClick={handleDialogClose}
+              sx={{ color: "#D6001C" }}>
               OK
             </Button>
           </DialogActions>

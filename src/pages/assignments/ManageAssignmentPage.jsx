@@ -41,7 +41,10 @@ import { useNavigate } from "react-router";
 import { PaginationBar, SearchBar } from "../../components";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
 import { path } from "../../routes/routeContants";
-import { FilterAssignment } from "../../services/assignments.service";
+import {
+  FilterAssignment,
+  GetAssignment,
+} from "../../services/assignments.service";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -63,12 +66,12 @@ const ManageAssignmentPage = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState();
-  const [assignments, setAssignment] = useState([]);
+  const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
     sortColumn: "date",
-    sortOrder: "",
+    sortOrder: "descend",
     page: 1,
     pageSize: "20",
     state: "",
@@ -76,6 +79,7 @@ const ManageAssignmentPage = () => {
     toDate: "",
   });
   const [dateRange, setDateRange] = useState([null, null]);
+  const [selectedState, setSelectedState] = useState("All");
 
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -83,32 +87,94 @@ const ManageAssignmentPage = () => {
       ? 1
       : Math.ceil(totalCount / pageSize);
 
-  //assignments
-
   const getAssignments = async (filterRequest) => {
     const res = await FilterAssignment(filterRequest);
-    const fetchedAssigments = res.data.data;
-    setTotalCount(res.data.totalCount);
+    let fetchedAssigments = res?.data?.data;
 
-    //assignment Created
-    const assignmentCreated = JSON.parse(
-      localStorage.getItem("assignmentCreated")
-    );
-    if (assignmentCreated) {
-      setAssignment([assignmentCreated, ...fetchedAssigments]);
-      sessionStorage.removeItem("assignmentCreated");
+    if (res.status === 200) {
+      setAssignments(res.data.data);
+      setTotalCount(res.data.totalCount);
     } else {
-      setAssignment(fetchedAssigments);
+      setAssignments([]);
+      setTotalCount(0);
     }
 
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
+    if (filterRequest.state !== "" && filterRequest.state !== "All") {
+      fetchedAssigments = fetchedAssigments.filter(
+        (assignment) => assignment.state === filterRequest.state
+      );
+    }
+
+    if (filterRequest.searchTerm !== "") {
+      const searchTerm = filterRequest.searchTerm || "";
+      fetchedAssigments = fetchedAssigments.filter(
+        (assignment) =>
+          assignment.asset.assetName.includes(searchTerm) ||
+          assignment.asset.assetCode.includes(searchTerm) ||
+          assignment.assignedTo.userName.includes(searchTerm)
+      );
+    }
+
+    if (filterRequest.fromDate && filterRequest.toDate) {
+      const fromDate = new Date(filterRequest.fromDate);
+      const toDate = new Date(filterRequest.toDate);
+      toDate.setHours(23, 59, 59, 999);
+
+      fetchedAssigments = fetchedAssigments.filter((assignment) => {
+        const assignmentDate = new Date(assignment.assignedDate);
+        return assignmentDate >= fromDate && assignmentDate <= toDate;
       });
     }
-    setLoading(false);
+
+    if (
+      filterRequest.sortOrder !== "" &&
+      filterRequest.sortOrder !== undefined
+    ) {
+      const sortColumnMap = {
+        code: "assetCode",
+        name: "assetName",
+        receiver: "assignedTo",
+        provider: "assignedBy",
+        date: "assignedDate",
+        state: "state",
+      };
+
+      const sortColumn = sortColumnMap[filterRequest.sortColumn];
+
+      let fetchedAssigmentsArray = Array.isArray(res?.data?.data) ? res?.data?.data : [];
+
+      fetchedAssigmentsArray.sort((a, b) => {
+        if (a[sortColumn] < b[sortColumn]) {
+          return filterRequest.sortOrder.toLowerCase() === "descend" ? 1 : -1;
+        }
+        if (a[sortColumn] > b[sortColumn]) {
+          return filterRequest.sortOrder.toLowerCase() === "descend" ? -1 : 1;
+        }
+        return 0;
+      });
+      //assignment Created
+      const assignmentCreated = JSON.parse(
+        localStorage.getItem("assignmentCreated")
+      );
+      if (assignmentCreated) {
+        setAssignments([assignmentCreated, ...fetchedAssigments]);
+        sessionStorage.removeItem("assignmentCreated");
+      } else {
+        setAssignments(fetchedAssigments);
+      }
+
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+      setLoading(false);
+    }
+
+    setTotalCount(fetchedAssigments.length);
   };
+
   useEffect(() => {
     getAssignments(filterRequest);
   }, [filterRequest]);
@@ -139,28 +205,30 @@ const ManageAssignmentPage = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+
   const handleDetailDialog = async (assignment) => {
-    //const res = await GetAssignment(assigment.id);
-    //setSelectedAssignment(res.data);
+    const res = await GetAssignment(assignment.id);
+    setSelectedAssignment(res.data);
     setDialogOpen(true);
   };
+
   const handleDialogClose = () => {
     setDialogOpen(false);
     setSelectedAssignment(null);
   };
 
   const handleStateChange = (e) => {
-    const selectedType = e.target.value;
+    const selectedState = e.target.value;
+    setSelectedState(selectedState);
     setFilterRequest((prevState) => ({
       ...prevState,
-      type: selectedType === "All" ? "" : selectedType,
+      state: selectedState === "All" ? "" : selectedState,
       searchTerm: "",
       sortColumn: "date",
       sortOrder: "",
       page: 1,
     }));
   };
-
   const handlePageChange = (e, value) => {
     setFilterRequest((prev) => ({
       ...prev,
@@ -174,18 +242,18 @@ const ManageAssignmentPage = () => {
       let newSortColumn;
 
       if (column === prev.sortColumn) {
-        if (prev.sortOrder === "") {
-          newSortOrder = "descend";
+        if (prev.sortOrder === "descend") {
+          newSortOrder = "ascend";
           newSortColumn = column;
-        } else if (prev.sortOrder === "descend") {
-          newSortOrder = "";
+        } else if (prev.sortOrder === "ascend") {
+          newSortOrder = "descend";
           newSortColumn = "date";
         } else {
-          newSortOrder = "";
+          newSortOrder = "descend";
           newSortColumn = column;
         }
       } else {
-        newSortOrder = "";
+        newSortOrder = "descend";
         newSortColumn = column;
       }
 
@@ -226,7 +294,7 @@ const ManageAssignmentPage = () => {
           </div>
         );
       }
-      if (filterRequest.sortOrder === "") {
+      if (filterRequest.sortOrder === "ascend") {
         return (
           <div style={iconStyle}>
             <CustomArrowDropUp />
@@ -234,15 +302,15 @@ const ManageAssignmentPage = () => {
           </div>
         );
       }
-    } else
+    } else {
       return (
         <div style={iconStyle}>
           <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
           <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
         </div>
       );
+    }
   };
-
   return (
     <>
       <Paper
@@ -260,7 +328,7 @@ const ManageAssignmentPage = () => {
           <FormControl
             variant="outlined"
             sx={{
-              minWidth: 120,
+              minWidth: 240,
               "& .MuiOutlinedInput-root": {
                 "&:hover fieldset": { borderColor: "black" },
                 "&.Mui-focused fieldset": { borderColor: "black" },
@@ -278,7 +346,7 @@ const ManageAssignmentPage = () => {
             </InputLabel>
             <Select
               label="State"
-              value={filterRequest.state === "" ? "All" : filterRequest.state}
+              value={selectedState}
               name="state"
               IconComponent={(props) => (
                 <FilterAltOutlined
@@ -290,7 +358,9 @@ const ManageAssignmentPage = () => {
               sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Accepted">Accepted</MenuItem>
-              <MenuItem value="Waiting">Waiting</MenuItem>
+              <MenuItem value="Waiting for acceptance">
+                Waiting for acceptance
+              </MenuItem>
             </Select>
           </FormControl>
           <Grid
@@ -300,7 +370,7 @@ const ManageAssignmentPage = () => {
               style: { color: "black" },
             }}
             sx={{
-              marginLeft: "auto",
+              marginLeft: "20px",
               marginRight: "20px",
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                 {
@@ -314,6 +384,11 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 onChange={(newValue) => {
                   setDateRange(newValue);
+                  setFilterRequest((prev) => ({
+                    ...prev,
+                    fromDate: newValue[0],
+                    toDate: newValue[1],
+                  }));
                 }}
                 renderInput={(startProps, endProps) => (
                   <TextField
@@ -495,31 +570,39 @@ const ManageAssignmentPage = () => {
                     ) : (
                       assignments.map((assignment, index) => (
                         <CustomTableRow
-                          key={index}
+                          key={assignment.id}
                           onClick={() => handleDetailDialog(assignment)}>
                           <TableCell sx={{ textAlign: "center" }}>
                             {index + 1}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
-                            {assignment.assetCode}
+                            {assignment.asset.assetCode}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              textAlign: "center",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              maxWidth: 150,
+                            }}>
+                            {assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
-                            {assignment.assetName}
+                            {assignment.assignedTo.userName}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
-                            {assignment.assignedTo}
-                          </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
-                            {assignment.assignedBy}
+                            {assignment.assignedBy.userName}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
                             {formatDate(assignment.assignedDate)}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
-                            {assignment.state}
+                            {assignmentStateEnum[assignment.state]}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
                             <IconButton
+                              disabled={assignment.state === 0}
                               sx={{
                                 "&:hover": {
                                   backgroundColor: "#bcbcbc",
@@ -531,6 +614,7 @@ const ManageAssignmentPage = () => {
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
+                              disabled={assignment.state === 0}
                               sx={{
                                 color: "#D6001C",
                                 "&:hover": {
@@ -544,7 +628,7 @@ const ManageAssignmentPage = () => {
                             </IconButton>
                             <IconButton
                               sx={{
-                                color: "#D6001C",
+                                color: "blue",
                                 "&:hover": {
                                   backgroundColor: "#bcbcbc",
                                 },
@@ -573,7 +657,9 @@ const ManageAssignmentPage = () => {
       {selectedAssignment && (
         <Dialog
           open={dialogOpen}
-          onClose={handleDialogClose}>
+          onClose={handleDialogClose}
+          maxWidth="md"
+          fullWidth={true}>
           <DialogTitle
             sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}>
             Detailed Assignment Information
@@ -604,7 +690,7 @@ const ManageAssignmentPage = () => {
                 item
                 xs={8}>
                 <Typography variant="body1">
-                  {selectedAssignment.assetCode}
+                  {selectedAssignment.asset.assetCode}
                 </Typography>
               </Grid>
               <Grid
@@ -617,8 +703,15 @@ const ManageAssignmentPage = () => {
               <Grid
                 item
                 xs={8}>
+                <div
+                  style={{
+                    maxHeight: "100px",
+                    overflowY: "auto",
+                    wordWrap: "break-word",
+                    wordBreak: "break-all",
+                  }}></div>
                 <Typography variant="body1">
-                  {selectedAssignment.assetName}
+                  {selectedAssignment.asset.assetName}
                 </Typography>
               </Grid>
               <Grid
@@ -631,9 +724,17 @@ const ManageAssignmentPage = () => {
               <Grid
                 item
                 xs={8}>
-                <Typography variant="body1">
-                  {selectedAssignment.specification}
-                </Typography>
+                <div
+                  style={{
+                    maxHeight: "100px",
+                    overflowY: "auto",
+                    wordWrap: "break-word",
+                    wordBreak: "break-all",
+                  }}>
+                  <Typography variant="body1">
+                    {selectedAssignment.specification}
+                  </Typography>
+                </div>
               </Grid>
               <Grid
                 item
@@ -646,7 +747,7 @@ const ManageAssignmentPage = () => {
                 item
                 xs={8}>
                 <Typography variant="body1">
-                  {selectedAssignment.assignedTo}
+                  {selectedAssignment.assignedTo.userName}
                 </Typography>
               </Grid>
               <Grid
@@ -660,7 +761,7 @@ const ManageAssignmentPage = () => {
                 item
                 xs={8}>
                 <Typography variant="body1">
-                  {selectedAssignment.assignedBy}
+                  {selectedAssignment.assignedBy.userName}
                 </Typography>
               </Grid>
               <Grid
@@ -701,9 +802,17 @@ const ManageAssignmentPage = () => {
               <Grid
                 item
                 xs={8}>
-                <Typography variant="body1">
-                  {selectedAssignment.note}
-                </Typography>
+                <div
+                  style={{
+                    maxHeight: "100px",
+                    overflowY: "auto",
+                    wordWrap: "break-word",
+                    wordBreak: "break-all",
+                  }}>
+                  <Typography variant="body1">
+                    {selectedAssignment.note}
+                  </Typography>
+                </div>
               </Grid>
             </Grid>
           </DialogContent>

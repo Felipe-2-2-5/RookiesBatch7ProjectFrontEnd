@@ -17,52 +17,13 @@ import {
   RadioGroup,
   FormControlLabel,
   Radio,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { CreateUserAPI } from "../../services/users.service";
-
-const PopupNotification = ({
-  open,
-  handleClose,
-  title,
-  content,
-  closeContent,
-}) => {
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      disableBackdropClick
-      disableEscapeKeyDown
-    >
-      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <p>{content}</p>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleClose}
-          sx={{
-            color: "white",
-            bgcolor: "#D6001C",
-            "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
-          {closeContent ? closeContent : "Ok"}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+import PopupNotification from "../../components/PopupNotification";
 
 const CreateUser = () => {
   const navigate = useNavigate();
@@ -96,7 +57,6 @@ const CreateUser = () => {
     joinedDate: false,
   });
 
-
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
@@ -107,11 +67,9 @@ const CreateUser = () => {
     if (trimmedValue.trim() === "") {
       errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
         } is required`;
-    }
-    else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
+    } else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
-    }
-    else if (!isValid) {
+    } else if (!isValid) {
       errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
         }  must contain only alphabetical characters and spaces.`;
     }
@@ -202,7 +160,8 @@ const CreateUser = () => {
       } else if (dob && joined < dob) {
         errorMessage = "Joined date must be after date of birth.";
       } else if (isWeekend(joined)) {
-        errorMessage = "Joined date is Saturday or Sunday. Please select a different date";
+        errorMessage =
+          "Joined date is Saturday or Sunday. Please select a different date";
       } else if (isNaN(joined.getTime())) {
         errorMessage = "Invalid date";
       }
@@ -214,7 +173,6 @@ const CreateUser = () => {
     }));
   }, [users.joinedDate, users.dateOfBirth, touched.joinedDate]);
 
-
   useEffect(() => {
     let errorMessage = "";
     if (touched.dateOfBirth) {
@@ -224,11 +182,9 @@ const CreateUser = () => {
       );
       if (!users.dateOfBirth) {
         errorMessage = "Date of Birth is required";
-      }
-      else if (age < 18) {
+      } else if (age < 18) {
         errorMessage = "User is under 18. Please select a different date.";
-      }
-      else if (isNaN(dob.getTime())) {
+      } else if (isNaN(dob.getTime())) {
         errorMessage = "Invalid date";
       }
     }
@@ -237,7 +193,6 @@ const CreateUser = () => {
       ...prevErrors,
       dateOfBirth: errorMessage,
     }));
-    console.log("formError message: " + formErrors.dateOfBirth);
   }, [users.dateOfBirth, touched.dateOfBirth, formErrors.dateOfBirth]);
 
   const handleSubmit = async (event) => {
@@ -261,7 +216,6 @@ const CreateUser = () => {
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
-        console.log(response);
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
@@ -366,13 +320,13 @@ const CreateUser = () => {
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9} >
+              <Grid item xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     slotProps={{
                       textField: {
                         error: formErrors.dateOfBirth && touched.dateOfBirth,
-                        onBlur: () => handleDateBlur('dateOfBirth'),
+                        onBlur: () => handleDateBlur("dateOfBirth"),
                       },
                     }}
                     // onBlur={(date) => handleDateChange("dateOfBirth", date)}
@@ -454,7 +408,7 @@ const CreateUser = () => {
                     slotProps={{
                       textField: {
                         error: formErrors.joinedDate && touched.joinedDate,
-                        onBlur: () => handleDateBlur('joinedDate'),
+                        onBlur: () => handleDateBlur("joinedDate"),
                       },
                     }}
                     sx={{

@@ -20,7 +20,7 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   const [contentPopup, setContentPopup] = useState(false);
   const handlePrefixChange = (event) => {
     const input = event.target.value
-      .replace(/[^A-Za-z]/, "")
+      .replace(/[^A-Z]/, "")
       .slice(0, 4)
       .trim();
     setPrefix(input);
@@ -30,29 +30,25 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   };
 
   const handleNameblur = (event) => {
-    const trimmedValue = event.target.value.replace(/\s+/g, " ");
-    const isValid = /^[a-zA-Z\s]{2,50}$/.test(trimmedValue);
+    const trimmedValue = event.target.value.replace(/[^a-zA-Z\s]/g, "");
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
       errorMessage = `Name is required`;
     } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
-    } else if (!isValid) {
-      errorMessage = `Name must contain only alphabetical characters and spaces.`;
     }
     setName(trimmedValue.trim());
     setNameError(errorMessage);
   };
   const handleNameChange = (event) => {
-    const trimmedValue = event.target.value.replace(/\s+/g, " ");
-    const isValid = /^[a-zA-Z\s]{2,50}$/.test(trimmedValue);
+    let trimmedValue = event.target.value.replace(/[^a-zA-Z\s]/g, "");
+    trimmedValue = trimmedValue.replace(/\s+/g, " ");
+
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
       errorMessage = `Name is required`;
     } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
-    } else if (!isValid) {
-      errorMessage = `Name must contain only alphabetical characters and spaces.`;
     }
     setName(trimmedValue);
     setNameError(errorMessage);

@@ -59,7 +59,8 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     page: 1,
     pageSize: "20",
     category: "",
-    state: ""
+    state: "Available"
+
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
@@ -144,25 +145,6 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     }));
   };
 
-  // const handleHeaderClick = (column) => {
-  //   setFilterRequest((prev) => {
-  //     let newSortOrder = prev.sortOrder;
-  //     if (column === prev.sortColumn) {
-  //       if (prev.sortOrder === "") {
-  //         newSortOrder = "descend";
-  //       } else if (prev.sortOrder === "descend") {
-  //         newSortOrder = "";
-  //       }
-  //     } else {
-  //       newSortOrder = "";
-  //     }
-  //     return {
-  //       ...prev,
-  //       sortColumn: column,
-  //       sortOrder: newSortOrder,
-  //     };
-  //   });
-  // };
   const handleHeaderClick = (column) => {
     setFilterRequest((prev) => {
       let newSortOrder;
@@ -174,7 +156,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "name";
+          newSortColumn = "assetName";
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -191,6 +173,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       };
     });
   };
+
 
   const getSortIcon = (column) => {
     if (filterRequest.sortColumn === column) {
@@ -262,7 +245,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           />
         </Box>
         <TableContainer component={Paper}>
-          <Box ref={scrollRef} sx={{ overflow: "auto", maxHeight: "400px" }}>
+          <Box ref={scrollRef} sx={{ overflow: "auto", height: "400px" }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -303,7 +286,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("category")}
-                      endIcon={getSortIcon("type")}
+                      endIcon={getSortIcon("category")}
                       sx={{
                         fontWeight: "bold",
                         textTransform: "none",
@@ -326,7 +309,13 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                   </TableRow>
                 ) : assets.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} align="center">
+                    <TableCell colSpan={4} align="center"
+                      sx={{
+                        color: "red",
+                        textAlign: "center",
+                        padding: "28px",
+                        fontWeight: "bold",
+                      }}>
                       No assets found
                     </TableCell>
                   </TableRow>
@@ -348,7 +337,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                       <TableCell sx={{ textAlign: "center" }}>
                         {asset.assetName}
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{asset.categoryId}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>{asset.category.name}</TableCell>
                     </CustomTableRow>
                   ))
                 )}

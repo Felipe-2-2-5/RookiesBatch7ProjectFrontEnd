@@ -139,22 +139,30 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
       page: value,
     }));
   };
-
   const handleHeaderClick = (column) => {
     setFilterRequest((prev) => {
-      let newSortOrder = prev.sortOrder;
+      let newSortOrder;
+      let newSortColumn;
+
       if (column === prev.sortColumn) {
         if (prev.sortOrder === "") {
           newSortOrder = "descend";
+          newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
+          newSortColumn = "name";
+        } else {
+          newSortOrder = "";
+          newSortColumn = column;
         }
       } else {
         newSortOrder = "";
+        newSortColumn = column;
       }
+
       return {
         ...prev,
-        sortColumn: column,
+        sortColumn: newSortColumn,
         sortOrder: newSortOrder,
       };
     });
@@ -230,7 +238,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
           />
         </Box>
         <TableContainer component={Paper}>
-          <Box ref={scrollRef} sx={{ overflow: "auto", maxHeight: "400px" }}>
+          <Box ref={scrollRef} sx={{ overflow: "auto", height: "400px" }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -294,7 +302,14 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
                   </TableRow>
                 ) : users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} align="center">
+                    <TableCell
+                      colSpan={4} align="center"
+                      sx={{
+                        color: "red",
+                        textAlign: "center",
+                        padding: "28px",
+                        fontWeight: "bold",
+                      }}>
                       No users found
                     </TableCell>
                   </TableRow>

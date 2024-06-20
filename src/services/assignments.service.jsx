@@ -8,3 +8,9 @@ export const GetAssignment = async (id) => {
   const response = await httpClient.get(`assignments/${id}`);
   return response;
 };
+
+export const CreateAssignmentAPI = async (body) => {
+  const response = await httpClient.post("/assignments", body);
+  return response;
+}
+

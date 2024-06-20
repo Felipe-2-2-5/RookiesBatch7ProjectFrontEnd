@@ -15,11 +15,13 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { vi } from "date-fns/locale";
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import DialogUserList from "../../components/DialogUserList";
-import DialogAssetList from "../../components/DialogAssetList";
+import { vi } from 'date-fns/locale';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import DialogUserList from '../../components/DialogUserList';
+import DialogAssetList from '../../components/DialogAssetList';
+import { CreateAssignmentAPI } from '../../services/assignments.service';
+import { format } from 'date-fns';
 
 const PopupNotification = ({
   open,
@@ -65,6 +67,7 @@ const CreateAssignment = () => {
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedAsset, setSelectedAsset] = useState(null);
   const [assignments, setAssignments] = useState({
     user: null,
     asset: null,
@@ -121,14 +124,26 @@ const CreateAssignment = () => {
     setTouched({ ...touched, [name]: true });
   };
 
+  const formatDate = (date) => {
+    if (!date) return "";
+    return format(date, "dd/MM/yyyy");
+  };
+
   const handleUserDialogOpen = () => {
     setVisibleDialog(true);
   };
 
   const handleUserDialogClose = () => {
-    setVisibleAssetDialog(false);
+    setVisibleDialog(false);
   };
 
+  const handleAssetDialogOpen = () => {
+    setVisibleAssetDialog(true);
+  };
+
+  const handleAssetDialogClose = () => {
+    setVisibleAssetDialog(false);
+  };
   const handleUserSelect = (user) => {
     setSelectedUser(user);
     setAssignments((prev) => ({
@@ -138,25 +153,40 @@ const CreateAssignment = () => {
     handleUserDialogClose();
   };
 
+  const handleAssetSelect = (asset) => {
+    setSelectedAsset(asset);
+    setAssignments((prev) => ({
+      ...prev,
+      asset: asset,
+    }));
+    handleAssetDialogClose();
+  };
+
+
+  // console.log(assignments);
+  // console.log(assignments.user.id);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const hasErrors = Object.values(formErrors).some((error) => error);
     if (!hasErrors) {
       try {
-        // const response = await CreateUserAPI({
-        //   ...users,
-        //   dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
-        //   joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
-        // });
-        // console.log(response);
-        // if (response) {
-        //   sessionStorage.setItem("user_created", JSON.stringify(response.data));
-        //   setTitlePopup("Notifications");
-        //   setContentPopup(
-        //     `User ${users.firstName} ${users.lastName} has been created.`
-        //   );
-        //   displayPopupNotification();
-        // }
+        const response = await CreateAssignmentAPI({
+
+          //custom input to match backend 
+          assignedToId: assignments.user.id,
+          assetId: assignments.asset.id,
+          assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
+          note: assignments.note
+        });
+
+        if (response) {
+          sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
+          setTitlePopup("Notifications");
+          setContentPopup(
+            `Asset: ${assignments.asset.name} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
+          );
+          displayPopupNotification();
+        }
       } catch (error) {
         setTitlePopup("Error");
         setContentPopup(`error: ${error.userMessage}`);
@@ -241,16 +271,8 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.user}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
-                }}
-              >
-                <Typography onClick={() => setVisibleAssetDialog(true)}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                <Typography handleAssetDialogOpen>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
@@ -267,13 +289,13 @@ const CreateAssignment = () => {
                   placeholder="Asset"
                   fullWidth
                   name="asset"
-                  value={assignments.asset}
-                  onClick={() => setVisibleAssetDialog(true)}
+                  value={assignments.asset ? `${assignments.asset.assetName}` : ''}
+                  onClick={handleAssetDialogOpen}
                   margin="dense"
                   error={formErrors.asset}
                   InputProps={{
                     endAdornment: (
-                      <IconButton onClick={() => setVisibleAssetDialog(true)}>
+                      <IconButton onClick={handleAssetDialogOpen}>
                         <SearchIcon />
                       </IconButton>
                     ),
@@ -402,9 +424,9 @@ const CreateAssignment = () => {
             <DialogAssetList
               visibleAssetDialog={visibleAssetDialog}
               setVisibleAssetDialog={setVisibleAssetDialog}
-              onSelect={handleUserSelect}
-              selectedAsset={selectedUser}
-              setSelectedAsset={setSelectedUser}
+              onSelect={handleAssetSelect}
+              selectedAsset={selectedAsset}
+              setSelectedAsset={setSelectedAsset}
             />
           )}
         </Box>

@@ -20,11 +20,14 @@ import { GetCategories } from "../../services/category.service"; // Corrected ty
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import CategoryForm from "./CategoryForm";
+import PopupNotification from "../../components/PopupNotification";
 
 const CreateAsset = () => {
   const [categories, setCategories] = useState([]);
   const [isVisible, setIsVisible] = useState(false);
-
+  const [openPopup, setOpenPopup] = useState(false);
+  const [titlePopup, setTitlePopup] = useState(false);
+  const [contentPopup, setContentPopup] = useState(false);
   const handleIsVisible = () => {
     if (!isVisible) {
       setIsVisible(true);
@@ -44,15 +47,17 @@ const CreateAsset = () => {
     installedDate: null,
     state: 0,
   });
-
+  const fetchCategories = async () => {
+    const res = await GetCategories(); // Corrected function name
+    setCategories(res.data);
+  };
   useEffect(() => {
-    const fetchCategories = async () => {
-      const res = await GetCategories(); // Corrected function name
-      setCategories(res.data);
-    };
     fetchCategories();
   }, []);
-
+  const handleNewCategory = (category) => {
+    setAsset({ ...asset, category: category });
+    fetchCategories();
+  };
   const handleNameBlur = (event) => {
     let errorMessage = "";
     const { name, value } = event.target;
@@ -158,7 +163,17 @@ const CreateAsset = () => {
       installedDate: formatDate(asset.installedDate),
       assetState: asset.state,
     };
-    await CreateAssetAPI(newAsset);
+    var res = await CreateAssetAPI(newAsset);
+    if (res) {
+      sessionStorage.setItem("asset_created", JSON.stringify(res.data));
+      setOpenPopup(true);
+      setTitlePopup("Notifications");
+      setContentPopup(`Asset ${asset.name}  has been created.`);
+    }
+  };
+  const handleCancel = () => {
+    setOpenPopup(false);
+    navigate("/manage-asset");
   };
   const categoriesWithButton = [
     ...categories,
@@ -233,6 +248,7 @@ const CreateAsset = () => {
                   }
                   onChange={(e, value) => {
                     if (value && value.isButton) {
+                      handleIsVisible();
                     } else {
                       handleCategoryChange(value);
                     }
@@ -243,6 +259,7 @@ const CreateAsset = () => {
                         {...props}
                         onClick={(e) => {
                           e.stopPropagation();
+                          handleIsVisible();
                         }}
                         style={{ display: "flex", justifyContent: "center" }}
                       >
@@ -428,7 +445,7 @@ const CreateAsset = () => {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-asset")}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </Button>
@@ -440,9 +457,16 @@ const CreateAsset = () => {
             <CategoryForm
               visibleDialog={isVisible}
               setVisibleDialog={setIsVisible}
+              setCategory={handleNewCategory}
             />
           )}
         </Box>
+        <PopupNotification
+          open={openPopup}
+          handleClose={handleCancel}
+          title={titlePopup}
+          content={contentPopup}
+        />
       </Container>
     </>
   );

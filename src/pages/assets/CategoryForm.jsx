@@ -9,13 +9,15 @@ import {
 } from "@mui/material";
 
 import { CreateCategoryAPI } from "../../services/category.service";
-
-const CategoryForm = (visibleDialog, setVisibleDialog) => {
+import PopupNotification from "../../components/PopupNotification";
+const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   const [prefix, setPrefix] = useState("");
   const [name, setName] = useState("");
   const [prefixError, setPrefixError] = useState("");
   const [nameError, setNameError] = useState("");
-
+  const [openPopup, setOpenPopup] = useState(false);
+  const [titlePopup, setTitlePopup] = useState(false);
+  const [contentPopup, setContentPopup] = useState(false);
   const handlePrefixChange = (event) => {
     const input = event.target.value.replace(/[^A-Za-z]/g, "").slice(0, 4);
     setPrefix(input);
@@ -25,30 +27,37 @@ const CategoryForm = (visibleDialog, setVisibleDialog) => {
   };
 
   const handleNameChange = (event) => {
-    const input = event.target.value
-      .replace(/[^A-Za-z0-9\s]/g, "")
-      .slice(0, 50);
+    const input = event.target.value.replace(/[^A-Za-z]/g, "").slice(0, 50);
     setName(input);
     setNameError(
       input.length === 0 || input.length > 50 ? "Invalid name format" : ""
     );
   };
+
   const handleCancel = () => {
     setVisibleDialog(false);
+    setOpenPopup(false);
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newCategory = {
       prefix: prefix,
       name: name,
     };
-    await CreateCategoryAPI(newCategory);
-    setVisibleDialog(false);
+    const res = await CreateCategoryAPI(newCategory);
+    if (res.data) {
+      setOpenPopup(true);
+      setTitlePopup("Notifications");
+      setContentPopup(`Category ${res.data.name} has been created.`);
+      setCategory(res.data);
+    }
   };
+
   return (
     <Dialog
       open={visibleDialog}
-      onclose={!visibleDialog}
+      onClose={() => setVisibleDialog(false)}
       PaperProps={{
         style: {
           position: "absolute",
@@ -86,6 +95,8 @@ const CategoryForm = (visibleDialog, setVisibleDialog) => {
               value={prefix}
               sx={{ width: "100%" }}
               onChange={handlePrefixChange}
+              onBlur={handlePrefixChange}
+              error={prefixError}
             />
             {prefixError && (
               <Typography variant="caption" color="error">
@@ -105,6 +116,8 @@ const CategoryForm = (visibleDialog, setVisibleDialog) => {
               label="Name"
               value={name}
               onChange={handleNameChange}
+              onBlur={handleNameChange}
+              error={nameError}
             />
             {nameError && (
               <Typography variant="caption" color="error">
@@ -140,6 +153,12 @@ const CategoryForm = (visibleDialog, setVisibleDialog) => {
           </Grid>
         </Grid>
       </form>
+      <PopupNotification
+        open={openPopup}
+        handleClose={handleCancel}
+        title={titlePopup}
+        content={contentPopup}
+      />
     </Dialog>
   );
 };

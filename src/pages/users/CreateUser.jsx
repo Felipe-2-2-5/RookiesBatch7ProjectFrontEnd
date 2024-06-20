@@ -65,15 +65,13 @@ const CreateUser = () => {
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        } is required`;
     } else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
     } else if (!isValid) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      }  must contain only alphabetical characters and spaces.`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        }  must contain only alphabetical characters and spaces.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -84,9 +82,8 @@ const CreateUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.trim();
     if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        } is required`;
     }
     setUsers({ ...users, [name]: trimmedValue });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -118,9 +115,8 @@ const CreateUser = () => {
 
     setUsers({ ...users, [name]: trimmedValue });
     if (value.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        } is required`;
     } else if (value.length > 20 || value.length < 2) {
       console.log("sting length: " + value.length);
       errorMessage = "The length of Firstname should be 2-20 characters.";
@@ -220,7 +216,6 @@ const CreateUser = () => {
           dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
-        console.log(response);
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
@@ -432,7 +427,7 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
+                      // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />

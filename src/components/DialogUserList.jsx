@@ -89,7 +89,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
     }
     setLoading(false);
   };
-
   useEffect(() => {
     getUsers(filterRequest);
   }, [filterRequest]);
@@ -235,7 +234,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={tableHeadStyle}></TableCell>
+                  <TableCell sx={{ width: "5%", padding: "0px" }}></TableCell>
                   <TableCell sx={tableHeadStyle}>
                     <Button
                       variant="text"

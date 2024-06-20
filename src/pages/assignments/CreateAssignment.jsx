@@ -229,7 +229,7 @@ const CreateAssignment = () => {
 
   const handleClosePopup = () => {
     setOpenPopup(false);
-    navigate("/manage-assignmnet");
+    navigate("/manage-assignment");
   };
 
   return (

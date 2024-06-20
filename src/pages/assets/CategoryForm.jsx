@@ -45,12 +45,21 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
       prefix: prefix,
       name: name,
     };
-    const res = await CreateCategoryAPI(newCategory);
-    if (res.data) {
+    try {
+      const res = await CreateCategoryAPI(newCategory);
+      if (res.data) {
+        setOpenPopup(true);
+        setTitlePopup("Notifications");
+        setContentPopup(`Category ${res.data.name} has been created.`);
+        setCategory(res.data);
+      }
+    } catch (error) {
+      console.error(error); // Log the error to see its structure
+      setTitlePopup("Error");
+      setContentPopup(
+        `${error.userMessage || "Existing category name or prefix"}`
+      );
       setOpenPopup(true);
-      setTitlePopup("Notifications");
-      setContentPopup(`Category ${res.data.name} has been created.`);
-      setCategory(res.data);
     }
   };
 

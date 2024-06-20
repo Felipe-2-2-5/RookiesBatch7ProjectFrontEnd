@@ -89,10 +89,10 @@ const ManageAssignmentPage = () => {
 
   const getAssignments = async (filterRequest) => {
     const res = await FilterAssignment(filterRequest);
-    let fetchedAssigments = res.data.data.$values;
+    let fetchedAssigments = res?.data?.data;
 
     if (res.status === 200) {
-      setAssignments(res.data.data.$values);
+      setAssignments(res.data.data);
       setTotalCount(res.data.totalCount);
     } else {
       setAssignments([]);
@@ -141,7 +141,9 @@ const ManageAssignmentPage = () => {
 
       const sortColumn = sortColumnMap[filterRequest.sortColumn];
 
-      fetchedAssigments.sort((a, b) => {
+      let fetchedAssigmentsArray = Array.isArray(res?.data?.data) ? res?.data?.data : [];
+
+      fetchedAssigmentsArray.sort((a, b) => {
         if (a[sortColumn] < b[sortColumn]) {
           return filterRequest.sortOrder.toLowerCase() === "descend" ? 1 : -1;
         }

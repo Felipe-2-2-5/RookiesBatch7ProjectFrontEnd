@@ -36,6 +36,7 @@ import {
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { PaginationBar, SearchBar } from "../../components";
@@ -112,6 +113,7 @@ const ManageAssignmentPage = () => {
 
       if (filterRequest.fromDate && filterRequest.toDate) {
         const fromDate = new Date(filterRequest.fromDate);
+        fromDate.setHours(0, 0, 0, 0);
         const toDate = new Date(filterRequest.toDate);
         toDate.setHours(23, 59, 59, 999);
 
@@ -395,11 +397,13 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 onChange={(newValue) => {
                   setDateRange(newValue);
-                  setFilterRequest((prev) => ({
-                    ...prev,
-                    fromDate: newValue[0],
-                    toDate: newValue[1],
-                  }));
+                  if (newValue[0] && newValue[1]) {
+                    setFilterRequest((prev) => ({
+                      ...prev,
+                      fromDate: format(newValue[0], "dd/MM/yyyy"),
+                      toDate: format(newValue[1], "dd/MM/yyyy"),
+                    }));
+                  }
                 }}
                 renderInput={(startProps, endProps) => (
                   <TextField
@@ -558,7 +562,7 @@ const ManageAssignmentPage = () => {
                 {loading ? (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      colSpan={7}
                       sx={{ textAlign: "center", padding: "28px" }}>
                       <CircularProgress />
                     </TableCell>
@@ -568,7 +572,7 @@ const ManageAssignmentPage = () => {
                     {assignments.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={6}
+                          colSpan={7}
                           sx={{
                             color: "red",
                             textAlign: "center",

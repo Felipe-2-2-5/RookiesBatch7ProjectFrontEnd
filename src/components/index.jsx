@@ -7,3 +7,5 @@
 // export { default as VerticalNavbarStaff } from "./VerticalNavbarStaff";
 export { default as PaginationBar } from "./PaginationBar";
 export { default as SearchBar } from "./SearchBar";
+export { default as AssignmentDialog} from "./assignments/AssignmentDialog";
+export { default as AssignmentTable } from "./assignments/AssignmentTable";

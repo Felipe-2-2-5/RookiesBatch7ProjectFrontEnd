@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState, Fragment } from "react";
 import {
   Typography,
   TextField,
@@ -17,155 +17,242 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  Box,
+  CircularProgress,
+  Pagination,
+  styled,
 } from "@mui/material";
 import {
   Edit as EditIcon,
   HighlightOff as DeleteIcon,
-  ArrowDropDown as ArrowDropDownIcon,
-  ArrowDropUp as ArrowDropUpIcon,
+  ArrowDropDown,
+  ArrowDropUp,
   FilterAlt as FilterIcon,
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
+import { Sheet } from "@mui/joy";
 import { useNavigate } from "react-router";
 import { path } from "../../routes/routeContants";
+import { FilterRequest, GetAsset, GetCategories } from "../../services/asset.service";
+import { assetStateEnum } from "../../enum/assetStateEnum";
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-GB");
+};
 
 const ManageAssetPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const scrollRef = useRef(null);
 
-  // Sample data for assets
-  const [assets] = useState([
-    {
-      id: 1,
-      code: "A001",
-      name: "Asset 1",
-      category: "Category A",
-      state: "Active",
-    },
-    {
-      id: 2,
-      code: "A002",
-      name: "Asset 2",
-      category: "Category B",
-      state: "Inactive",
-    },
-    {
-      id: 3,
-      code: "A003",
-      name: "Asset 3",
-      category: "Category A",
-      state: "Active",
-    },
-    {
-      id: 4,
-      code: "A004",
-      name: "Asset 4",
-      category: "Category B",
-      state: "Inactive",
-    },
-    {
-      id: 5,
-      code: "A005",
-      name: "Asset 5",
-      category: "Category A",
-      state: "Active",
-    },
-    {
-      id: 6,
-      code: "A006",
-      name: "Asset 6",
-      category: "Category B",
-      state: "Inactive",
-    },
-    {
-      id: 7,
-      code: "A007",
-      name: "Asset 7",
-      category: "Category A",
-      state: "Active",
-    },
-    {
-      id: 8,
-      code: "A008",
-      name: "Asset 8",
-      category: "Category B",
-      state: "Inactive",
-    },
-    {
-      id: 9,
-      code: "A009",
-      name: "Asset 9",
-      category: "Category A",
-      state: "Active",
-    },
-    {
-      id: 10,
-      code: "A010",
-      name: "Asset 10",
-      category: "Category B",
-      state: "Inactive",
-    },
-    // Add more assets as needed
-  ]);
+  const [filterRequest, setFilterRequest] = useState({
+    state: "",
+    category: "",
+    searchTerm: "",
+    sortColumn: "name",
+    sortOrder: "",
+    page: 1,
+    pageSize: "20",
+  });
 
-  // State variables for filters, search, and sorting
-  const [stateFilter, setStateFilter] = useState("All"); // Example: "Active", "Inactive", "All"
-  const [categoryFilter, setCategoryFilter] = useState("All"); // Example: "Category A", "Category B", "All"
-  const [searchTerm, setSearchTerm] = useState("");
-  const [sortBy, setSortBy] = useState("name"); // Default sort by "name"
-  const [sortOrder, setSortOrder] = useState("asc"); // Sort order: "asc" or "desc"
+  const [totalCount, setTotalCount] = useState();
+  const pageSize = filterRequest.pageSize || 1;
+  const pageCount = Number.isNaN(totalCount) || totalCount === 0 ? 1 : Math.ceil(totalCount / pageSize);
 
-  // State for dialog
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedAsset, setSelectedAsset] = useState(null);
+  const [assets, setAsset] = useState([]);
+  const [categories, setCategories] = useState(null);
+  // Fetch assets when component mounts
+  useEffect(() => {
+    const getAssets = async (filterRequest) => {
+      const res = await FilterRequest(filterRequest);
+      const fetchedAssets = res.data.data;
+      setTotalCount(res.data.totalCount);
 
-  // Filtered and sorted assets based on current filters and search term
-  let filteredAssets = assets.filter(
-    (asset) =>
-      (stateFilter === "All" || asset.state === stateFilter) &&
-      (categoryFilter === "All" || asset.category === categoryFilter) &&
-      (asset.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        asset.code.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-
-  // Sort filtered assets based on sortBy and sortOrder
-  if (sortBy) {
-    filteredAssets.sort((a, b) => {
-      const first = a[sortBy];
-      const second = b[sortBy];
-      if (sortOrder === "asc") {
-        return first.localeCompare(second);
+      const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
+      if (assetCreated) {
+        setAsset([assetCreated, ...fetchedAssets]);
+        sessionStorage.removeItem("asset_created");
       } else {
-        return second.localeCompare(first);
+        setAsset(fetchedAssets);
       }
-    });
-  }
+      // Scroll to top of list
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        })
+      }
+      setLoading(false)
+    };
 
-  // Handle opening dialog for asset details
-  const openAssetDialog = (asset) => {
-    setSelectedAsset(asset);
-    setOpenDialog(true);
+    getAssets(filterRequest);
+  }, [filterRequest]);
+
+  // Fetch categories when component mounts
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await GetCategories();
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Search state to set in filter request after entered
+  const [searchTerm, setSearchTerm] = useState("");
+  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, ' ');
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
-  // Handle closing dialog
-  const closeAssetDialog = () => {
-    setOpenDialog(false);
+  const handleSearch = () => {
+    setFilterRequest((prev) => ({
+      ...prev,
+      searchTerm: trimmedSearchTerm,
+    }));
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      setSearchTerm(trimmedSearchTerm)
+      handleSearch()
+    }
+  };
+
+  const handleSearchClick = () => {
+    setSearchTerm(trimmedSearchTerm)
+    handleSearch()
+  };
+
+  // State for dialog
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedAsset, setSelectedAsset] = useState(null);
+
+  const handleDetailDialog = async (asset) => {
+    const res = await GetAsset(asset.id);
+    console.log(res.data)
+    setSelectedAsset(res.data);
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
     setSelectedAsset(null);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchTerm(event.target.value);
+  const handleStateChange = (e) => {
+    const selectedState = e.target.value;
+    setFilterRequest((prevState) => ({
+      ...prevState,
+      state: selectedState === "All" ? "" : selectedState,
+      searchTerm: "",
+      sortColumn: "name",
+      sortOrder: "",
+      page: 1,
+    }));
   };
 
-  const handleSort = (column) => {
-    if (sortBy === column) {
-      // Toggle between ascending and descending order
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      // Default to ascending order when sorting a new column
-      setSortBy(column);
-      setSortOrder("asc");
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    setFilterRequest((prevState) => ({
+      ...prevState,
+      category: selectedCategory === "All" ? "" : selectedCategory,
+      searchTerm: "",
+      sortColumn: "name",
+      sortOrder: "",
+      page: 1,
+    }));
+  };
+
+  const handleHeaderClick = (column) => {
+    setFilterRequest((prev) => {
+      let newSortOrder;
+      let newSortColumn;
+
+      if (column === prev.sortColumn) {
+        if (prev.sortOrder === "") {
+          newSortOrder = "descend";
+          newSortColumn = column;
+        } else if (prev.sortOrder === "descend") {
+          newSortOrder = "";
+          newSortColumn = "name";
+        } else {
+          newSortOrder = "";
+          newSortColumn = column;
+        }
+      } else {
+        newSortOrder = "";
+        newSortColumn = column;
+      }
+
+      return {
+        ...prev,
+        sortColumn: newSortColumn,
+        sortOrder: newSortOrder,
+      };
+    });
+  };
+
+  // Custom Arrow Up
+  const CustomArrowDropUp = styled(ArrowDropUp)(({ theme }) => ({
+    '& path': {
+      d: 'path("m7 20 5-5 5 5z")'
     }
+  }));
+
+  // Custom Arrow Down
+  const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
+    '& path': {
+      d: 'path("m7 0 5 5 5-5z")'
+    }
+  }));
+
+  const getSortIcon = (column) => {
+    const iconStyle = {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
+    if (filterRequest.sortColumn === column) {
+      if (filterRequest.sortOrder === "descend") {
+        return (
+          <div style={iconStyle}>
+            <CustomArrowDropUp sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropDown />
+          </div>
+        );
+      }
+      if (filterRequest.sortOrder === "") {
+        return (
+          <div style={iconStyle}>
+            <CustomArrowDropUp />
+            <CustomArrowDropDown sx={{ color: "#bdbdbd", }} />
+          </div>
+        );
+      }
+    } else
+      return (
+        <div style={iconStyle}>
+          <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
+          <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
+        </div>
+      );
+  };
+
+  const handlePageChange = (e, value) => {
+    setFilterRequest((prev) => ({
+      ...prev,
+      page: value,
+    }));
   };
 
   return (
@@ -187,8 +274,8 @@ const ManageAssetPage = () => {
             <TextField
               label="State"
               select
-              value={stateFilter}
-              onChange={(e) => setStateFilter(e.target.value)}
+              value={filterRequest.state === "" ? "All" : filterRequest.state}
+              onChange={handleStateChange}
               variant="outlined"
               fullWidth
               sx={{
@@ -210,8 +297,11 @@ const ManageAssetPage = () => {
               }}
             >
               <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Active">Active</MenuItem>
-              <MenuItem value="Inactive">Inactive</MenuItem>
+              {Object.values(assetStateEnum).map((state) => (
+                <MenuItem key={state} value={state}>
+                  {state}
+                </MenuItem>
+              ))}
             </TextField>
           </Grid>
 
@@ -220,8 +310,8 @@ const ManageAssetPage = () => {
             <TextField
               label="Category"
               select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
+              value={filterRequest.category === "" ? "All" : filterRequest.category}
+              onChange={handleCategoryChange}
               variant="outlined"
               fullWidth
               sx={{
@@ -243,8 +333,17 @@ const ManageAssetPage = () => {
               }}
             >
               <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Category A">Category A</MenuItem>
-              <MenuItem value="Category B">Category B</MenuItem>
+              {categories ? (
+                categories.map((category) => (
+                  <MenuItem key={category.id} value={category.name}>
+                    {category.name}
+                  </MenuItem>
+                ))
+              ) : (
+                <MenuItem value="" disabled>
+                  Loading categories...
+                </MenuItem>
+              )}
             </TextField>
           </Grid>
 
@@ -255,6 +354,7 @@ const ManageAssetPage = () => {
               variant="outlined"
               value={searchTerm}
               onChange={handleSearchChange}
+              onKeyPress={handleKeyPress}
               fullWidth
               sx={{
                 "& label.Mui-focused": { color: "#000" },
@@ -266,7 +366,9 @@ const ManageAssetPage = () => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <SearchIcon />
+                    <IconButton onClick={handleSearchClick}>
+                      <SearchIcon />
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
@@ -296,128 +398,136 @@ const ManageAssetPage = () => {
 
       {/* Asset Table */}
       <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                onClick={() => handleSort("code")}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Asset Code
-                  {sortBy === "code" ? (
-                    <IconButton size="small">
-                      {sortOrder === "asc" ? (
-                        <ArrowDropUpIcon />
-                      ) : (
-                        <ArrowDropDownIcon />
-                      )}
-                    </IconButton>
-                  ) : (
-                    <IconButton size="small">
-                      <ArrowDropDownIcon />
-                    </IconButton>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
-                onClick={() => handleSort("name")}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Asset Name
-                  {sortBy === "name" ? (
-                    <IconButton size="small">
-                      {sortOrder === "asc" ? (
-                        <ArrowDropUpIcon />
-                      ) : (
-                        <ArrowDropDownIcon />
-                      )}
-                    </IconButton>
-                  ) : (
-                    <IconButton size="small">
-                      <ArrowDropDownIcon />
-                    </IconButton>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                onClick={() => handleSort("category")}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Category
-                  {sortBy === "category" ? (
-                    <IconButton size="small">
-                      {sortOrder === "asc" ? (
-                        <ArrowDropUpIcon />
-                      ) : (
-                        <ArrowDropDownIcon />
-                      )}
-                    </IconButton>
-                  ) : (
-                    <IconButton size="small">
-                      <ArrowDropDownIcon />
-                    </IconButton>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                onClick={() => handleSort("state")}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  State
-                  {sortBy === "state" ? (
-                    <IconButton size="small">
-                      {sortOrder === "asc" ? (
-                        <ArrowDropUpIcon />
-                      ) : (
-                        <ArrowDropDownIcon />
-                      )}
-                    </IconButton>
-                  ) : (
-                    <IconButton size="small">
-                      <ArrowDropDownIcon />
-                    </IconButton>
-                  )}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }}
-              ></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredAssets.map((asset) => (
-              <TableRow
-                key={asset.id}
-                hover
-                onClick={() => openAssetDialog(asset)}
-                style={{ cursor: "pointer" }} // Set cursor to pointer on hover
-              >
-                <TableCell>{asset.code}</TableCell>
-                <TableCell>{asset.name}</TableCell>
-                <TableCell>{asset.category}</TableCell>
-                <TableCell>{asset.state}</TableCell>
-                <TableCell>
-                  <IconButton aria-label="edit" style={{ color: "#D6001C" }}>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton aria-label="delete" style={{ color: "#D6001C" }}>
-                    <DeleteIcon />
-                  </IconButton>
+        <Sheet
+          ref={scrollRef}
+          sx={{ overflow: "auto", height: "100%" }}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                  onClick={() => handleHeaderClick("code")}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    Asset Code
+                    {getSortIcon("code")}
+                  </div>
                 </TableCell>
+                <TableCell
+                  style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
+                  onClick={() => handleHeaderClick("name")}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    Asset Name
+                    {getSortIcon("name")}
+                  </div>
+                </TableCell>
+                <TableCell
+                  style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                  onClick={() => handleHeaderClick("category")}
+
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    Category
+                    {getSortIcon("category")}
+                  </div>
+                </TableCell>
+                <TableCell
+                  style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                  onClick={() => handleHeaderClick("state")}
+                >
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    State
+                    {getSortIcon("state")}
+                  </div>
+                </TableCell>
+                <TableCell
+                  style={{ fontWeight: "bold", width: "15%" }}
+                ></TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
+                    <CircularProgress />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <>
+                  {assets.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={6}
+                        sx={{
+                          color: "red",
+                          textAlign: "center",
+                          padding: "28px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        No asset found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    assets.map((asset) => (
+                      <TableRow
+                        key={asset.id}
+                        hover
+                        onClick={() => handleDetailDialog(asset)}
+                        style={{ cursor: "pointer" }} // Set cursor to pointer on hover
+                      >
+                        <TableCell>{asset.assetCode}</TableCell>
+                        <TableCell>{asset.assetName}</TableCell>
+                        <TableCell>{asset.category.name}</TableCell>
+                        <TableCell>{assetStateEnum[asset.state]}</TableCell>
+                        <TableCell>
+                          <IconButton aria-label="edit">
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton aria-label="delete" style={{ color: "#D6001C" }}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </>
+              )}
+            </TableBody>
+
+          </Table>
+        </Sheet>
       </TableContainer>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          paddingTop: "10px",
+        }}
+      >
+        <Pagination
+          count={pageCount}
+          variant="outlined"
+          shape="rounded"
+          page={filterRequest.page}
+          onChange={handlePageChange}
+          sx={{
+            "& .MuiPaginationItem-root": {
+              color: "#D6001C",
+            },
+            "& .Mui-selected": {
+              backgroundColor: "#D6001C !important",
+              color: "white",
+            },
+          }}
+        />
+      </Box>
 
       {/* Asset Details Dialog */}
       <Dialog
-        open={openDialog}
-        onClose={closeAssetDialog}
+        open={dialogOpen}
+        onClose={handleDialogClose}
         fullWidth
         maxWidth="sm"
       >
@@ -435,7 +545,7 @@ const ManageAssetPage = () => {
           Detailed Asset Information
           <IconButton
             aria-label="close"
-            onClick={closeAssetDialog}
+            onClick={handleDialogClose}
             sx={{
               bgcolor: "grey.300",
               color: "#D6001C",
@@ -452,45 +562,106 @@ const ManageAssetPage = () => {
             alignItems: "center",
           }}
         >
-          <Grid container spacing={2}>
-            <Grid item xs={5}>
-              <Typography variant="body1">Asset Code</Typography>
-            </Grid>
-            <Grid item xs={7}>
-              <Typography variant="body1">
-                {selectedAsset && selectedAsset.code}
-              </Typography>
-            </Grid>
+          {selectedAsset ? (
+      <Grid container spacing={2}>
+        <Grid item xs={5}>
+          <Typography variant="body1">Asset Code</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="body1">{selectedAsset.assetCode}</Typography>
+        </Grid>
 
-            <Grid item xs={5}>
-              <Typography variant="body1">Asset Name</Typography>
-            </Grid>
-            <Grid item xs={7}>
-              <Typography variant="body1">
-                {selectedAsset && selectedAsset.name}
-              </Typography>
-            </Grid>
+        <Grid item xs={5}>
+          <Typography variant="body1">Asset Name</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="body1">{selectedAsset.assetName}</Typography>
+        </Grid>
 
-            <Grid item xs={5}>
-              <Typography variant="body1">Category</Typography>
-            </Grid>
-            <Grid item xs={7}>
-              <Typography variant="body1">
-                {selectedAsset && selectedAsset.category}
-              </Typography>
-            </Grid>
+        <Grid item xs={5}>
+          <Typography variant="body1">Category</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="body1">{selectedAsset.category.name}</Typography>
+        </Grid>
 
-            <Grid item xs={5}>
-              <Typography variant="body1">State</Typography>
+        <Grid item xs={5}>
+          <Typography variant="body1">State</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="body1">{assetStateEnum[selectedAsset.state]}</Typography>
+        </Grid>
+
+        <Grid item xs={5}>
+          <Typography variant="body1">Installed Date</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="body1">{formatDate(selectedAsset.installedDate)}</Typography>
+        </Grid>
+
+        <Grid item xs={5}>
+          <Typography variant="body1">Specificaion</Typography>
+        </Grid>
+        <Grid item xs={7}>
+          <Typography variant="body1">{selectedAsset.specification}</Typography>
+        </Grid>
+
+        {/* Assignment History */}
+        {selectedAsset.assignments && selectedAsset.assignments.length > 0 ? (
+          <>
+            <Grid item xs={12}>
+              <Typography variant="h6" style={{ marginTop: 10 }}>Assignment History</Typography>
             </Grid>
-            <Grid item xs={7}>
-              <Typography variant="body1">
-                {selectedAsset && selectedAsset.state}
-              </Typography>
-            </Grid>
+            {selectedAsset.assignments.map((assignment, index) => (
+              <Fragment key={index}>
+                <Grid item xs={5}>
+                  <Typography variant="body1">Assign To</Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{assignment.assignTo}</Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1">Assign By</Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{assignment.assignBy}</Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1">Assign Date</Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{assignment.assignDate}</Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1">State</Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{assignment.state}</Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1">Note</Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{assignment.note}</Typography>
+                </Grid>
+              </Fragment>
+            ))}
+          </>
+        ) : (
+          <Grid item xs={12}>
+            <Typography variant="body1" style={{ fontStyle: 'italic' }}>No assignment history found.</Typography>
           </Grid>
-        </DialogContent>
-      </Dialog>
+        )}
+      </Grid>
+    ) : (
+      <CircularProgress /> // Show loading indicator while fetching data
+    )}
+  </DialogContent>
+</Dialog>
     </>
   );
 };

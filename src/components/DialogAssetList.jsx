@@ -60,6 +60,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     pageSize: "20",
     category: "",
     state: "Available"
+    
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;

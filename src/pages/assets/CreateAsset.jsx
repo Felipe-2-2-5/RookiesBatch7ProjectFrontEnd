@@ -28,6 +28,7 @@ const CreateAsset = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
+  const [touched, setTouched] = useState();
   const handleIsVisible = () => {
     if (!isVisible) {
       setIsVisible(true);
@@ -53,28 +54,23 @@ const CreateAsset = () => {
   };
   useEffect(() => {
     fetchCategories();
-  }, []);
+    if (touched) {
+      let errorMessage = "";
+      if (asset.installedDate === null) {
+        errorMessage = `Installed Date is required`;
+      } else if (isNaN(asset.installedDate.getTime())) {
+        errorMessage = "Invalid date";
+      }
+      setFormErrors({ ...formErrors, installedDate: errorMessage });
+    }
+  }, [touched, asset.installedDate, formErrors]);
   const handleNewCategory = (category) => {
     setAsset({ ...asset, category: category });
     fetchCategories();
   };
   const handleNameBlur = (event) => {
-    let errorMessage = "";
-    const { name, value } = event.target;
-    const trimmedValue = value.trim();
-    if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
-    }
-    setAsset({ ...asset, [name]: trimmedValue });
-    setFormErrors({ ...formErrors, [name]: errorMessage });
-  };
-
-  const handleNameChange = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
-    setAsset({ ...asset, [name]: trimmedValue });
     const isValid = /^[a-zA-Z0-9\s]{2,50}$/.test(trimmedValue);
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
@@ -88,6 +84,27 @@ const CreateAsset = () => {
         name.charAt(0).toUpperCase() + name.slice(1)
       } must contain only alphabetical characters, numbers and spaces.`;
     }
+    setAsset({ ...asset, [name]: trimmedValue });
+    setFormErrors({ ...formErrors, [name]: errorMessage });
+  };
+
+  const handleNameChange = (event) => {
+    const { name, value } = event.target;
+    const trimmedValue = value.replace(/\s+/g, " ");
+    const isValid = /^[a-zA-Z0-9\s]{2,50}$/.test(trimmedValue);
+    let errorMessage = "";
+    if (trimmedValue.trim() === "") {
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
+    } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
+      errorMessage = "The length of Name should be 2-50 characters.";
+    } else if (!isValid) {
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } must contain only alphabetical characters, numbers and spaces.`;
+    }
+    setAsset({ ...asset, [name]: trimmedValue });
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
@@ -100,47 +117,32 @@ const CreateAsset = () => {
   };
   const handleSpecChange = (event) => {
     const { name, value } = event.target;
-    const trimmedValue = value.replace(/\s+/g, " ");
     let errorMessage = "";
-    if (trimmedValue === "") {
+    if (value === "") {
       errorMessage = `Specification is required`;
-    } else if (trimmedValue.length > 500 || trimmedValue.length < 2) {
+    } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Name should be 2-500 characters.";
     }
-    setAsset({ ...asset, [name]: trimmedValue });
+    setAsset({ ...asset, [name]: value });
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
   const handleSpecBlur = (event) => {
     const { name, value } = event.target;
-    const trimmedValue = value.trim();
     let errorMessage = "";
-    if (trimmedValue === "") {
+    if (value === "") {
       errorMessage = `Specification is required`;
-    } else if (trimmedValue.length > 500 || trimmedValue.length < 2) {
+    } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Name should be 2-500 characters.";
     }
-    setAsset({ ...asset, [name]: trimmedValue });
+    setAsset({ ...asset, [name]: value });
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
   const handleDateBlur = () => {
-    let errorMessage = "";
-    if (asset.installedDate === null) {
-      errorMessage = `Installed Date is required`;
-    } else if (isNaN(asset.installedDate.getTime())) {
-      errorMessage = "Invalid date";
-    }
-    setFormErrors({ ...formErrors, installedDate: errorMessage });
+    setTouched(true);
   };
   const handleDateChange = (date) => {
-    console.log(date);
-    let errorMessage = "";
-    if (asset.installedDate === null || asset.installedDate === "") {
-      errorMessage = `Installed Date is required`;
-    } else if (isNaN(asset.installedDate.getTime())) {
-      errorMessage = "Invalid date";
-    }
-    setFormErrors({ ...formErrors, installedDate: errorMessage });
     setAsset({ ...asset, installedDate: date });
+    setTouched(true);
   };
   const formatDate = (date) => {
     if (!date) return "";
@@ -360,7 +362,7 @@ const CreateAsset = () => {
                         onBlur: () => handleDateBlur(),
                       },
                     }}
-                    onChange={(date) => handleDateChange(date)}
+                    onChange={handleDateChange}
                     renderInput={(params) => (
                       <TextField
                         {...params}

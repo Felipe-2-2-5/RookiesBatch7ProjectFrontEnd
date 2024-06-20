@@ -80,9 +80,7 @@ const CreateAsset = () => {
     } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
     } else if (!isValid) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must contain only alphabetical characters, numbers and spaces.`;
+      errorMessage = `Name must contain only alphabetical characters, numbers and spaces.`;
     }
     setAsset({ ...asset, [name]: trimmedValue });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -100,9 +98,7 @@ const CreateAsset = () => {
     } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
     } else if (!isValid) {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } must contain only alphabetical characters, numbers and spaces.`;
+      errorMessage = `Name must contain only alphabetical characters, numbers and spaces.`;
     }
     setAsset({ ...asset, [name]: trimmedValue });
 
@@ -121,7 +117,7 @@ const CreateAsset = () => {
     if (value === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
-      errorMessage = "The length of Name should be 2-500 characters.";
+      errorMessage = "The length of Specification should be 2-500 characters.";
     }
     setAsset({ ...asset, [name]: value });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -132,7 +128,7 @@ const CreateAsset = () => {
     if (value === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
-      errorMessage = "The length of Name should be 2-500 characters.";
+      errorMessage = "The length of Specification should be 2-500 characters.";
     }
     setAsset({ ...asset, [name]: value });
     setFormErrors({ ...formErrors, [name]: errorMessage });

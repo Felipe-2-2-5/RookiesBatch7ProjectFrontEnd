@@ -19,19 +19,43 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
   const handlePrefixChange = (event) => {
-    const input = event.target.value.replace(/[^A-Za-z]/g, "").slice(0, 4);
+    const input = event.target.value
+      .replace(/[^A-Za-z]/, "")
+      .slice(0, 4)
+      .trim();
     setPrefix(input);
     setPrefixError(
-      input.length === 0 || input.length > 4 ? "Invalid prefix format" : ""
+      input.length === 0 || input.length > 4 ? "Prefix is required" : ""
     );
   };
 
+  const handleNameblur = (event) => {
+    const trimmedValue = event.target.value.replace(/\s+/g, " ");
+    const isValid = /^[a-zA-Z\s]{2,50}$/.test(trimmedValue);
+    let errorMessage = "";
+    if (trimmedValue.trim() === "") {
+      errorMessage = `Name is required`;
+    } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
+      errorMessage = "The length of Name should be 2-50 characters.";
+    } else if (!isValid) {
+      errorMessage = `Name must contain only alphabetical characters and spaces.`;
+    }
+    setName(trimmedValue.trim());
+    setNameError(errorMessage);
+  };
   const handleNameChange = (event) => {
-    const input = event.target.value.replace(/[^A-Za-z]/g, "").slice(0, 50);
-    setName(input);
-    setNameError(
-      input.length === 0 || input.length > 50 ? "Invalid name format" : ""
-    );
+    const trimmedValue = event.target.value.replace(/\s+/g, " ");
+    const isValid = /^[a-zA-Z\s]{2,50}$/.test(trimmedValue);
+    let errorMessage = "";
+    if (trimmedValue.trim() === "") {
+      errorMessage = `Name is required`;
+    } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
+      errorMessage = "The length of Name should be 2-50 characters.";
+    } else if (!isValid) {
+      errorMessage = `Name must contain only alphabetical characters and spaces.`;
+    }
+    setName(trimmedValue);
+    setNameError(errorMessage);
   };
 
   const handleCancel = () => {
@@ -125,7 +149,7 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
               label="Name"
               value={name}
               onChange={handleNameChange}
-              onBlur={handleNameChange}
+              onBlur={handleNameblur}
               error={nameError}
             />
             {nameError && (

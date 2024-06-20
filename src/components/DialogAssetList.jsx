@@ -22,7 +22,7 @@ import {
   styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { FilterRequest } from "../services/users.service";
+import { AssetFilterRequest } from "../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -32,7 +32,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const tableHeadStyle = {
-  width: "15%",
+  width: "20%",
   textAlign: "center",
 };
 
@@ -54,11 +54,12 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
-    sortColumn: "name",
+    sortColumn: "assetName",
     sortOrder: "",
     page: 1,
     pageSize: "20",
-    type: "",
+    category: "",
+    state: ""
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
@@ -68,18 +69,20 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       : Math.ceil(totalCount / pageSize);
   const [searchTerm, setSearchTerm] = useState("");
 
+  // console.log("state", assets);
+
   const getUsers = async (filterRequest) => {
     setLoading(true);
-    const res = await FilterRequest(filterRequest);
-    const fetchedUsers = res.data.data;
+    const res = await AssetFilterRequest(filterRequest);
+    const fetchedAssets = res.data.data;
     setTotalCount(res.data.totalCount);
 
     const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
     if (userCreated) {
-      setAssets([userCreated, ...fetchedUsers]);
+      setAssets([userCreated, ...fetchedAssets]);
       sessionStorage.removeItem("user_created");
     } else {
-      setAssets(fetchedUsers);
+      setAssets(fetchedAssets);
     }
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -263,12 +266,12 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={tableHeadStyle}></TableCell>
+                  <TableCell sx={{ width: "5%", padding: "0px" }}></TableCell>
                   <TableCell sx={tableHeadStyle}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("code")}
-                      endIcon={getSortIcon("code")}
+                      onClick={() => handleHeaderClick("assetCode")}
+                      endIcon={getSortIcon("assetCode")}
                       sx={{
                         fontWeight: "bold",
                         textTransform: "none",
@@ -277,14 +280,14 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                         color: "black",
                       }}
                     >
-                      Staff Code
+                      Asset Code
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHeadStyle}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("name")}
-                      endIcon={getSortIcon("name")}
+                      onClick={() => handleHeaderClick("assetName")}
+                      endIcon={getSortIcon("assetName")}
                       sx={{
                         fontWeight: "bold",
                         textTransform: "none",
@@ -293,13 +296,13 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                         color: "black",
                       }}
                     >
-                      Full Name
+                      Asset Name
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHeadStyle}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("type")}
+                      onClick={() => handleHeaderClick("category")}
                       endIcon={getSortIcon("type")}
                       sx={{
                         fontWeight: "bold",
@@ -309,7 +312,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                         color: "black",
                       }}
                     >
-                      Type
+                      Category
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -336,16 +339,16 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                             color: "#000",
                             "&.Mui-checked": { color: "#d32f2f" },
                           }}
-                          checked={selectedAsset?.staffCode === asset.staffCode}
+                          checked={selectedAsset?.assetCode === asset.assetCode}
                           onChange={() => handleSelectAsset(asset)}
-                          value={asset.staffCode}
+                          value={asset.assetCode}
                         />
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{asset.staffCode}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>{asset.assetCode}</TableCell>
                       <TableCell sx={{ textAlign: "center" }}>
-                        {asset.firstName + " " + asset.lastName}
+                        {asset.assetName}
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{asset.type === 0 ? "Staff" : "Admin"}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>{asset.categoryId}</TableCell>
                     </CustomTableRow>
                   ))
                 )}
@@ -400,7 +403,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           Cancel
         </Button>
       </DialogActions>
-    </Dialog>
+    </Dialog >
   );
 };
 

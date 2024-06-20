@@ -105,17 +105,15 @@ const CreateUser = () => {
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        } is required`;
     }
     else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
     }
-    else if(!isValid){
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      }  must contain only alphabetical characters and spaces.`;
+    else if (!isValid) {
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        }  must contain only alphabetical characters and spaces.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -126,9 +124,8 @@ const CreateUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.trim();
     if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        } is required`;
     }
     setUsers({ ...users, [name]: trimmedValue });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -160,9 +157,8 @@ const CreateUser = () => {
 
     setUsers({ ...users, [name]: trimmedValue });
     if (value.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
+        } is required`;
     } else if (value.length > 20 || value.length < 2) {
       console.log("sting length: " + value.length);
       errorMessage = "The length of Firstname should be 2-20 characters.";
@@ -211,13 +207,13 @@ const CreateUser = () => {
         errorMessage = "Invalid date";
       }
     }
-  
+
     setFormErrors((prevErrors) => ({
       ...prevErrors,
       joinedDate: errorMessage,
     }));
   }, [users.joinedDate, users.dateOfBirth, touched.joinedDate]);
-  
+
 
   useEffect(() => {
     let errorMessage = "";
@@ -226,7 +222,7 @@ const CreateUser = () => {
       const age = Math.floor(
         (Date.now() - dob) / (365.25 * 24 * 60 * 60 * 1000)
       );
-      if(!users.dateOfBirth){
+      if (!users.dateOfBirth) {
         errorMessage = "Date of Birth is required";
       }
       else if (age < 18) {
@@ -241,7 +237,7 @@ const CreateUser = () => {
       ...prevErrors,
       dateOfBirth: errorMessage,
     }));
-    console.log("formError message: "+ formErrors.dateOfBirth);
+    console.log("formError message: " + formErrors.dateOfBirth);
   }, [users.dateOfBirth, touched.dateOfBirth, formErrors.dateOfBirth]);
 
   const handleSubmit = async (event) => {
@@ -375,7 +371,7 @@ const CreateUser = () => {
                   <DatePicker
                     slotProps={{
                       textField: {
-                        error: formErrors.dateOfBirth && touched.dateOfBirth ,
+                        error: formErrors.dateOfBirth && touched.dateOfBirth,
                         onBlur: () => handleDateBlur('dateOfBirth'),
                       },
                     }}
@@ -383,11 +379,9 @@ const CreateUser = () => {
                     sx={{
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
-                      "&.Mui-focused fieldset": { borderColor: "#000" },
+                        "&.Mui-focused fieldset": { borderColor: "#000" },
                       },
-                      }}
-                    
-                    
+                    }}
                     format="dd/MM/yyyy"
                     label="Date Of Birth"
                     value={users.dateOfBirth}
@@ -459,7 +453,7 @@ const CreateUser = () => {
                   <DatePicker
                     slotProps={{
                       textField: {
-                        error:  formErrors.joinedDate && touched.joinedDate,
+                        error: formErrors.joinedDate && touched.joinedDate,
                         onBlur: () => handleDateBlur('joinedDate'),
                       },
                     }}
@@ -479,7 +473,7 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
+                      // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />

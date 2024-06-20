@@ -743,7 +743,7 @@ const ManageAssignmentPage = () => {
                     wordBreak: "break-all",
                   }}>
                   <Typography variant="body1">
-                    {selectedAssignment.specification}
+                    {selectedAssignment.asset.specification}
                   </Typography>
                 </div>
               </Grid>

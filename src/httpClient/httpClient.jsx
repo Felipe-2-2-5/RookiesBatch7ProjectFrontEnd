@@ -5,7 +5,7 @@ import { EventEmitter } from "events";
 export const popupEventEmitter = new EventEmitter();
 
 const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
-//const baseURL = "https://localhost:7083/api";
+// const baseURL = "https://localhost:7083/api";
 // process.env.REACT_APP_API_BASE_URL || "https://localhost:7083/api";
 
 const instance = axios.create({
@@ -32,9 +32,9 @@ instance.interceptors.response.use(
     return { data: res?.data, status: res.status };
   },
   async (err) => {
-    let errorMessage = "An error occurred";
     try {
       if (err.response.status > 400) {
+        let errorMessage = "";
         if (err.response.status === 401) {
           errorMessage = "You are not authorized to access this resource";
           localStorage.removeItem("token");
@@ -43,24 +43,17 @@ instance.interceptors.response.use(
         } else if (err.response.status === 404) {
           errorMessage = "Resource not found";
         } else {
-          errorMessage = err.response.data.userMessage || errorMessage;
+          errorMessage = err.response.userMessage;
         }
         popupEventEmitter.emit("showPopup", errorMessage);
-        return Promise.reject({
-          ...err.response.data,
-          userMessage: errorMessage,
-        });
+        return Promise.reject(err.response.data);
       }
     } catch (error) {
       popupEventEmitter.emit(
         "showPopup",
-        "An error occurred while processing your request. Please try again later."
+        "An error occured while processing your request. Please try again later."
       );
-      return Promise.reject({
-        ...error,
-        userMessage:
-          "An error occurred while processing your request. Please try again later.",
-      });
+      return Promise.reject(error.response.data);
     }
   }
 );

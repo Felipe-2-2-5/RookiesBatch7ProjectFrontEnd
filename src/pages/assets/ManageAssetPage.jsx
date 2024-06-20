@@ -400,7 +400,7 @@ const ManageAssetPage = () => {
       <TableContainer component={Paper}>
         <Sheet
           ref={scrollRef}
-          sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ overflow: "auto", height: "calc(100vh - 300px)" }}>
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -563,105 +563,105 @@ const ManageAssetPage = () => {
           }}
         >
           {selectedAsset ? (
-      <Grid container spacing={2}>
-        <Grid item xs={5}>
-          <Typography variant="body1">Asset Code</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="body1">{selectedAsset.assetCode}</Typography>
-        </Grid>
+            <Grid container spacing={2}>
+              <Grid item xs={5}>
+                <Typography variant="body1">Asset Code</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="body1">{selectedAsset.assetCode}</Typography>
+              </Grid>
 
-        <Grid item xs={5}>
-          <Typography variant="body1">Asset Name</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="body1">{selectedAsset.assetName}</Typography>
-        </Grid>
+              <Grid item xs={5}>
+                <Typography variant="body1">Asset Name</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="body1">{selectedAsset.assetName}</Typography>
+              </Grid>
 
-        <Grid item xs={5}>
-          <Typography variant="body1">Category</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="body1">{selectedAsset.category.name}</Typography>
-        </Grid>
+              <Grid item xs={5}>
+                <Typography variant="body1">Category</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="body1">{selectedAsset.category.name}</Typography>
+              </Grid>
 
-        <Grid item xs={5}>
-          <Typography variant="body1">State</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="body1">{assetStateEnum[selectedAsset.state]}</Typography>
-        </Grid>
+              <Grid item xs={5}>
+                <Typography variant="body1">State</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="body1">{assetStateEnum[selectedAsset.state]}</Typography>
+              </Grid>
 
-        <Grid item xs={5}>
-          <Typography variant="body1">Installed Date</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="body1">{formatDate(selectedAsset.installedDate)}</Typography>
-        </Grid>
+              <Grid item xs={5}>
+                <Typography variant="body1">Installed Date</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="body1">{formatDate(selectedAsset.installedDate)}</Typography>
+              </Grid>
 
-        <Grid item xs={5}>
-          <Typography variant="body1">Specificaion</Typography>
-        </Grid>
-        <Grid item xs={7}>
-          <Typography variant="body1">{selectedAsset.specification}</Typography>
-        </Grid>
+              <Grid item xs={5}>
+                <Typography variant="body1">Specificaion</Typography>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="body1">{selectedAsset.specification}</Typography>
+              </Grid>
 
-        {/* Assignment History */}
-        {selectedAsset.assignments && selectedAsset.assignments.length > 0 ? (
-          <>
-            <Grid item xs={12}>
-              <Typography variant="h6" style={{ marginTop: 10 }}>Assignment History</Typography>
+              {/* Assignment History */}
+              {selectedAsset.assignments && selectedAsset.assignments.length > 0 ? (
+                <>
+                  <Grid item xs={12}>
+                    <Typography variant="h6" style={{ marginTop: 10 }}>Assignment History</Typography>
+                  </Grid>
+                  {selectedAsset.assignments.map((assignment, index) => (
+                    <Fragment key={index}>
+                      <Grid item xs={5}>
+                        <Typography variant="body1">Assign To</Typography>
+                      </Grid>
+                      <Grid item xs={7}>
+                        <Typography variant="body1">{assignment.assignTo}</Typography>
+                      </Grid>
+
+                      <Grid item xs={5}>
+                        <Typography variant="body1">Assign By</Typography>
+                      </Grid>
+                      <Grid item xs={7}>
+                        <Typography variant="body1">{assignment.assignBy}</Typography>
+                      </Grid>
+
+                      <Grid item xs={5}>
+                        <Typography variant="body1">Assign Date</Typography>
+                      </Grid>
+                      <Grid item xs={7}>
+                        <Typography variant="body1">{assignment.assignDate}</Typography>
+                      </Grid>
+
+                      <Grid item xs={5}>
+                        <Typography variant="body1">State</Typography>
+                      </Grid>
+                      <Grid item xs={7}>
+                        <Typography variant="body1">{assignment.state}</Typography>
+                      </Grid>
+
+                      <Grid item xs={5}>
+                        <Typography variant="body1">Note</Typography>
+                      </Grid>
+                      <Grid item xs={7}>
+                        <Typography variant="body1">{assignment.note}</Typography>
+                      </Grid>
+                    </Fragment>
+                  ))}
+                </>
+              ) : (
+                <Grid item xs={12}>
+                  <Typography variant="body1" style={{ fontStyle: 'italic' }}>No assignment history found.</Typography>
+                </Grid>
+              )}
             </Grid>
-            {selectedAsset.assignments.map((assignment, index) => (
-              <Fragment key={index}>
-                <Grid item xs={5}>
-                  <Typography variant="body1">Assign To</Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">{assignment.assignTo}</Typography>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Typography variant="body1">Assign By</Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">{assignment.assignBy}</Typography>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Typography variant="body1">Assign Date</Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">{assignment.assignDate}</Typography>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Typography variant="body1">State</Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">{assignment.state}</Typography>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Typography variant="body1">Note</Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">{assignment.note}</Typography>
-                </Grid>
-              </Fragment>
-            ))}
-          </>
-        ) : (
-          <Grid item xs={12}>
-            <Typography variant="body1" style={{ fontStyle: 'italic' }}>No assignment history found.</Typography>
-          </Grid>
-        )}
-      </Grid>
-    ) : (
-      <CircularProgress /> // Show loading indicator while fetching data
-    )}
-  </DialogContent>
-</Dialog>
+          ) : (
+            <CircularProgress /> // Show loading indicator while fetching data
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };

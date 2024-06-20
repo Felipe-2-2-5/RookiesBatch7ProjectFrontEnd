@@ -425,12 +425,12 @@ const CreateAssignment = () => {
           )}
         </Box>
       </Container>
-      {/* <PopupNotification
+      <PopupNotification
         open={openPopup}
         handleClose={handleClosePopup}
         title={titlePopup}
         content={contentPopup}
-      /> */}
+      />
     </>
   );
 };

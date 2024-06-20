@@ -72,7 +72,7 @@ const CreateAssignment = () => {
     user: null,
     asset: null,
     // assignedDate: Date.now(),
-    assignedDate : new Date(),
+    assignedDate: new Date(),
     note: "",
   });
   const [formErrors, setFormErrors] = useState({
@@ -83,7 +83,7 @@ const CreateAssignment = () => {
   });
   const [touched, setTouched] = useState({
     assignedDate: false,
-    user:false,
+    user: false,
     asset: false
   });
 
@@ -110,7 +110,7 @@ const CreateAssignment = () => {
       } else if (assignedDateFormat < currentDate) {
         errorMessage =
           "Cannot select Assigned Date in the past. Please select another date.";
-      }else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
+      } else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
         errorMessage = "Invalid date";
       }
     }
@@ -123,7 +123,7 @@ const CreateAssignment = () => {
 
   useEffect(() => {
     let errorMessage = "";
-    if(touched.user &&  !selectedUser){
+    if (touched.user && !selectedUser) {
       errorMessage = "User is required";
     }
     setFormErrors((prevErrors) => ({
@@ -134,7 +134,7 @@ const CreateAssignment = () => {
 
   useEffect(() => {
     let errorMessage = "";
-    if(touched.asset &&  !selectedAsset){
+    if (touched.asset && !selectedAsset) {
       errorMessage = "Asset is required";
     }
     setFormErrors((prevErrors) => ({
@@ -198,8 +198,8 @@ const CreateAssignment = () => {
   // console.log(assignments.user.id);
   const handleSubmit = async (event) => {
     event.preventDefault();
-      try {
-        const response = await CreateAssignmentAPI({
+    try {
+      const response = await CreateAssignmentAPI({
 
         //custom input to match backend 
         assignedToId: assignments.user.id,
@@ -229,7 +229,7 @@ const CreateAssignment = () => {
 
   const handleClosePopup = () => {
     setOpenPopup(false);
-    navigate("/manage-assignmnet");
+    navigate("/manage-assignment");
   };
 
   return (

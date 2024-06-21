@@ -36,6 +36,7 @@ import {
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { PaginationBar, SearchBar } from "../../components";
@@ -80,6 +81,7 @@ const ManageAssignmentPage = () => {
   });
   const [dateRange, setDateRange] = useState([null, null]);
   const [selectedState, setSelectedState] = useState("All");
+  const [dateError, setDateError] = useState(false);
 
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -112,6 +114,7 @@ const ManageAssignmentPage = () => {
 
       if (filterRequest.fromDate && filterRequest.toDate) {
         const fromDate = new Date(filterRequest.fromDate);
+        fromDate.setHours(0, 0, 0, 0);
         const toDate = new Date(filterRequest.toDate);
         toDate.setHours(23, 59, 59, 999);
 
@@ -122,7 +125,7 @@ const ManageAssignmentPage = () => {
       }
 
       setAssignments(fetchedAssignments);
-      setTotalCount(fetchedAssignments.length);
+      setTotalCount(res.data.totalCount);
     } else {
       setAssignments([]);
       setTotalCount(0);
@@ -168,8 +171,11 @@ const ManageAssignmentPage = () => {
         sessionStorage.getItem("assignmentCreated")
       );
       if (assignmentCreated) {
-        setAssignments([assignmentCreated, ...fetchedAssignments]);
-        sessionStorage.removeItem("assignmentCreated");
+        const updatedAssignments = fetchedAssignments.filter(
+          (asset) => asset.id !== assignmentCreated.id
+        );
+        setAssignments([assignmentCreated, ...updatedAssignments]);
+        sessionStorage.removeItem("assignment_created");
       } else {
         setAssignments(fetchedAssignments);
       }
@@ -183,7 +189,7 @@ const ManageAssignmentPage = () => {
       setLoading(false);
     }
 
-    setTotalCount(fetchedAssignments.length);
+    setTotalCount(res.data.totalCount);
   };
 
   useEffect(() => {
@@ -201,6 +207,7 @@ const ManageAssignmentPage = () => {
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1,
     }));
   };
   const handleKeyPress = (e) => {
@@ -272,6 +279,7 @@ const ManageAssignmentPage = () => {
         ...prev,
         sortColumn: newSortColumn,
         sortOrder: newSortOrder,
+        page: 1,
       };
     });
   };
@@ -395,11 +403,23 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 onChange={(newValue) => {
                   setDateRange(newValue);
-                  setFilterRequest((prev) => ({
-                    ...prev,
-                    fromDate: newValue[0],
-                    toDate: newValue[1],
-                  }));
+                  if (newValue[0] && newValue[1]) {
+                    if (
+                      !(newValue[0] instanceof Date) ||
+                      isNaN(newValue[0].getTime()) ||
+                      !(newValue[1] instanceof Date) ||
+                      isNaN(newValue[1].getTime())
+                    ) {
+                      setDateError(true);
+                    } else {
+                      setDateError(false);
+                      setFilterRequest((prev) => ({
+                        ...prev,
+                        fromDate: format(newValue[0], "dd/MM/yyyy"),
+                        toDate: format(newValue[1], "dd/MM/yyyy"),
+                      }));
+                    }
+                  }
                 }}
                 renderInput={(startProps, endProps) => (
                   <TextField
@@ -417,7 +437,7 @@ const ManageAssignmentPage = () => {
                       },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                       {
-                        borderColor: "black",
+                        borderColor: dateError ? "red" : "black",
                       },
                     }}
                   />
@@ -558,7 +578,7 @@ const ManageAssignmentPage = () => {
                 {loading ? (
                   <TableRow>
                     <TableCell
-                      colSpan={6}
+                      colSpan={7}
                       sx={{ textAlign: "center", padding: "28px" }}>
                       <CircularProgress />
                     </TableCell>
@@ -568,7 +588,7 @@ const ManageAssignmentPage = () => {
                     {assignments.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={6}
+                          colSpan={7}
                           sx={{
                             color: "red",
                             textAlign: "center",

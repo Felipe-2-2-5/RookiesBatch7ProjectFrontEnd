@@ -167,7 +167,7 @@ const ManageAssignmentPage = () => {
       });
       //assignment Created
       const assignmentCreated = JSON.parse(
-        localStorage.getItem("assignment_created")
+        sessionStorage.getItem("assignment_created")
       );
       if (assignmentCreated) {
         const updatedAssignments = fetchedAssignments.filter(

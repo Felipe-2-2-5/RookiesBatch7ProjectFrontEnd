@@ -167,11 +167,14 @@ const ManageAssignmentPage = () => {
       });
       //assignment Created
       const assignmentCreated = JSON.parse(
-        localStorage.getItem("assignmentCreated")
+        localStorage.getItem("assignment_created")
       );
       if (assignmentCreated) {
-        setAssignments([assignmentCreated, ...fetchedAssignments]);
-        sessionStorage.removeItem("assignmentCreated");
+        const updatedAssignments = fetchedAssignments.filter(
+          (asset) => asset.id !== assignmentCreated.id
+        );
+        setAssignments([assignmentCreated, ...updatedAssignments]);
+        sessionStorage.removeItem("assignment_created");
       } else {
         setAssignments(fetchedAssignments);
       }
@@ -332,12 +335,14 @@ const ManageAssignmentPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}>
+        }}
+      >
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Assignment List
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+        >
           <FormControl
             variant="outlined"
             sx={{
@@ -346,14 +351,16 @@ const ManageAssignmentPage = () => {
                 "&:hover fieldset": { borderColor: "black" },
                 "&.Mui-focused fieldset": { borderColor: "black" },
               },
-            }}>
+            }}
+          >
             <InputLabel
               sx={{
                 color: "black",
                 "&.Mui-focused": {
                   color: "black",
                 },
-              }}>
+              }}
+            >
               {" "}
               State
             </InputLabel>
@@ -362,13 +369,11 @@ const ManageAssignmentPage = () => {
               value={selectedState}
               name="state"
               IconComponent={(props) => (
-                <FilterAltOutlined
-                  {...props}
-                  style={{ transform: "none" }}
-                />
+                <FilterAltOutlined {...props} style={{ transform: "none" }} />
               )}
               onChange={handleStateChange}
-              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
+              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
+            >
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Accepted">Accepted</MenuItem>
               <MenuItem value="Waiting for acceptance">
@@ -389,7 +394,8 @@ const ManageAssignmentPage = () => {
                 {
                   borderColor: "black",
                 },
-            }}>
+            }}
+          >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateRangePicker
                 startText="Start date"
@@ -445,16 +451,16 @@ const ManageAssignmentPage = () => {
                 backgroundColor: "#d32f2f",
               },
             }}
-            onClick={() => navigate(path.assignmentCreate)}>
+            onClick={() => navigate(path.assignmentCreate)}
+          >
             Create new assignment
           </Button>
         </Box>{" "}
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
-          <Sheet
-            ref={scrollRef}
-            sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}
+        >
+          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -462,7 +468,8 @@ const ManageAssignmentPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}>
+                }}
+              >
                 <TableRow>
                   <TableCell sx={tableHead}>No.</TableCell>
                   <TableCell sx={tableHead}>
@@ -476,7 +483,8 @@ const ManageAssignmentPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}>
+                      }}
+                    >
                       Asset Code
                     </Button>
                   </TableCell>
@@ -491,7 +499,8 @@ const ManageAssignmentPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}>
+                      }}
+                    >
                       Asset Name
                     </Button>
                   </TableCell>
@@ -506,7 +515,8 @@ const ManageAssignmentPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}>
+                      }}
+                    >
                       Assigned To
                     </Button>
                   </TableCell>
@@ -521,7 +531,8 @@ const ManageAssignmentPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}>
+                      }}
+                    >
                       Assigned By
                     </Button>
                   </TableCell>
@@ -536,7 +547,8 @@ const ManageAssignmentPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}>
+                      }}
+                    >
                       Assigned Date
                     </Button>
                   </TableCell>
@@ -551,7 +563,8 @@ const ManageAssignmentPage = () => {
                         padding: 0,
                         minWidth: "auto",
                         color: "black",
-                      }}>
+                      }}
+                    >
                       State
                     </Button>
                   </TableCell>
@@ -563,7 +576,8 @@ const ManageAssignmentPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={7}
-                      sx={{ textAlign: "center", padding: "28px" }}>
+                      sx={{ textAlign: "center", padding: "28px" }}
+                    >
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -578,7 +592,8 @@ const ManageAssignmentPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}>
+                          }}
+                        >
                           No assignment found
                         </TableCell>
                       </TableRow>
@@ -586,7 +601,8 @@ const ManageAssignmentPage = () => {
                       assignments.map((assignment, index) => (
                         <CustomTableRow
                           key={assignment.id}
-                          onClick={() => handleDetailDialog(assignment)}>
+                          onClick={() => handleDetailDialog(assignment)}
+                        >
                           <TableCell sx={{ textAlign: "center" }}>
                             {index + 1}
                           </TableCell>
@@ -600,7 +616,8 @@ const ManageAssignmentPage = () => {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                               maxWidth: 150,
-                            }}>
+                            }}
+                          >
                             {assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
@@ -625,7 +642,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                              }}>
+                              }}
+                            >
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
@@ -638,7 +656,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                              }}>
+                              }}
+                            >
                               <CancelTwoTone />
                             </IconButton>
                             <IconButton
@@ -650,7 +669,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                              }}>
+                              }}
+                            >
                               <RestartAltRounded />
                             </IconButton>
                           </TableCell>
@@ -674,9 +694,11 @@ const ManageAssignmentPage = () => {
           open={dialogOpen}
           onClose={handleDialogClose}
           maxWidth="md"
-          fullWidth={true}>
+          fullWidth={true}
+        >
           <DialogTitle
-            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}>
+            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
+          >
             Detailed Assignment Information
             <IconButton
               aria-label="close"
@@ -686,144 +708,114 @@ const ManageAssignmentPage = () => {
                 right: 10,
                 top: 12,
                 color: "#D6001C",
-              }}>
+              }}
+            >
               <DisabledByDefaultTwoTone />
             </IconButton>
           </DialogTitle>
           <DialogContent dividers>
-            <Grid
-              container
-              spacing={2}>
-              <Grid
-                item
-                xs={4}>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Asset Code:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <Typography variant="body1">
                   {selectedAssignment.asset.assetCode}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Asset Name:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <div
                   style={{
                     maxHeight: "100px",
                     overflowY: "auto",
                     wordWrap: "break-word",
                     wordBreak: "break-all",
-                  }}></div>
+                  }}
+                ></div>
                 <Typography variant="body1">
                   {selectedAssignment.asset.assetName}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Specification:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <div
                   style={{
                     maxHeight: "100px",
                     overflowY: "auto",
                     wordWrap: "break-word",
                     wordBreak: "break-all",
-                  }}>
+                  }}
+                >
                   <Typography variant="body1">
                     {selectedAssignment.asset.specification}
                   </Typography>
                 </div>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Assigned to:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <Typography variant="body1">
                   {selectedAssignment.assignedTo.userName}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Assigned by:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <Typography variant="body1">
                   {selectedAssignment.assignedBy.userName}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Assigned Date:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <Typography variant="body1">
                   {formatDate(selectedAssignment.assignedDate)}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>State:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <Typography variant="body1">
                   {assignmentStateEnum[selectedAssignment.state]}
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={4}>
+              <Grid item xs={4}>
                 <Typography variant="body1">
                   <strong>Note:</strong>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={8}>
+              <Grid item xs={8}>
                 <div
                   style={{
                     maxHeight: "100px",
                     overflowY: "auto",
                     wordWrap: "break-word",
                     wordBreak: "break-all",
-                  }}>
+                  }}
+                >
                   <Typography variant="body1">
                     {selectedAssignment.note}
                   </Typography>
@@ -832,9 +824,7 @@ const ManageAssignmentPage = () => {
             </Grid>
           </DialogContent>
           <DialogActions>
-            <Button
-              onClick={handleDialogClose}
-              sx={{ color: "#D6001C" }}>
+            <Button onClick={handleDialogClose} sx={{ color: "#D6001C" }}>
               OK
             </Button>
           </DialogActions>

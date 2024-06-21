@@ -49,21 +49,26 @@ const CreateAsset = () => {
     state: 0,
   });
   const fetchCategories = async () => {
-    const res = await GetCategories(); // Corrected function name
+    const res = await GetCategories();
     setCategories(res.data);
   };
   useEffect(() => {
     fetchCategories();
+  }, []);
+  useEffect(() => {
     if (touched) {
       let errorMessage = "";
       if (asset.installedDate === null) {
         errorMessage = `Installed Date is required`;
-      } else if (isNaN(asset.installedDate.getTime())) {
+      } else if (isNaN(new Date(asset.installedDate).getTime())) {
         errorMessage = "Invalid date";
       }
-      setFormErrors({ ...formErrors, installedDate: errorMessage });
+      setFormErrors((prevErrors) => ({
+        ...prevErrors,
+        installedDate: errorMessage,
+      }));
     }
-  }, [touched, asset.installedDate, formErrors]);
+  }, [touched, asset.installedDate]);
   const handleNewCategory = (category) => {
     setAsset({ ...asset, category: category });
     fetchCategories();
@@ -74,9 +79,7 @@ const CreateAsset = () => {
     const isValid = /^[a-zA-Z0-9\s]{2,50}$/.test(trimmedValue);
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `Name is required`;
     } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
     } else if (!isValid) {
@@ -92,9 +95,7 @@ const CreateAsset = () => {
     const isValid = /^[a-zA-Z0-9\s]{2,50}$/.test(trimmedValue);
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${
-        name.charAt(0).toUpperCase() + name.slice(1)
-      } is required`;
+      errorMessage = `Name is required`;
     } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
     } else if (!isValid) {

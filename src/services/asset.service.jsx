@@ -12,7 +12,6 @@ export const GetAssets = async () => {
 
 export const GetAsset = async (id) => {
   const response = await httpClient.get(`/assets/${id}`);
-  console.log(response);
   return response;
 };
 

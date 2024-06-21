@@ -98,26 +98,39 @@ const CreateAssignment = () => {
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
+  const formatDateOnly = (date) => {
+    if (!date) return '';
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+
   useEffect(() => {
-    console.log("date.now" + new Date());
-    console.log("assignments.assignedDate" + assignments.assignedDate);
     let errorMessage = "";
     if (touched.assignedDate) {
       if (!assignments.assignedDate) {
-        errorMessage = "Assigned dateF is required";
-      } else if (assignments.assignedDate < Date.now()) {
-        errorMessage =
-          "Cannot select Assigned Date in the past. Please select another date.";
-      }else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
-        errorMessage = "Invalid date";
+        errorMessage = "Assigned date is required";
+      } else {
+        const assignedDateOnly = formatDateOnly(assignments.assignedDate);
+        const todayDateOnly = formatDateOnly(new Date());
+  
+        if (assignedDateOnly < todayDateOnly) {
+          errorMessage = "Cannot select Assigned Date in the past. Please select another date.";
+        } else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
+          errorMessage = "Invalid date";
+        }
       }
     }
-
+  
     setFormErrors((prevErrors) => ({
       ...prevErrors,
       assignedDate: errorMessage,
     }));
   }, [assignments.assignedDate, touched.assignedDate]);
+  
+
 
   useEffect(() => {
     let errorMessage = "";
@@ -146,7 +159,7 @@ const CreateAssignment = () => {
     setTouched({ ...touched, [name]: true });
   };
 
-  const handleDateBlur = (name, date) => {
+  const handleDateBlur = (name) => {
     setTouched({ ...touched, [name]: true });
   };
 

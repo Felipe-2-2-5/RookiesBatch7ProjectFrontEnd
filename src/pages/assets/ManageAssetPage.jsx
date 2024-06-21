@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, Fragment } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Typography,
   TextField,
@@ -31,14 +31,9 @@ import {
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
-import { Sheet } from "@mui/joy";
 import { useNavigate } from "react-router";
 import { path } from "../../routes/routeContants";
-import {
-  FilterRequest,
-  GetAsset,
-  GetCategories,
-} from "../../services/asset.service";
+import { FilterRequest, GetAsset, GetCategories } from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
 
 const formatDate = (dateString) => {
@@ -63,48 +58,32 @@ const ManageAssetPage = () => {
 
   const [totalCount, setTotalCount] = useState();
   const pageSize = filterRequest.pageSize || 1;
-  const pageCount =
-    Number.isNaN(totalCount) || totalCount === 0
-      ? 1
-      : Math.ceil(totalCount / pageSize);
+  const pageCount = Number.isNaN(totalCount) || totalCount === 0 ? 1 : Math.ceil(totalCount / pageSize);
 
   const [assets, setAsset] = useState([]);
   const [categories, setCategories] = useState(null);
   // Fetch assets when component mounts
   useEffect(() => {
     const getAssets = async (filterRequest) => {
-      setLoading(true); // Start loading
+      const res = await FilterRequest(filterRequest);
+      const fetchedAssets = res.data.data;
+      setTotalCount(res.data.totalCount);
 
-      try {
-        const res = await FilterRequest(filterRequest);
-        const fetchedAssets = res.data.data;
-        setTotalCount(res.data.totalCount);
-
-        const assetCreated = JSON.parse(
-          sessionStorage.getItem("asset_created")
-        );
-        if (assetCreated) {
-          const updatedAssets = fetchedAssets.filter(
-            (asset) => asset.id !== assetCreated.id
-          );
-          setAsset([assetCreated, ...updatedAssets]);
-          sessionStorage.removeItem("asset_created");
-        } else {
-          setAsset(fetchedAssets);
-        }
-
-        // Scroll to top of list
-        if (scrollRef.current) {
-          scrollRef.current.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch assets:", error);
-      } finally {
-        setLoading(false); // End loading
+      const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
+      if (assetCreated) {
+        setAsset([assetCreated, ...fetchedAssets]);
+        sessionStorage.removeItem("asset_created");
+      } else {
+        setAsset(fetchedAssets);
       }
+      // Scroll to top of list
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        })
+      }
+      setLoading(false)
     };
 
     getAssets(filterRequest);
@@ -126,7 +105,7 @@ const ManageAssetPage = () => {
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
-  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
+  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, ' ');
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -136,19 +115,20 @@ const ManageAssetPage = () => {
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1,
     }));
   };
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      setSearchTerm(trimmedSearchTerm);
-      handleSearch();
+      setSearchTerm(trimmedSearchTerm)
+      handleSearch()
     }
   };
 
   const handleSearchClick = () => {
-    setSearchTerm(trimmedSearchTerm);
-    handleSearch();
+    setSearchTerm(trimmedSearchTerm)
+    handleSearch()
   };
 
   // State for dialog
@@ -157,8 +137,10 @@ const ManageAssetPage = () => {
 
   const handleDetailDialog = async (asset) => {
     const res = await GetAsset(asset.id);
-    console.log(res.data);
-    setSelectedAsset(res.data);
+    const sortedAssignments = res.data.assignments.sort((a, b) => {
+      return new Date(b.assignedDate) - new Date(a.assignedDate);
+    });
+    setSelectedAsset({ ...res.data, assignments: sortedAssignments });
     setDialogOpen(true);
   };
 
@@ -222,16 +204,16 @@ const ManageAssetPage = () => {
 
   // Custom Arrow Up
   const CustomArrowDropUp = styled(ArrowDropUp)(({ theme }) => ({
-    "& path": {
-      d: 'path("m7 20 5-5 5 5z")',
-    },
+    '& path': {
+      d: 'path("m7 20 5-5 5 5z")'
+    }
   }));
 
   // Custom Arrow Down
   const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
-    "& path": {
-      d: 'path("m7 0 5 5 5-5z")',
-    },
+    '& path': {
+      d: 'path("m7 0 5 5 5-5z")'
+    }
   }));
 
   const getSortIcon = (column) => {
@@ -246,7 +228,7 @@ const ManageAssetPage = () => {
       if (filterRequest.sortOrder === "descend") {
         return (
           <div style={iconStyle}>
-            <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
+            <CustomArrowDropUp sx={{ color: "#bdbdbd", }} />
             <CustomArrowDropDown />
           </div>
         );
@@ -255,7 +237,7 @@ const ManageAssetPage = () => {
         return (
           <div style={iconStyle}>
             <CustomArrowDropUp />
-            <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
+            <CustomArrowDropDown sx={{ color: "#bdbdbd", }} />
           </div>
         );
       }
@@ -330,9 +312,7 @@ const ManageAssetPage = () => {
             <TextField
               label="Category"
               select
-              value={
-                filterRequest.category === "" ? "All" : filterRequest.category
-              }
+              value={filterRequest.category === "" ? "All" : filterRequest.category}
               onChange={handleCategoryChange}
               variant="outlined"
               fullWidth
@@ -419,112 +399,124 @@ const ManageAssetPage = () => {
       </Grid>
 
       {/* Asset Table */}
-      <TableContainer component={Paper}>
-        <Sheet
-          ref={scrollRef}
-          sx={{ overflow: "auto", height: "calc(100vh - 300px)" }}
-        >
-          <Table stickyHeader>
-            <TableHead>
+      <TableContainer
+        component={Paper}
+        sx={{
+          marginTop: 2,
+          maxHeight: 600, // Adjust this value as needed
+          overflowY: "auto",
+        }}
+        ref={scrollRef}
+      >
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                onClick={() => handleHeaderClick("assetcode")}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  Asset Code
+                  {getSortIcon("assetcode")}
+                </div>
+              </TableCell>
+              <TableCell
+                style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
+                onClick={() => handleHeaderClick("assetname")}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  Asset Name
+                  {getSortIcon("assetname")}
+                </div>
+              </TableCell>
+              <TableCell
+                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                onClick={() => handleHeaderClick("category")}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  Category
+                  {getSortIcon("category")}
+                </div>
+              </TableCell>
+              <TableCell
+                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                onClick={() => handleHeaderClick("state")}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  State
+                  {getSortIcon("state")}
+                </div>
+              </TableCell>
+              <TableCell
+                style={{ fontWeight: "bold", width: "15%" }}
+              ></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {loading ? (
               <TableRow>
-                <TableCell
-                  style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                  onClick={() => handleHeaderClick("assetcode")}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    Asset Code
-                    {getSortIcon("assetcode")}
-                  </div>
+                <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
+                  <CircularProgress />
                 </TableCell>
-                <TableCell
-                  style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
-                  onClick={() => handleHeaderClick("assetname")}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    Asset Name
-                    {getSortIcon("assetname")}
-                  </div>
-                </TableCell>
-                <TableCell
-                  style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                  onClick={() => handleHeaderClick("category")}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    Category
-                    {getSortIcon("category")}
-                  </div>
-                </TableCell>
-                <TableCell
-                  style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                  onClick={() => handleHeaderClick("state")}
-                >
-                  <div style={{ display: "flex", alignItems: "center" }}>
-                    State
-                    {getSortIcon("state")}
-                  </div>
-                </TableCell>
-                <TableCell
-                  style={{ fontWeight: "bold", width: "15%" }}
-                ></TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {loading ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    sx={{ textAlign: "center", padding: "28px" }}
-                  >
-                    <CircularProgress />
-                  </TableCell>
-                </TableRow>
-              ) : (
-                <>
-                  {assets.length === 0 ? (
-                    <TableRow>
-                      <TableCell
-                        colSpan={6}
-                        sx={{
-                          color: "red",
-                          textAlign: "center",
-                          padding: "28px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        No asset found
+            ) : (
+              <>
+                {assets.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={6}
+                      sx={{
+                        color: "red",
+                        textAlign: "center",
+                        padding: "28px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      No asset found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  assets.map((asset) => (
+                    <TableRow
+                      key={asset.id}
+                      hover
+                      onClick={() => handleDetailDialog(asset)}
+                      style={{ cursor: "pointer" }} // Set cursor to pointer on hover
+                    >
+                      <TableCell>{asset.assetCode}</TableCell>
+                      <TableCell>{asset.assetName}</TableCell>
+                      <TableCell>{asset.category.name}</TableCell>
+                      <TableCell>{assetStateEnum[asset.state]}</TableCell>
+                      <TableCell>
+                        {assetStateEnum[asset.state] === "Assigned" ? (
+                          // Disable edit and delete icons if state is assigned
+                          <>
+                            <IconButton aria-label="edit" disabled>
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton aria-label="delete" disabled style={{ color: "#D6001C", opacity: 0.5 }}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </>
+                        ) : (
+                          // Render edit and delete icons normally if state is not assigned
+                          <>
+                            <IconButton aria-label="edit">
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton aria-label="delete" style={{ color: "#D6001C" }}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </>
+                        )}
                       </TableCell>
                     </TableRow>
-                  ) : (
-                    assets.map((asset) => (
-                      <TableRow
-                        key={asset.id}
-                        hover
-                        onClick={() => handleDetailDialog(asset)}
-                        style={{ cursor: "pointer" }} // Set cursor to pointer on hover
-                      >
-                        <TableCell>{asset.assetCode}</TableCell>
-                        <TableCell>{asset.assetName}</TableCell>
-                        <TableCell>{asset.category.name}</TableCell>
-                        <TableCell>{assetStateEnum[asset.state]}</TableCell>
-                        <TableCell>
-                          <IconButton aria-label="edit">
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="delete"
-                            style={{ color: "#D6001C" }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </>
-              )}
-            </TableBody>
-          </Table>
-        </Sheet>
+                  ))
+                )}
+              </>
+            )}
+          </TableBody>
+        </Table>
       </TableContainer>
       <Box
         sx={{
@@ -556,14 +548,14 @@ const ManageAssetPage = () => {
         open={dialogOpen}
         onClose={handleDialogClose}
         fullWidth
-        maxWidth="sm"
+        maxWidth="md"
       >
         <DialogTitle
           sx={{
             bgcolor: "grey.300",
             color: "#D6001C",
             fontWeight: "bold",
-            borderBottom: "1px solid black", // Adding bottom border
+            borderBottom: "1px solid black",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
@@ -585,134 +577,107 @@ const ManageAssetPage = () => {
           sx={{
             borderTop: "1px solid black",
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexDirection: "column",
+            padding: "20px",
           }}
         >
           {selectedAsset ? (
-            <Grid container spacing={2}>
-              <Grid item xs={5}>
-                <Typography variant="body1">Asset Code</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <Typography variant="body1">
-                  {selectedAsset.assetCode}
-                </Typography>
-              </Grid>
+            <>
+              {/* Asset Details */}
+              <Typography variant="h6" sx={{ marginTop: 2 }} gutterBottom>
+                {/* Asset Details */}
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Asset Code:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{selectedAsset.assetCode}</Typography>
+                </Grid>
 
-              <Grid item xs={5}>
-                <Typography variant="body1">Asset Name</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <Typography variant="body1">
-                  {selectedAsset.assetName}
-                </Typography>
-              </Grid>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Asset Name:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{selectedAsset.assetName}</Typography>
+                </Grid>
 
-              <Grid item xs={5}>
-                <Typography variant="body1">Category</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <Typography variant="body1">
-                  {selectedAsset.category.name}
-                </Typography>
-              </Grid>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Category:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{selectedAsset.category.name}</Typography>
+                </Grid>
 
-              <Grid item xs={5}>
-                <Typography variant="body1">State</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <Typography variant="body1">
-                  {assetStateEnum[selectedAsset.state]}
-                </Typography>
-              </Grid>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    State:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{assetStateEnum[selectedAsset.state]}</Typography>
+                </Grid>
 
-              <Grid item xs={5}>
-                <Typography variant="body1">Installed Date</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <Typography variant="body1">
-                  {formatDate(selectedAsset.installedDate)}
-                </Typography>
-              </Grid>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Installed Date:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{formatDate(selectedAsset.installedDate)}</Typography>
+                </Grid>
 
-              <Grid item xs={5}>
-                <Typography variant="body1">Specificaion</Typography>
-              </Grid>
-              <Grid item xs={7}>
-                <Typography variant="body1">
-                  {selectedAsset.specification}
-                </Typography>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Specification:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">{selectedAsset.specification}</Typography>
+                </Grid>
               </Grid>
 
               {/* Assignment History */}
-              {selectedAsset.assignments &&
-              selectedAsset.assignments.length > 0 ? (
+              {selectedAsset.assignments && selectedAsset.assignments.length > 0 && (
                 <>
-                  <Grid item xs={12}>
-                    <Typography variant="h6" style={{ marginTop: 10 }}>
-                      Assignment History
-                    </Typography>
-                  </Grid>
-                  {selectedAsset.assignments.map((assignment, index) => (
-                    <Fragment key={index}>
-                      <Grid item xs={5}>
-                        <Typography variant="body1">Assign To</Typography>
-                      </Grid>
-                      <Grid item xs={7}>
-                        <Typography variant="body1">
-                          {assignment.assignTo}
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={5}>
-                        <Typography variant="body1">Assign By</Typography>
-                      </Grid>
-                      <Grid item xs={7}>
-                        <Typography variant="body1">
-                          {assignment.assignBy}
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={5}>
-                        <Typography variant="body1">Assign Date</Typography>
-                      </Grid>
-                      <Grid item xs={7}>
-                        <Typography variant="body1">
-                          {assignment.assignDate}
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={5}>
-                        <Typography variant="body1">State</Typography>
-                      </Grid>
-                      <Grid item xs={7}>
-                        <Typography variant="body1">
-                          {assignment.state}
-                        </Typography>
-                      </Grid>
-
-                      <Grid item xs={5}>
-                        <Typography variant="body1">Note</Typography>
-                      </Grid>
-                      <Grid item xs={7}>
-                        <Typography variant="body1">
-                          {assignment.note}
-                        </Typography>
-                      </Grid>
-                    </Fragment>
-                  ))}
-                </>
-              ) : (
-                <Grid item xs={12}>
-                  <Typography variant="body1" style={{ fontStyle: "italic" }}>
-                    No assignment history found.
+                  <Typography variant="h6" sx={{ marginTop: 3 }} gutterBottom>
+                    {/* Assignment History */}
                   </Typography>
-                </Grid>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell><strong>Assigned To</strong></TableCell>
+                          <TableCell><strong>Assigned By</strong></TableCell>
+                          <TableCell><strong>Assigned Date</strong></TableCell>
+                          <TableCell><strong>Note</strong></TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {selectedAsset.assignments.map((assignment, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{assignment.assignedTo.userName}</TableCell>
+                            <TableCell>{assignment.assignedBy.userName}</TableCell>
+                            <TableCell>{formatDate(assignment.assignedDate)}</TableCell>
+                            <TableCell>{assignment.note}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
               )}
-            </Grid>
+            </>
           ) : (
-            <CircularProgress /> // Show loading indicator while fetching data
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+              <CircularProgress />
+            </Box>
           )}
         </DialogContent>
       </Dialog>

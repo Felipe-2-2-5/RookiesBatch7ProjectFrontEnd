@@ -81,6 +81,7 @@ const ManageAssignmentPage = () => {
   });
   const [dateRange, setDateRange] = useState([null, null]);
   const [selectedState, setSelectedState] = useState("All");
+  const [dateError, setDateError] = useState(false);
 
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -124,7 +125,7 @@ const ManageAssignmentPage = () => {
       }
 
       setAssignments(fetchedAssignments);
-      setTotalCount(fetchedAssignments.length);
+      setTotalCount(res.data.totalCount);
     } else {
       setAssignments([]);
       setTotalCount(0);
@@ -167,11 +168,11 @@ const ManageAssignmentPage = () => {
       });
       //assignment Created
       const assignmentCreated = JSON.parse(
-        localStorage.getItem("assignmentCreated")
+        sessionStorage.getItem("assignment_created")
       );
       if (assignmentCreated) {
         setAssignments([assignmentCreated, ...fetchedAssignments]);
-        sessionStorage.removeItem("assignmentCreated");
+        sessionStorage.removeItem("assignment_created");
       } else {
         setAssignments(fetchedAssignments);
       }
@@ -185,7 +186,7 @@ const ManageAssignmentPage = () => {
       setLoading(false);
     }
 
-    setTotalCount(fetchedAssignments.length);
+    setTotalCount(res.data.totalCount);
   };
 
   useEffect(() => {
@@ -203,6 +204,7 @@ const ManageAssignmentPage = () => {
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1,
     }));
   };
   const handleKeyPress = (e) => {
@@ -274,6 +276,7 @@ const ManageAssignmentPage = () => {
         ...prev,
         sortColumn: newSortColumn,
         sortOrder: newSortOrder,
+        page: 1,
       };
     });
   };
@@ -398,11 +401,21 @@ const ManageAssignmentPage = () => {
                 onChange={(newValue) => {
                   setDateRange(newValue);
                   if (newValue[0] && newValue[1]) {
-                    setFilterRequest((prev) => ({
-                      ...prev,
-                      fromDate: format(newValue[0], "dd/MM/yyyy"),
-                      toDate: format(newValue[1], "dd/MM/yyyy"),
-                    }));
+                    if (
+                      !(newValue[0] instanceof Date) ||
+                      isNaN(newValue[0].getTime()) ||
+                      !(newValue[1] instanceof Date) ||
+                      isNaN(newValue[1].getTime())
+                    ) {
+                      setDateError(true);
+                    } else {
+                      setDateError(false);
+                      setFilterRequest((prev) => ({
+                        ...prev,
+                        fromDate: format(newValue[0], "dd/MM/yyyy"),
+                        toDate: format(newValue[1], "dd/MM/yyyy"),
+                      }));
+                    }
                   }
                 }}
                 renderInput={(startProps, endProps) => (
@@ -421,7 +434,7 @@ const ManageAssignmentPage = () => {
                         },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                         {
-                          borderColor: "black",
+                          borderColor: dateError ? "red" : "black",
                         },
                     }}
                   />

@@ -205,12 +205,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       open={visibleAssetDialog}
       PaperProps={{
         style: {
-          // display: "flex",
-          // alignItems: "center",
-          // justifyContent: "center",
-          width: "70%",
           maxHeight: "70vh",
-          overflowY: "auto",
           margin: "auto",
           position: "absolute",
           top: 0,
@@ -252,7 +247,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           />
         </Box>
         <TableContainer component={Paper}>
-          <Box ref={scrollRef} sx={{ overflow: "auto", maxHeight: "400px" }}>
+          <Box sx={{ overflow: "auto", height: "calc(70vh - 240px)" }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>

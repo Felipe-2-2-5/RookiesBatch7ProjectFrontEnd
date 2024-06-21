@@ -208,11 +208,11 @@ const CreateAssignment = () => {
         note: assignments.note
       });
 
-      if (response.status === 200) {
+      if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
         setTitlePopup("Notifications");
         setContentPopup(
-          `Asset: ${assignments.asset.assetName} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
+          `Asset ${assignments.asset.assetName} has been assigned to ${assignments.user.firstName} ${assignments.user.lastName}.`
         );
         displayPopupNotification()
       }

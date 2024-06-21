@@ -102,12 +102,10 @@ const CreateAssignment = () => {
     console.log("date.now" + new Date());
     console.log("assignments.assignedDate" + assignments.assignedDate);
     let errorMessage = "";
-    const currentDate = formatDate(new Date());
-    const assignedDateFormat = formatDate(assignments.assignedDate);
     if (touched.assignedDate) {
       if (!assignments.assignedDate) {
-        errorMessage = "Assigned date is required";
-      } else if (assignedDateFormat < currentDate) {
+        errorMessage = "Assigned dateF is required";
+      } else if (assignments.assignedDate < Date.now()) {
         errorMessage =
           "Cannot select Assigned Date in the past. Please select another date.";
       }else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {

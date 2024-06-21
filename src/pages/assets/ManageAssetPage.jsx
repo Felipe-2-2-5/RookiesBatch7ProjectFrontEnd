@@ -34,7 +34,11 @@ import {
 import { Sheet } from "@mui/joy";
 import { useNavigate } from "react-router";
 import { path } from "../../routes/routeContants";
-import { FilterRequest, GetAsset, GetCategories } from "../../services/asset.service";
+import {
+  FilterRequest,
+  GetAsset,
+  GetCategories,
+} from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
 
 const formatDate = (dateString) => {
@@ -59,32 +63,48 @@ const ManageAssetPage = () => {
 
   const [totalCount, setTotalCount] = useState();
   const pageSize = filterRequest.pageSize || 1;
-  const pageCount = Number.isNaN(totalCount) || totalCount === 0 ? 1 : Math.ceil(totalCount / pageSize);
+  const pageCount =
+    Number.isNaN(totalCount) || totalCount === 0
+      ? 1
+      : Math.ceil(totalCount / pageSize);
 
   const [assets, setAsset] = useState([]);
   const [categories, setCategories] = useState(null);
   // Fetch assets when component mounts
   useEffect(() => {
     const getAssets = async (filterRequest) => {
-      const res = await FilterRequest(filterRequest);
-      const fetchedAssets = res.data.data;
-      setTotalCount(res.data.totalCount);
+      setLoading(true); // Start loading
 
-      const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
-      if (assetCreated) {
-        setAsset([assetCreated, ...fetchedAssets]);
-        sessionStorage.removeItem("asset_created");
-      } else {
-        setAsset(fetchedAssets);
+      try {
+        const res = await FilterRequest(filterRequest);
+        const fetchedAssets = res.data.data;
+        setTotalCount(res.data.totalCount);
+
+        const assetCreated = JSON.parse(
+          sessionStorage.getItem("asset_created")
+        );
+        if (assetCreated) {
+          const updatedAssets = fetchedAssets.filter(
+            (asset) => asset.id !== assetCreated.id
+          );
+          setAsset([assetCreated, ...updatedAssets]);
+          sessionStorage.removeItem("asset_created");
+        } else {
+          setAsset(fetchedAssets);
+        }
+
+        // Scroll to top of list
+        if (scrollRef.current) {
+          scrollRef.current.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch assets:", error);
+      } finally {
+        setLoading(false); // End loading
       }
-      // Scroll to top of list
-      if (scrollRef.current) {
-        scrollRef.current.scrollTo({
-          top: 0,
-          behavior: "smooth"
-        })
-      }
-      setLoading(false)
     };
 
     getAssets(filterRequest);
@@ -106,7 +126,7 @@ const ManageAssetPage = () => {
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
-  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, ' ');
+  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -121,14 +141,14 @@ const ManageAssetPage = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      setSearchTerm(trimmedSearchTerm)
-      handleSearch()
+      setSearchTerm(trimmedSearchTerm);
+      handleSearch();
     }
   };
 
   const handleSearchClick = () => {
-    setSearchTerm(trimmedSearchTerm)
-    handleSearch()
+    setSearchTerm(trimmedSearchTerm);
+    handleSearch();
   };
 
   // State for dialog
@@ -137,7 +157,7 @@ const ManageAssetPage = () => {
 
   const handleDetailDialog = async (asset) => {
     const res = await GetAsset(asset.id);
-    console.log(res.data)
+    console.log(res.data);
     setSelectedAsset(res.data);
     setDialogOpen(true);
   };
@@ -202,16 +222,16 @@ const ManageAssetPage = () => {
 
   // Custom Arrow Up
   const CustomArrowDropUp = styled(ArrowDropUp)(({ theme }) => ({
-    '& path': {
-      d: 'path("m7 20 5-5 5 5z")'
-    }
+    "& path": {
+      d: 'path("m7 20 5-5 5 5z")',
+    },
   }));
 
   // Custom Arrow Down
   const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
-    '& path': {
-      d: 'path("m7 0 5 5 5-5z")'
-    }
+    "& path": {
+      d: 'path("m7 0 5 5 5-5z")',
+    },
   }));
 
   const getSortIcon = (column) => {
@@ -226,7 +246,7 @@ const ManageAssetPage = () => {
       if (filterRequest.sortOrder === "descend") {
         return (
           <div style={iconStyle}>
-            <CustomArrowDropUp sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
             <CustomArrowDropDown />
           </div>
         );
@@ -235,7 +255,7 @@ const ManageAssetPage = () => {
         return (
           <div style={iconStyle}>
             <CustomArrowDropUp />
-            <CustomArrowDropDown sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
           </div>
         );
       }
@@ -310,7 +330,9 @@ const ManageAssetPage = () => {
             <TextField
               label="Category"
               select
-              value={filterRequest.category === "" ? "All" : filterRequest.category}
+              value={
+                filterRequest.category === "" ? "All" : filterRequest.category
+              }
               onChange={handleCategoryChange}
               variant="outlined"
               fullWidth
@@ -400,7 +422,8 @@ const ManageAssetPage = () => {
       <TableContainer component={Paper}>
         <Sheet
           ref={scrollRef}
-          sx={{ overflow: "auto", height: "calc(100vh - 300px)" }}>
+          sx={{ overflow: "auto", height: "calc(100vh - 300px)" }}
+        >
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -425,7 +448,6 @@ const ManageAssetPage = () => {
                 <TableCell
                   style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
                   onClick={() => handleHeaderClick("category")}
-
                 >
                   <div style={{ display: "flex", alignItems: "center" }}>
                     Category
@@ -449,7 +471,10 @@ const ManageAssetPage = () => {
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
+                  <TableCell
+                    colSpan={6}
+                    sx={{ textAlign: "center", padding: "28px" }}
+                  >
                     <CircularProgress />
                   </TableCell>
                 </TableRow>
@@ -485,7 +510,10 @@ const ManageAssetPage = () => {
                           <IconButton aria-label="edit">
                             <EditIcon />
                           </IconButton>
-                          <IconButton aria-label="delete" style={{ color: "#D6001C" }}>
+                          <IconButton
+                            aria-label="delete"
+                            style={{ color: "#D6001C" }}
+                          >
                             <DeleteIcon />
                           </IconButton>
                         </TableCell>
@@ -495,7 +523,6 @@ const ManageAssetPage = () => {
                 </>
               )}
             </TableBody>
-
           </Table>
         </Sheet>
       </TableContainer>
@@ -568,49 +595,64 @@ const ManageAssetPage = () => {
                 <Typography variant="body1">Asset Code</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Typography variant="body1">{selectedAsset.assetCode}</Typography>
+                <Typography variant="body1">
+                  {selectedAsset.assetCode}
+                </Typography>
               </Grid>
 
               <Grid item xs={5}>
                 <Typography variant="body1">Asset Name</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Typography variant="body1">{selectedAsset.assetName}</Typography>
+                <Typography variant="body1">
+                  {selectedAsset.assetName}
+                </Typography>
               </Grid>
 
               <Grid item xs={5}>
                 <Typography variant="body1">Category</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Typography variant="body1">{selectedAsset.category.name}</Typography>
+                <Typography variant="body1">
+                  {selectedAsset.category.name}
+                </Typography>
               </Grid>
 
               <Grid item xs={5}>
                 <Typography variant="body1">State</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Typography variant="body1">{assetStateEnum[selectedAsset.state]}</Typography>
+                <Typography variant="body1">
+                  {assetStateEnum[selectedAsset.state]}
+                </Typography>
               </Grid>
 
               <Grid item xs={5}>
                 <Typography variant="body1">Installed Date</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Typography variant="body1">{formatDate(selectedAsset.installedDate)}</Typography>
+                <Typography variant="body1">
+                  {formatDate(selectedAsset.installedDate)}
+                </Typography>
               </Grid>
 
               <Grid item xs={5}>
                 <Typography variant="body1">Specificaion</Typography>
               </Grid>
               <Grid item xs={7}>
-                <Typography variant="body1">{selectedAsset.specification}</Typography>
+                <Typography variant="body1">
+                  {selectedAsset.specification}
+                </Typography>
               </Grid>
 
               {/* Assignment History */}
-              {selectedAsset.assignments && selectedAsset.assignments.length > 0 ? (
+              {selectedAsset.assignments &&
+              selectedAsset.assignments.length > 0 ? (
                 <>
                   <Grid item xs={12}>
-                    <Typography variant="h6" style={{ marginTop: 10 }}>Assignment History</Typography>
+                    <Typography variant="h6" style={{ marginTop: 10 }}>
+                      Assignment History
+                    </Typography>
                   </Grid>
                   {selectedAsset.assignments.map((assignment, index) => (
                     <Fragment key={index}>
@@ -618,42 +660,54 @@ const ManageAssetPage = () => {
                         <Typography variant="body1">Assign To</Typography>
                       </Grid>
                       <Grid item xs={7}>
-                        <Typography variant="body1">{assignment.assignTo}</Typography>
+                        <Typography variant="body1">
+                          {assignment.assignTo}
+                        </Typography>
                       </Grid>
 
                       <Grid item xs={5}>
                         <Typography variant="body1">Assign By</Typography>
                       </Grid>
                       <Grid item xs={7}>
-                        <Typography variant="body1">{assignment.assignBy}</Typography>
+                        <Typography variant="body1">
+                          {assignment.assignBy}
+                        </Typography>
                       </Grid>
 
                       <Grid item xs={5}>
                         <Typography variant="body1">Assign Date</Typography>
                       </Grid>
                       <Grid item xs={7}>
-                        <Typography variant="body1">{assignment.assignDate}</Typography>
+                        <Typography variant="body1">
+                          {assignment.assignDate}
+                        </Typography>
                       </Grid>
 
                       <Grid item xs={5}>
                         <Typography variant="body1">State</Typography>
                       </Grid>
                       <Grid item xs={7}>
-                        <Typography variant="body1">{assignment.state}</Typography>
+                        <Typography variant="body1">
+                          {assignment.state}
+                        </Typography>
                       </Grid>
 
                       <Grid item xs={5}>
                         <Typography variant="body1">Note</Typography>
                       </Grid>
                       <Grid item xs={7}>
-                        <Typography variant="body1">{assignment.note}</Typography>
+                        <Typography variant="body1">
+                          {assignment.note}
+                        </Typography>
                       </Grid>
                     </Fragment>
                   ))}
                 </>
               ) : (
                 <Grid item xs={12}>
-                  <Typography variant="body1" style={{ fontStyle: 'italic' }}>No assignment history found.</Typography>
+                  <Typography variant="body1" style={{ fontStyle: "italic" }}>
+                    No assignment history found.
+                  </Typography>
                 </Grid>
               )}
             </Grid>

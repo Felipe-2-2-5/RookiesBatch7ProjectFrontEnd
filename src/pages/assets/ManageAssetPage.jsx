@@ -17,6 +17,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogActions,
   Box,
   CircularProgress,
   Pagination,
@@ -31,7 +32,9 @@ import {
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
+import { Sheet } from "@mui/joy";
 import { useNavigate } from "react-router";
+import { Link } from 'react-router-dom';
 import { path } from "../../routes/routeContants";
 import { FilterRequest, GetAsset, GetCategories } from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
@@ -147,6 +150,42 @@ const ManageAssetPage = () => {
   const handleDialogClose = () => {
     setDialogOpen(false);
     setSelectedAsset(null);
+    setShowDeleteConfirmation(false); // Close delete confirmation dialog
+    setShowNotification(false); // Close notification dialog
+  };
+
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+
+  const handleDeleteIconClick = (asset) => {
+    setSelectedAsset(asset);
+
+    if (asset.assignments && asset.assignments.length > 0
+    ) {
+      setShowNotification(true);
+    } else {
+      setShowDeleteConfirmation(true);
+    }
+  };
+
+  const handleDeleteConfirmation = async () => {
+    if (selectedAsset) {
+      try {
+        // await DeleteAsset(selectedAsset.id);
+        // Handle deletion success (e.g., show a success message, update asset list)
+        console.log("Asset deleted successfully.");
+        // Refresh asset list
+        setFilterRequest((prev) => ({
+          ...prev,
+          page: 1,
+        }));
+        setShowDeleteConfirmation(false);
+      } catch (error) {
+        console.error("Error deleting asset:", error);
+        // Handle deletion error (e.g., show an error message)
+        setShowDeleteConfirmation(false);
+      }
+    }
   };
 
   const handleStateChange = (e) => {
@@ -259,289 +298,313 @@ const ManageAssetPage = () => {
 
   return (
     <>
-      <Typography
-        variant="h5"
-        component="h2"
-        style={{ color: "#D6001C", fontWeight: "bold", marginBottom: 20 }}
-      >
-        Asset List
-      </Typography>
-
-      {/* Filters, Search, and Create New Asset */}
-      <Grid container spacing={2} alignItems="center">
-        {/* Left side: Filters and Search */}
-        <Grid item xs={12} md={8} container spacing={2}>
-          {/* State Filter */}
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="State"
-              select
-              value={filterRequest.state === "" ? "All" : filterRequest.state}
-              onChange={handleStateChange}
-              variant="outlined"
-              fullWidth
-              sx={{
-                "& label.Mui-focused": { color: "#000" },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": { borderColor: "#000" },
-                },
-                "& .MuiSelect-icon": {
-                  color: "transparent",
-                },
-                width: "70%",
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <FilterIcon />
-                  </InputAdornment>
-                ),
-              }}
-            >
-              <MenuItem value="All">All</MenuItem>
-              {Object.values(assetStateEnum).map((state) => (
-                <MenuItem key={state} value={state}>
-                  {state}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-
-          {/* Category Filter */}
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Category"
-              select
-              value={filterRequest.category === "" ? "All" : filterRequest.category}
-              onChange={handleCategoryChange}
-              variant="outlined"
-              fullWidth
-              sx={{
-                "& label.Mui-focused": { color: "#000" },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": { borderColor: "#000" },
-                },
-                "& .MuiSelect-icon": {
-                  color: "transparent",
-                },
-                width: "70%",
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <FilterIcon />
-                  </InputAdornment>
-                ),
-              }}
-            >
-              <MenuItem value="All">All</MenuItem>
-              {categories ? (
-                categories.map((category) => (
-                  <MenuItem key={category.id} value={category.name}>
-                    {category.name}
-                  </MenuItem>
-                ))
-              ) : (
-                <MenuItem value="" disabled>
-                  Loading categories...
-                </MenuItem>
-              )}
-            </TextField>
-          </Grid>
-
-          {/* Search Box */}
-          <Grid item xs={12} sm={4}>
-            <TextField
-              label="Search"
-              variant="outlined"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              onKeyPress={handleKeyPress}
-              fullWidth
-              sx={{
-                "& label.Mui-focused": { color: "#000" },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": { borderColor: "#000" },
-                },
-                width: "120%",
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleSearchClick}>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Right side: Create New Asset Button */}
-        <Grid item xs={12} md={4} container justifyContent="flex-end">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate(path.assetCreate)}
-            sx={{
-              backgroundColor: "#D6001C",
-              color: "white",
-              height: 56, // Set height to 56px
-              "&:hover": {
-                bgcolor: "rgba(214, 0, 28, 0.8)",
-              },
-            }}
-          >
-            Create New Asset
-          </Button>
-        </Grid>
-      </Grid>
-
-      {/* Asset Table */}
-      <TableContainer
-        component={Paper}
-        sx={{
-          marginTop: 2,
-          maxHeight: 600, // Adjust this value as needed
-          overflowY: "auto",
+      <Paper
+        elevation={3}
+        style={{
+          padding: "20px",
+          width: "100%",
+          height: "calc(100vh - 150px)",
         }}
-        ref={scrollRef}
       >
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                onClick={() => handleHeaderClick("assetcode")}
+        <Typography
+          variant="h5"
+          component="h2"
+          style={{ color: "#D6001C", fontWeight: "bold", marginBottom: 20 }}
+        >
+          Asset List
+        </Typography>
+
+        {/* Filters, Search, and Create New Asset */}
+        <Grid container spacing={2} alignItems="center">
+          {/* Left side: Filters and Search */}
+          <Grid item xs={12} md={8} container spacing={2}>
+            {/* State Filter */}
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="State"
+                select
+                value={filterRequest.state === "" ? "All" : filterRequest.state}
+                onChange={handleStateChange}
+                variant="outlined"
+                fullWidth
+                sx={{
+                  "& label.Mui-focused": { color: "#000" },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": { borderColor: "#000" },
+                  },
+                  "& .MuiSelect-icon": {
+                    color: "transparent",
+                  },
+                  width: "70%",
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <FilterIcon />
+                    </InputAdornment>
+                  ),
+                }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Asset Code
-                  {getSortIcon("assetcode")}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
-                onClick={() => handleHeaderClick("assetname")}
+                <MenuItem value="All">All</MenuItem>
+                {Object.values(assetStateEnum).map((state) => (
+                  <MenuItem key={state} value={state}>
+                    {state}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            {/* Category Filter */}
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Category"
+                select
+                value={filterRequest.category === "" ? "All" : filterRequest.category}
+                onChange={handleCategoryChange}
+                variant="outlined"
+                fullWidth
+                sx={{
+                  "& label.Mui-focused": { color: "#000" },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": { borderColor: "#000" },
+                  },
+                  "& .MuiSelect-icon": {
+                    color: "transparent",
+                  },
+                  width: "70%",
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <FilterIcon />
+                    </InputAdornment>
+                  ),
+                }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Asset Name
-                  {getSortIcon("assetname")}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                onClick={() => handleHeaderClick("category")}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  Category
-                  {getSortIcon("category")}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
-                onClick={() => handleHeaderClick("state")}
-              >
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  State
-                  {getSortIcon("state")}
-                </div>
-              </TableCell>
-              <TableCell
-                style={{ fontWeight: "bold", width: "15%" }}
-              ></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
-                  <CircularProgress />
-                </TableCell>
-              </TableRow>
-            ) : (
-              <>
-                {assets.length === 0 ? (
+                <MenuItem value="All">All</MenuItem>
+                {categories ? (
+                  categories.map((category) => (
+                    <MenuItem key={category.id} value={category.name}>
+                      {category.name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem value="" disabled>
+                    Loading categories...
+                  </MenuItem>
+                )}
+              </TextField>
+            </Grid>
+
+            {/* Search Box */}
+            <Grid item xs={12} sm={4}>
+              <TextField
+                label="Search"
+                variant="outlined"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onKeyPress={handleKeyPress}
+                fullWidth
+                sx={{
+                  "& label.Mui-focused": { color: "#000" },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": { borderColor: "#000" },
+                  },
+                  width: "120%",
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleSearchClick}>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+          </Grid>
+
+          {/* Right side: Create New Asset Button */}
+          <Grid item xs={12} md={4} container justifyContent="flex-end">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate(path.assetCreate)}
+              sx={{
+                backgroundColor: "#D6001C",
+                color: "white",
+                height: 56, // Set height to 56px
+                "&:hover": {
+                  bgcolor: "rgba(214, 0, 28, 0.8)",
+                },
+              }}
+            >
+              Create New Asset
+            </Button>
+          </Grid>
+        </Grid>
+
+        {/* Asset Table */}
+        <TableContainer
+          component={Paper}
+          sx={{ height: "calc(100% - 150px)", position: "relative" }}
+        >
+          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
+            <Table stickyHeader>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                    onClick={() => handleHeaderClick("assetcode")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      Asset Code
+                      {getSortIcon("assetcode")}
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
+                    onClick={() => handleHeaderClick("assetname")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      Asset Name
+                      {getSortIcon("assetname")}
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                    onClick={() => handleHeaderClick("category")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      Category
+                      {getSortIcon("category")}
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                    onClick={() => handleHeaderClick("state")}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      State
+                      {getSortIcon("state")}
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    style={{ fontWeight: "bold", width: "15%" }}
+                  ></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {loading ? (
                   <TableRow>
-                    <TableCell
-                      colSpan={6}
-                      sx={{
-                        color: "red",
-                        textAlign: "center",
-                        padding: "28px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      No asset found
+                    <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
+                      <CircularProgress />
                     </TableCell>
                   </TableRow>
                 ) : (
-                  assets.map((asset) => (
-                    <TableRow
-                      key={asset.id}
-                      hover
-                      onClick={() => handleDetailDialog(asset)}
-                      style={{ cursor: "pointer" }} // Set cursor to pointer on hover
-                    >
-                      <TableCell>{asset.assetCode}</TableCell>
-                      <TableCell>{asset.assetName}</TableCell>
-                      <TableCell>{asset.category.name}</TableCell>
-                      <TableCell>{assetStateEnum[asset.state]}</TableCell>
-                      <TableCell>
-                        {assetStateEnum[asset.state] === "Assigned" ? (
-                          // Disable edit and delete icons if state is assigned
-                          <>
-                            <IconButton aria-label="edit" disabled>
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton aria-label="delete" disabled style={{ color: "#D6001C", opacity: 0.5 }}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </>
-                        ) : (
-                          // Render edit and delete icons normally if state is not assigned
-                          <>
-                            <IconButton aria-label="edit">
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton aria-label="delete" style={{ color: "#D6001C" }}>
-                              <DeleteIcon />
-                            </IconButton>
-                          </>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))
+                  <>
+                    {assets.length === 0 ? (
+                      <TableRow>
+                        <TableCell
+                          colSpan={6}
+                          sx={{
+                            color: "red",
+                            textAlign: "center",
+                            padding: "28px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          No asset found
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      assets.map((asset) => (
+                        <TableRow
+                          key={asset.id}
+                          hover
+                          onClick={() => handleDetailDialog(asset)}
+                          style={{ cursor: "pointer" }} // Set cursor to pointer on hover
+                        >
+                          <TableCell>{asset.assetCode}</TableCell>
+                          <TableCell>{asset.assetName}</TableCell>
+                          <TableCell>{asset.category.name}</TableCell>
+                          <TableCell>{assetStateEnum[asset.state]}</TableCell>
+                          <TableCell>
+                            {assetStateEnum[asset.state] === "Assigned" ? (
+                              // Disable edit and delete icons if state is assigned
+                              <>
+                                <IconButton aria-label="edit" disabled
+                                  onClick={(e) => {
+                                    // Prevent showing popup
+                                    e.stopPropagation();
+                                  }}>
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton aria-label="delete" disabled style={{ color: "#D6001C", opacity: 0.5 }}
+                                  onClick={(e) => {
+                                    // Prevent showing popup
+                                    e.stopPropagation();
+                                  }}>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </>
+                            ) : (
+                              // Render edit and delete icons normally if state is not assigned
+                              <>
+                                <IconButton aria-label="edit"
+                                  onClick={(e) => {
+                                    // Prevent showing popup
+                                    e.stopPropagation();
+                                  }}>
+                                  <EditIcon />
+                                </IconButton>
+                                <IconButton aria-label="delete" style={{ color: "#D6001C" }}
+                                  onClick={(e) => {
+                                    // Prevent showing popup
+                                    e.stopPropagation();
+
+                                    handleDeleteIconClick(asset);
+                                  }}>
+                                  <DeleteIcon />
+                                </IconButton>
+                              </>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </>
                 )}
-              </>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          paddingTop: "10px",
-        }}
-      >
-        <Pagination
-          count={pageCount}
-          variant="outlined"
-          shape="rounded"
-          page={filterRequest.page}
-          onChange={handlePageChange}
+              </TableBody>
+            </Table>
+          </Sheet>
+        </TableContainer>
+        <Box
           sx={{
-            "& .MuiPaginationItem-root": {
-              color: "#D6001C",
-            },
-            "& .Mui-selected": {
-              backgroundColor: "#D6001C !important",
-              color: "white",
-            },
+            display: "flex",
+            justifyContent: "flex-end",
+            paddingTop: "15px",
           }}
-        />
-      </Box>
+        >
+          <Pagination
+            count={pageCount}
+            variant="outlined"
+            shape="rounded"
+            page={filterRequest.page}
+            onChange={handlePageChange}
+            sx={{
+              "& .MuiPaginationItem-root": {
+                color: "#D6001C",
+              },
+              "& .Mui-selected": {
+                backgroundColor: "#D6001C !important",
+                color: "white",
+              },
+            }}
+          />
+        </Box>
+      </Paper>
 
       {/* Asset Details Dialog */}
       <Dialog
@@ -679,6 +742,99 @@ const ManageAssetPage = () => {
               <CircularProgress />
             </Box>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteConfirmation} onClose={() => setShowDeleteConfirmation(false)}>
+        <DialogTitle
+          sx={{
+            bgcolor: "grey.300",
+            color: "#D6001C",
+            fontWeight: "bold",
+            borderBottom: "1px solid black",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+          Are you sure?
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            borderTop: "1px solid black",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+          }}>
+          <Typography variant="body1">
+            Do you want to delete this asset?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteConfirmation} autoFocus
+            sx={{
+              color: "white",
+              bgcolor: "#D6001C",
+              "&:hover": {
+                bgcolor: "rgba(214, 0, 28, 0.8)",
+              },
+            }}>
+            Delete
+          </Button>
+          <Button onClick={() => setShowDeleteConfirmation(false)}
+            sx={{
+              color: "black",
+            }}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Notification Dialog for Historical Assignments */}
+      <Dialog open={showNotification} onClose={() => setShowNotification(false)}>
+        <DialogTitle
+          sx={{
+            bgcolor: "grey.300",
+            color: "#D6001C",
+            fontWeight: "bold",
+            borderBottom: "1px solid black",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}>
+          Cannot Delete Asset
+          <IconButton
+            aria-label="close"
+            onClick={handleDialogClose}
+            sx={{
+              bgcolor: "grey.300",
+              color: "#D6001C",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            borderTop: "1px solid black",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+          }}>
+          <Typography variant="body1">
+            Cannot delete the asset because it belongs to one or more historical assignments.
+          </Typography>
+          <Typography variant="body1">
+            If the asset is not able to be used anymore, please update its state in{' '}
+            <Link
+              component={Link}
+              to="/edit-asset"
+              color="primary"
+              underline="always"
+            >
+              Edit Asset page
+            </Link>.
+          </Typography>
         </DialogContent>
       </Dialog>
     </>

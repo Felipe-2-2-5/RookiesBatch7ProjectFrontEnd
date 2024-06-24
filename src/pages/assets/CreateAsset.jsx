@@ -160,8 +160,9 @@ const CreateAsset = () => {
       categoryId: asset.category.id,
       specification: asset.specification,
       installedDate: formatDate(asset.installedDate),
-      assetState: parseInt(asset.state, 10),
+      state: parseInt(asset.state, 10),
     };
+    console.log(newAsset);
     var res = await CreateAssetAPI(newAsset);
     if (res) {
       sessionStorage.setItem("asset_created", JSON.stringify(res.data));

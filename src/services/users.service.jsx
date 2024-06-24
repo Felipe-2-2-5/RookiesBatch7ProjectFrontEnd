@@ -34,3 +34,7 @@ export const UpdateUser = async (id, body) => {
   const response = await httpClient.put(`/users/${id}`, body);
   return response;
 };
+export const DisableUser = async (id) => {
+  const response = await httpClient.put(`/users/disable/${id}`);
+  return response;
+};

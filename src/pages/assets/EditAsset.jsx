@@ -10,51 +10,51 @@ import {
   Box,
   Container,
   FormHelperText,
-  Autocomplete,
 } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { CreateAssetAPI } from "../../services/asset.service";
-import { GetCategories } from "../../services/category.service"; // Corrected typo in import
-import { useNavigate } from "react-router-dom";
+import { EditAssetAPI, GetAsset } from "../../services/asset.service";
+import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
-import CategoryForm from "./CategoryForm";
 import PopupNotification from "../../components/PopupNotification";
 
-const CreateAsset = () => {
-  const [categories, setCategories] = useState([]);
-  const [isVisible, setIsVisible] = useState(false);
+const EditAsset = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
   const [touched, setTouched] = useState();
-  const handleIsVisible = () => {
-    if (!isVisible) {
-      setIsVisible(true);
-    }
-  };
+  const { id } = useParams();
+
   const navigate = useNavigate();
   const [formErrors, setFormErrors] = useState({
-    name: "",
+    assetName: "",
     category: "",
     specification: "",
     installedDate: "",
   });
   const [asset, setAsset] = useState({
-    name: "",
+    assetName: "",
     category: null,
     specification: "",
     installedDate: null,
     state: 0,
   });
-  const fetchCategories = async () => {
-    const res = await GetCategories();
-    setCategories(res.data);
+  const fetchAsset = async (id) => {
+    const res = await GetAsset(id);
+    const asset = res.data;
+    console.log(asset);
+    setAsset({
+      assetName: asset.assetName,
+      category: asset.category,
+      specification: asset.specification,
+      installedDate: new Date(asset.installedDate),
+      state: parseInt(asset.state, 10),
+    });
   };
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    fetchAsset(id);
+  }, [id]);
   useEffect(() => {
     if (touched) {
       let errorMessage = "";
@@ -69,10 +69,7 @@ const CreateAsset = () => {
       }));
     }
   }, [touched, asset.installedDate]);
-  const handleNewCategory = (category) => {
-    setAsset({ ...asset, category: category });
-    fetchCategories();
-  };
+
   const handleNameBlur = (event) => {
     const { name, value } = event.target;
     const trimmedValue = value.replace(/\s+/g, " ");
@@ -105,13 +102,7 @@ const CreateAsset = () => {
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
-  const handleCategoryBlur = () => {
-    let errorMessage = "";
-    if (asset.category === null) {
-      errorMessage = `Category is required`;
-    }
-    setFormErrors({ ...formErrors, category: errorMessage });
-  };
+
   const handleSpecChange = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
@@ -145,40 +136,27 @@ const CreateAsset = () => {
     if (!date) return "";
     return format(date, "dd/MM/yyyy");
   };
-  const handleCategoryChange = (category) => {
-    let errorMessage = "";
-    if (!category) {
-      errorMessage = `Category is required`;
-    }
-    setFormErrors({ ...formErrors, category: errorMessage });
-    setAsset({ ...asset, category: category });
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newAsset = {
-      assetName: asset.name,
+      assetName: asset.assetName,
       categoryId: asset.category.id,
       specification: asset.specification,
       installedDate: formatDate(asset.installedDate),
       state: parseInt(asset.state, 10),
     };
-    console.log(newAsset);
-    var res = await CreateAssetAPI(newAsset);
+    var res = await EditAssetAPI(id, newAsset);
     if (res) {
       sessionStorage.setItem("asset_created", JSON.stringify(res.data));
       setOpenPopup(true);
       setTitlePopup("Notifications");
-      setContentPopup(`Asset ${asset.name}  has been created.`);
+      setContentPopup(`Asset ${asset.assetName}  has been edited.`);
     }
   };
   const handleCancel = () => {
     setOpenPopup(false);
     navigate("/manage-asset");
   };
-  const categoriesWithButton = [
-    ...categories,
-    { name: "Add Category", isButton: true },
-  ];
   return (
     <>
       <Container sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -192,7 +170,7 @@ const CreateAsset = () => {
               fontSize: "20px",
             }}
           >
-            Create New Asset
+            Edit Asset
           </Typography>
           <form
             onSubmit={handleSubmit}
@@ -213,11 +191,11 @@ const CreateAsset = () => {
               <Grid item xs={9}>
                 <TextField
                   label="Name"
-                  value={asset.name}
-                  name="name"
+                  value={asset.assetName}
+                  name="assetName"
                   onChange={handleNameChange}
                   onBlur={handleNameBlur}
-                  error={formErrors.name}
+                  error={formErrors.assetName}
                   fullWidth
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -226,8 +204,8 @@ const CreateAsset = () => {
                     },
                   }}
                 />
-                {formErrors.name && (
-                  <FormHelperText error>{formErrors.name}</FormHelperText>
+                {formErrors.assetName && (
+                  <FormHelperText error>{formErrors.assetName}</FormHelperText>
                 )}
               </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
@@ -237,73 +215,18 @@ const CreateAsset = () => {
                 </Typography>
               </Grid>
               <Grid item xs={9}>
-                <Autocomplete
-                  onChangeCapture={handleCategoryBlur}
-                  options={categoriesWithButton}
-                  getOptionLabel={(option) => option.name}
-                  value={
-                    categories.find(
-                      (cat) => cat.name === asset.category?.name
-                    ) || null
-                  }
-                  onChange={(e, value) => {
-                    if (value && value.isButton) {
-                      handleIsVisible();
-                    } else {
-                      handleCategoryChange(value);
-                    }
+                <TextField
+                  name="category"
+                  value={asset.category?.name}
+                  fullWidth
+                  disabled
+                  sx={{
+                    "& label.Mui-focused": { color: "#000" },
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": { borderColor: "#000" },
+                    },
                   }}
-                  renderOption={(props, option) =>
-                    option.isButton ? (
-                      <li
-                        {...props}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleIsVisible();
-                        }}
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <Button
-                          title="Add Category"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleIsVisible();
-                          }}
-                          sx={{
-                            color: "black",
-                            textTransform: "none",
-                            fontSize: "16px",
-                            padding: "0",
-                            marginLeft: "5px",
-                            width: "100%",
-                          }}
-                        >
-                          + Add Category
-                        </Button>
-                      </li>
-                    ) : (
-                      <li {...props}>{option.name}</li>
-                    )
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      onBlur={handleCategoryBlur}
-                      error={formErrors.category}
-                      {...params}
-                      label="Category"
-                      fullWidth
-                      sx={{
-                        "& label.Mui-focused": { color: "#000" },
-                        "& .MuiOutlinedInput-root": {
-                          "&.Mui-focused fieldset": { borderColor: "#000" },
-                        },
-                      }}
-                    />
-                  )}
                 />
-                {formErrors.category && (
-                  <FormHelperText error>{formErrors.category}</FormHelperText>
-                )}
               </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
@@ -376,7 +299,7 @@ const CreateAsset = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3}>
                 <Typography>
                   State
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
@@ -386,7 +309,7 @@ const CreateAsset = () => {
                 <RadioGroup
                   name="state"
                   value={asset.state}
-                  row
+                  column
                   onChange={(e) =>
                     setAsset({ ...asset, state: e.target.value })
                   }
@@ -415,6 +338,30 @@ const CreateAsset = () => {
                     }
                     label="Not Availble"
                   />
+                  <FormControlLabel
+                    value={2}
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#000",
+                          "&.Mui-checked": { color: "#d32f2f" },
+                        }}
+                      />
+                    }
+                    label="Wating for recycling"
+                  />
+                  <FormControlLabel
+                    value={3}
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#000",
+                          "&.Mui-checked": { color: "#d32f2f" },
+                        }}
+                      />
+                    }
+                    label="Recycled"
+                  />
                 </RadioGroup>
               </Grid>
               <Grid item xs={12}>
@@ -433,7 +380,7 @@ const CreateAsset = () => {
                     }}
                     disabled={
                       Object.values(formErrors).some((error) => error) ||
-                      !asset.name ||
+                      !asset.assetName ||
                       !asset.category ||
                       !asset.specification ||
                       !asset.installedDate
@@ -453,13 +400,6 @@ const CreateAsset = () => {
               </Grid>
             </Grid>
           </form>
-          {isVisible && (
-            <CategoryForm
-              visibleDialog={isVisible}
-              setVisibleDialog={setIsVisible}
-              setCategory={handleNewCategory}
-            />
-          )}
         </Box>
         <PopupNotification
           open={openPopup}
@@ -472,4 +412,4 @@ const CreateAsset = () => {
   );
 };
 
-export default CreateAsset;
+export default EditAsset;

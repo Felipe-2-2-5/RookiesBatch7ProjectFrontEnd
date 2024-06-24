@@ -16,6 +16,7 @@ import CreateAssignment from "../pages/assignments/CreateAssignment";
 import CreateAsset from "../pages/assets/CreateAsset";
 import EditAssignment from "../pages/assignments/EditAssignment";
 import EditUser from "../pages/users/EditUser";
+import EditAsset from "../pages/assets/EditAsset";
 
 export const AdminRoutes = () => {
   const element = useRoutes([
@@ -89,6 +90,15 @@ export const AdminRoutes = () => {
       element: (
         <RequireAuth>
           <CreateAsset />
+        </RequireAuth>
+      ),
+      errorElement: <NotFound />,
+    },
+    {
+      path: path.assetEdit,
+      element: (
+        <RequireAuth>
+          <EditAsset />
         </RequireAuth>
       ),
       errorElement: <NotFound />,

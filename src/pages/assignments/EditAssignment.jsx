@@ -75,8 +75,8 @@ const EditAssignment = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedAsset, setSelectedAsset] = useState(null);
     const [selectedAssignment, setSelectedAssignment] = useState({ assignedDate: null });
-    const [initialAsset, setInitialAsset] = useState('');
-    const [currentAsset, setCurrentAsset] = useState('');
+    // const [initialAsset, setInitialAsset] = useState('');
+    // const [currentAsset, setCurrentAsset] = useState('');
     const [formErrors, setFormErrors] = useState({
         user: false,
         asset: false,
@@ -115,8 +115,8 @@ const EditAssignment = () => {
                 if (response) {
                     setSelectedUser(response.data.assignedTo);
                     setSelectedAsset(response.data.asset);
-                    setInitialAsset(response.data.asset.assetName);
-                    setCurrentAsset(response.data.asset.assetName);
+                    // setInitialAsset(response.data.asset.assetName);
+                    // setCurrentAsset(response.data.asset.assetName);
                     setSelectedAssignment({
                         ...response.data,
                         assignedDate: new Date(response.data.assignedDate),
@@ -183,7 +183,7 @@ const EditAssignment = () => {
     const handleAssetChange = (e) => {
         const value = e.target.value;
         console.log("value", value);
-        setCurrentAsset(value);
+        // setCurrentAsset(value);
     };
 
     // const isAssetChanged = () => {

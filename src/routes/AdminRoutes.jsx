@@ -13,8 +13,9 @@ import {
 } from "../pages";
 import { path } from "./routeContants";
 import CreateAssignment from "../pages/assignments/CreateAssignment";
-import DialogUserList from "../components/DialogUserList";
 import CreateAsset from "../pages/assets/CreateAsset";
+import EditAssignment from "../pages/assignments/EditAssignment";
+import EditUser from "../pages/users/EditUser";
 import EditAsset from "../pages/assets/EditAsset";
 
 export const AdminRoutes = () => {
@@ -53,6 +54,15 @@ export const AdminRoutes = () => {
       errorElement: <NotFound />,
     },
     {
+      path: path.userEdit,
+      element: (
+        <RequireAuth>
+          <EditUser />
+        </RequireAuth>
+      ),
+      errorElement: <NotFound />,
+    },
+    {
       path: path.assignmentCreate,
       element: (
         <RequireAuth>
@@ -62,8 +72,12 @@ export const AdminRoutes = () => {
       errorElement: <NotFound />,
     },
     {
-      path: "/dialog",
-      element: <DialogUserList />,
+      path: path.assignmentEdit,
+      element: (
+        <RequireAuth>
+          <EditAssignment />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {

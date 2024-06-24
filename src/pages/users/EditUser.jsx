@@ -64,6 +64,7 @@ const EditUser = () => {
             ...response.data,
             dateOfBirth: parsedDateOfBirth,
             joinedDate: parsedJoinedDate,
+            location: response.data.location === 1 ? "HaNoi" : "HoChiMinh",
           });
         }
       } catch (error) {
@@ -241,7 +242,7 @@ const EditUser = () => {
           joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
         });
         if (response) {
-          sessionStorage.setItem("user_updated", JSON.stringify(response.data));
+          sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
             `User ${users.firstName} ${users.lastName} has been updated.`
@@ -288,7 +289,6 @@ const EditUser = () => {
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   First Name
-                  <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
               <Grid item xs={9}>
@@ -316,7 +316,6 @@ const EditUser = () => {
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Last Name
-                  <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
               <Grid item xs={9}>

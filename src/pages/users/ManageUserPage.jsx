@@ -94,19 +94,12 @@ const ManageUserPage = () => {
     setTotalCount(res?.data?.totalCount);
 
     const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
-    const userUpdated = JSON.parse(sessionStorage.getItem("user_updated"));
     if (userCreated) {
       const updatedUsers = fetchedUsers.filter(
         (asset) => asset.id !== userCreated.id
       );
       setUser([userCreated, ...updatedUsers]);
       sessionStorage.removeItem("user_created");
-    } else if (userUpdated) {
-      const updatedUsers = fetchedUsers.filter(
-        (asset) => asset.id !== userCreated.id
-      );
-      setUser([userCreated, ...updatedUsers]);
-      sessionStorage.removeItem("user_updated");
     } else {
       setUser(fetchedUsers);
     }

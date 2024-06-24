@@ -186,13 +186,13 @@ const EditAssignment = () => {
         setCurrentAsset(value);
     };
 
-    const isAssetChanged = () => {
-        return initialAsset !== currentAsset;
-    };
+    // const isAssetChanged = () => {
+    //     return initialAsset !== currentAsset;
+    // };
 
-    const isAssetValid = () => {
-        return !formErrors.asset && currentAsset;
-    };
+    // const isAssetValid = () => {
+    //     return !formErrors.asset && currentAsset;
+    // };
 
     const handleDateChange = (name, date) => {
         setSelectedAssignment({ ...selectedAssignment, [name]: date });

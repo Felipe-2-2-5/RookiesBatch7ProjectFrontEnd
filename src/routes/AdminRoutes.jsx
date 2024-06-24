@@ -71,6 +71,15 @@ export const AdminRoutes = () => {
       errorElement: <NotFound />,
     },
     {
+      path: path.assignmentEdit,
+      element: (
+        <RequireAuth>
+          <EditAssignment />
+        </RequireAuth>
+      ),
+      errorElement: <NotFound />,
+    },
+    {
       path: path.assets,
       element: <ManageAssetPage />,
       errorElement: <NotFound />,

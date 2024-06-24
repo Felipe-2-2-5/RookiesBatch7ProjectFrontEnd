@@ -100,18 +100,7 @@ const ManageUserPage = () => {
       );
       setUser([userCreated, ...updatedUsers]);
       sessionStorage.removeItem("user_created");
-<<<<<<< HEAD
-    }
-      else {
-=======
-    } else if (userUpdated) {
-      const updatedUsers = fetchedUsers.filter(
-        (asset) => asset.id !== userCreated.id
-      );
-      setUser([userCreated, ...updatedUsers]);
-      sessionStorage.removeItem("user_updated");
     } else {
->>>>>>> 669b6068fca5726ce6863bd871cec5c001cd2860
       setUser(fetchedUsers);
     }
     //Scroll to top of list

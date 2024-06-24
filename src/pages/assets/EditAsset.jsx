@@ -143,7 +143,7 @@ const EditAsset = () => {
       categoryId: asset.category.id,
       specification: asset.specification,
       installedDate: formatDate(asset.installedDate),
-      assetState: asset.state,
+      assetState: parseInt(asset.state),
     };
     var res = await EditAssetAPI(id, newAsset);
     if (res) {

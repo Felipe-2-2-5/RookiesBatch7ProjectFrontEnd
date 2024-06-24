@@ -160,7 +160,6 @@ const CreateAsset = () => {
       categoryId: asset.category.id,
       specification: asset.specification,
       installedDate: formatDate(asset.installedDate),
-      state: parseInt(asset.state, 10),
       assetState: parseInt(asset.state, 10),
     };
     var res = await CreateAssetAPI(newAsset);

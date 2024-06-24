@@ -263,8 +263,8 @@ const ManageUserPage = () => {
         getUsers(filterRequest);
         setDisableError(null); // clear any previous errors
       } catch (err) {
-        // Set the error state to the error message
         setDisableError(err?.UserMessage);
+        setDisableDialogOpen(false);
         setDisableErrorPopupOpen(true);
       }
     }
@@ -291,7 +291,7 @@ const ManageUserPage = () => {
           <PopupNotification
             open={disableErrorPopupOpen}
             handleClose={() => setDisableErrorPopupOpen(false)}
-            title="Error"
+            title="Can not disable user"
             content={disableError}
           />
           <FormControl
@@ -684,12 +684,14 @@ const ManageUserPage = () => {
       <Dialog
         open={disableDialogOpen}
         onClose={() => setDisableDialogOpen(false)}
-        maxWidth="md"
+        maxWidth="xs"
         fullWidth>
         <DialogTitle
           sx={{
+            color: "#D6001C",
             bgcolor: "grey.300",
-            borderBottom: "1px solid black",
+            borderBottom: "3px solid grey",
+            fontWeight: "bold",
           }}>
           Are you sure?
         </DialogTitle>
@@ -710,7 +712,8 @@ const ManageUserPage = () => {
           <Button
             onClick={() => setDisableDialogOpen(false)}
             sx={{
-              borderColor: "black",
+              color: "grey",
+              border: "2px solid grey",
               "&:hover": {
                 backgroundColor: "lightgray",
               },

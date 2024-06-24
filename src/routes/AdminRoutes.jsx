@@ -15,6 +15,7 @@ import { path } from "./routeContants";
 import CreateAssignment from "../pages/assignments/CreateAssignment";
 import DialogUserList from "../components/DialogUserList";
 import CreateAsset from "../pages/assets/CreateAsset";
+import EditAssignment from "../pages/assignments/EditAssignment";
 
 export const AdminRoutes = () => {
   const element = useRoutes([
@@ -59,6 +60,10 @@ export const AdminRoutes = () => {
         </RequireAuth>
       ),
       errorElement: <NotFound />,
+    },
+    {
+      path: path.assignmentEdit,
+      element: <RequireAuth><EditAssignment /></RequireAuth>
     },
     {
       path: "/dialog",

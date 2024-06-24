@@ -72,7 +72,7 @@ const CreateAssignment = () => {
     user: null,
     asset: null,
     // assignedDate: Date.now(),
-    assignedDate : new Date(),
+    assignedDate: new Date(),
     note: "",
   });
   const [formErrors, setFormErrors] = useState({
@@ -83,7 +83,7 @@ const CreateAssignment = () => {
   });
   const [touched, setTouched] = useState({
     assignedDate: false,
-    user:false,
+    user: false,
     asset: false
   });
 
@@ -105,7 +105,7 @@ const CreateAssignment = () => {
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
-  
+
 
   useEffect(() => {
     let errorMessage = "";
@@ -115,7 +115,7 @@ const CreateAssignment = () => {
       } else {
         const assignedDateOnly = formatDateOnly(assignments.assignedDate);
         const todayDateOnly = formatDateOnly(new Date());
-  
+
         if (assignedDateOnly < todayDateOnly) {
           errorMessage = "Cannot select Assigned Date in the past. Please select another date.";
         } else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
@@ -123,18 +123,18 @@ const CreateAssignment = () => {
         }
       }
     }
-  
+
     setFormErrors((prevErrors) => ({
       ...prevErrors,
       assignedDate: errorMessage,
     }));
   }, [assignments.assignedDate, touched.assignedDate]);
-  
+
 
 
   useEffect(() => {
     let errorMessage = "";
-    if(touched.user &&  !selectedUser){
+    if (touched.user && !selectedUser) {
       errorMessage = "User is required";
     }
     setFormErrors((prevErrors) => ({
@@ -145,7 +145,7 @@ const CreateAssignment = () => {
 
   useEffect(() => {
     let errorMessage = "";
-    if(touched.asset &&  !selectedAsset){
+    if (touched.asset && !selectedAsset) {
       errorMessage = "Asset is required";
     }
     setFormErrors((prevErrors) => ({
@@ -205,12 +205,11 @@ const CreateAssignment = () => {
   };
 
 
-  // console.log(assignments);
-  // console.log(assignments.user.id);
+  console.log(assignments.assignedDate);
   const handleSubmit = async (event) => {
     event.preventDefault();
-      try {
-        const response = await CreateAssignmentAPI({
+    try {
+      const response = await CreateAssignmentAPI({
 
         //custom input to match backend 
         assignedToId: assignments.user.id,
@@ -219,11 +218,11 @@ const CreateAssignment = () => {
         note: assignments.note
       });
 
-      if (response.status === 200) {
+      if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
         setTitlePopup("Notifications");
         setContentPopup(
-          `Asset: ${assignments.asset.assetName} has been assigned to User: ${assignments.user.firstName} ${assignments.user.lastName}.`
+          `Asset ${assignments.asset.assetName} has been assigned to ${assignments.user.firstName} ${assignments.user.lastName}.`
         );
         displayPopupNotification()
       }

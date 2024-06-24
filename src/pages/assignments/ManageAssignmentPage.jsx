@@ -394,9 +394,9 @@ const ManageAssignmentPage = () => {
               marginLeft: "20px",
               marginRight: "20px",
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -435,13 +435,13 @@ const ManageAssignmentPage = () => {
                     }}
                     sx={{
                       "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                        {
-                          color: "black",
-                        },
+                      {
+                        color: "black",
+                      },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: dateError ? "red" : "black",
-                        },
+                      {
+                        borderColor: dateError ? "red" : "black",
+                      },
                     }}
                   />
                 )}
@@ -654,6 +654,7 @@ const ManageAssignmentPage = () => {
                                 },
                               }}
                               onClick={(e) => {
+                                navigate(`${path.assignmentEdit.replace(":id", assignment.id)}`);
                                 e.stopPropagation();
                               }}
                             >

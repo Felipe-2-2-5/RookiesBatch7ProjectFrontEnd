@@ -14,6 +14,7 @@ import {
 import { path } from "./routeContants";
 import CreateAssignment from "../pages/assignments/CreateAssignment";
 import CreateAsset from "../pages/assets/CreateAsset";
+import EditAssignment from "../pages/assignments/EditAssignment";
 import EditUser from "../pages/users/EditUser";
 
 export const AdminRoutes = () => {

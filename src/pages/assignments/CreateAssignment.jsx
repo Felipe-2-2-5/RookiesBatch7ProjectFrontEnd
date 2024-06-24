@@ -205,8 +205,7 @@ const CreateAssignment = () => {
   };
 
 
-  // console.log(assignments);
-  // console.log(assignments.user.id);
+  console.log(assignments.assignedDate);
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {

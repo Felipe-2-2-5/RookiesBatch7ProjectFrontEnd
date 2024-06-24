@@ -49,7 +49,7 @@ const EditAsset = () => {
       category: asset.category,
       specification: asset.specification,
       installedDate: new Date(asset.installedDate),
-      state: asset.state,
+      state: parseInt(asset.state, 10),
     });
   };
   useEffect(() => {
@@ -143,7 +143,7 @@ const EditAsset = () => {
       categoryId: asset.category.id,
       specification: asset.specification,
       installedDate: formatDate(asset.installedDate),
-      assetState: parseInt(asset.state),
+      assetState: parseInt(asset.state, 10),
     };
     var res = await EditAssetAPI(id, newAsset);
     if (res) {

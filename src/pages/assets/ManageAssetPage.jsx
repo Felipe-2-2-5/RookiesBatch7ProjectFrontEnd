@@ -556,7 +556,7 @@ const ManageAssetPage = () => {
                         >
                           <TableCell>{asset.assetCode}</TableCell>
                           <TableCell>{asset.assetName}</TableCell>
-                          <TableCell>{asset.category.name}</TableCell>
+                          <TableCell>{asset.category?.name}</TableCell>
                           <TableCell>{assetStateEnum[asset.state]}</TableCell>
                           <TableCell>
                             {assetStateEnum[asset.state] === "Assigned" ? (

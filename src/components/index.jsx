@@ -6,4 +6,5 @@
 // export { default as VerticalNavbarAdmin } from "./VerticalNavbarAdmin";
 // export { default as VerticalNavbarStaff } from "./VerticalNavbarStaff";
 export { default as PaginationBar } from "./PaginationBar";
+export { default as PopupNotification } from "./PopupNotification";
 export { default as SearchBar } from "./SearchBar";

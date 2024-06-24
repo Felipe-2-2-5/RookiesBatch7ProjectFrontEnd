@@ -14,18 +14,29 @@ const PopupNotification = ({
   content,
   closeContent,
 }) => {
+  const contentLines = content ? content.split("\n") : [];
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       disableBackdropClick
       disableEscapeKeyDown
-    >
-      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+      maxWidth="md">
+      <DialogTitle
+        sx={{
+          borderBottom: "3px solid grey",
+          color: "#D6001C",
+          fontWeight: "bold",
+          minWidth: 400,
+          bgcolor: "lightgrey",
+        }}>
         {title}
       </DialogTitle>
       <DialogContent>
-        <p>{content}</p>
+        {contentLines.map((line, index) => (
+          <p key={index}>{line}</p>
+        ))}
       </DialogContent>
       <DialogActions>
         <Button
@@ -34,8 +45,7 @@ const PopupNotification = ({
             color: "white",
             bgcolor: "#D6001C",
             "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
+          }}>
           {closeContent ? closeContent : "Ok"}
         </Button>
       </DialogActions>

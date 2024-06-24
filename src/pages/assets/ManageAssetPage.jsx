@@ -82,7 +82,10 @@ const ManageAssetPage = () => {
 
       const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
       if (assetCreated) {
-        setAsset([assetCreated, ...fetchedAssets]);
+        const updatedAssets = fetchedAssets.filter(
+          (asset) => asset.id !== assetCreated.id
+        );
+        setAsset([assetCreated, ...updatedAssets]);
         sessionStorage.removeItem("asset_created");
       } else {
         setAsset(fetchedAssets);

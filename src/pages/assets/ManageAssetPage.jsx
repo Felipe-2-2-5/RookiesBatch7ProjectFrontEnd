@@ -40,6 +40,7 @@ import {
   FilterRequest,
   GetAsset,
   GetCategories,
+  DeleteAsset,
 } from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
 
@@ -159,10 +160,14 @@ const ManageAssetPage = () => {
     setSelectedAsset(null);
     setShowDeleteConfirmation(false); // Close delete confirmation dialog
     setShowNotification(false); // Close notification dialog
+    setErrorDialog(false); // Close error dialog
+    setErrorMessage(""); // Clear error message
   };
 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
+  const [errorDialog, setErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleDeleteIconClick = (asset) => {
     setSelectedAsset(asset);
@@ -177,18 +182,30 @@ const ManageAssetPage = () => {
   const handleDeleteConfirmation = async () => {
     if (selectedAsset) {
       try {
-        // await DeleteAsset(selectedAsset.id);
-        // Handle deletion success (e.g., show a success message, update asset list)
-        console.log("Asset deleted successfully.");
-        // Refresh asset list
-        setFilterRequest((prev) => ({
-          ...prev,
-          page: 1,
-        }));
-        setShowDeleteConfirmation(false);
+        const res = await DeleteAsset(selectedAsset.id);
+
+        // Assuming res includes status and possibly other data
+        if (res.status === 204) {
+          // Handle deletion success (Refresh asset list)
+          setFilterRequest((prev) => ({
+            ...prev,
+            page: 1,
+          }));
+          setShowDeleteConfirmation(false);
+          // Optionally, show a success message
+          console.log("Asset deleted successfully");
+        } else {
+          // Handle other cases based on status or message
+          setErrorMessage(
+            "Error deleting asset: " + res.status + " " + res.data
+          ); // Set error message
+          setErrorDialog(true); // Show error dialog
+        }
       } catch (error) {
-        console.error("Error deleting asset:", error);
         // Handle deletion error (e.g., show an error message)
+        setErrorMessage("Error deleting asset: " + error.message); // Set error message
+        setErrorDialog(true); // Show error dialog
+      } finally {
         setShowDeleteConfirmation(false);
       }
     }
@@ -456,7 +473,7 @@ const ManageAssetPage = () => {
         {/* Asset Table */}
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 150px)", position: "relative" }}
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}
         >
           <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
@@ -845,6 +862,19 @@ const ManageAssetPage = () => {
             }}
           >
             Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Error Dialog */}
+      <Dialog open={errorDialog} onClose={() => setErrorDialog(false)}>
+        <DialogTitle>Error</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">{errorMessage}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setErrorDialog(false)} color="primary">
+            OK
           </Button>
         </DialogActions>
       </Dialog>

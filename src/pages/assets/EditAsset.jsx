@@ -299,7 +299,7 @@ const EditAsset = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3}>
                 <Typography>
                   State
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
@@ -309,7 +309,7 @@ const EditAsset = () => {
                 <RadioGroup
                   name="state"
                   value={asset.state}
-                  row
+                  column
                   onChange={(e) =>
                     setAsset({ ...asset, state: e.target.value })
                   }
@@ -337,6 +337,30 @@ const EditAsset = () => {
                       />
                     }
                     label="Not Availble"
+                  />
+                  <FormControlLabel
+                    value={2}
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#000",
+                          "&.Mui-checked": { color: "#d32f2f" },
+                        }}
+                      />
+                    }
+                    label="Wating for recycling"
+                  />
+                  <FormControlLabel
+                    value={3}
+                    control={
+                      <Radio
+                        sx={{
+                          color: "#000",
+                          "&.Mui-checked": { color: "#d32f2f" },
+                        }}
+                      />
+                    }
+                    label="Recycled"
                   />
                 </RadioGroup>
               </Grid>

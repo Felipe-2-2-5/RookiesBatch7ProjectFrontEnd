@@ -40,11 +40,11 @@ import { useNavigate } from "react-router";
 import { GenderEnum } from "../../enum/genderEnum";
 import { path } from "../../routes/routeContants";
 import { FilterRequest, GetUser } from "../../services/users.service";
-//reformat code from 	2017-09-18T00:00:00 to 19/08/2017
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-GB"); // en-GB format gives the desired "dd/mm/yyyy" format
-};
+// //reformat code from 	2017-09-18T00:00:00 to 19/08/2017
+// const formatDate = (dateString) => {
+//   const date = new Date(dateString);
+//   return date.toLocaleDateString("en-GB"); // en-GB format gives the desired "dd/mm/yyyy" format
+// };
 
 // custom style background when hover user
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -448,7 +448,7 @@ const ManageUserPage = () => {
                             {user.userName}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
-                            {formatDate(user.joinedDate)}
+                            {user.joinedDate}
                           </TableCell>
                           <TableCell sx={{ textAlign: "center" }}>
                             {user.type === 0 ? "Staff" : "Admin"}
@@ -575,7 +575,7 @@ const ManageUserPage = () => {
               </Grid>
               <Grid item xs={8}>
                 <Typography variant="body1">
-                  {formatDate(selectedUser.dateOfBirth)}
+                  {selectedUser.dateOfBirth}
                 </Typography>
               </Grid>
 

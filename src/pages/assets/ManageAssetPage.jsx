@@ -33,7 +33,11 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router";
 import { path } from "../../routes/routeContants";
-import { FilterRequest, GetAsset, GetCategories } from "../../services/asset.service";
+import {
+  FilterRequest,
+  GetAsset,
+  GetCategories,
+} from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
 
 const formatDate = (dateString) => {
@@ -58,7 +62,10 @@ const ManageAssetPage = () => {
 
   const [totalCount, setTotalCount] = useState();
   const pageSize = filterRequest.pageSize || 1;
-  const pageCount = Number.isNaN(totalCount) || totalCount === 0 ? 1 : Math.ceil(totalCount / pageSize);
+  const pageCount =
+    Number.isNaN(totalCount) || totalCount === 0
+      ? 1
+      : Math.ceil(totalCount / pageSize);
 
   const [assets, setAsset] = useState([]);
   const [categories, setCategories] = useState(null);
@@ -80,10 +87,10 @@ const ManageAssetPage = () => {
       if (scrollRef.current) {
         scrollRef.current.scrollTo({
           top: 0,
-          behavior: "smooth"
-        })
+          behavior: "smooth",
+        });
       }
-      setLoading(false)
+      setLoading(false);
     };
 
     getAssets(filterRequest);
@@ -105,7 +112,7 @@ const ManageAssetPage = () => {
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
-  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, ' ');
+  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -121,14 +128,14 @@ const ManageAssetPage = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
-      setSearchTerm(trimmedSearchTerm)
-      handleSearch()
+      setSearchTerm(trimmedSearchTerm);
+      handleSearch();
     }
   };
 
   const handleSearchClick = () => {
-    setSearchTerm(trimmedSearchTerm)
-    handleSearch()
+    setSearchTerm(trimmedSearchTerm);
+    handleSearch();
   };
 
   // State for dialog
@@ -204,16 +211,16 @@ const ManageAssetPage = () => {
 
   // Custom Arrow Up
   const CustomArrowDropUp = styled(ArrowDropUp)(({ theme }) => ({
-    '& path': {
-      d: 'path("m7 20 5-5 5 5z")'
-    }
+    "& path": {
+      d: 'path("m7 20 5-5 5 5z")',
+    },
   }));
 
   // Custom Arrow Down
   const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
-    '& path': {
-      d: 'path("m7 0 5 5 5-5z")'
-    }
+    "& path": {
+      d: 'path("m7 0 5 5 5-5z")',
+    },
   }));
 
   const getSortIcon = (column) => {
@@ -228,7 +235,7 @@ const ManageAssetPage = () => {
       if (filterRequest.sortOrder === "descend") {
         return (
           <div style={iconStyle}>
-            <CustomArrowDropUp sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
             <CustomArrowDropDown />
           </div>
         );
@@ -237,7 +244,7 @@ const ManageAssetPage = () => {
         return (
           <div style={iconStyle}>
             <CustomArrowDropUp />
-            <CustomArrowDropDown sx={{ color: "#bdbdbd", }} />
+            <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
           </div>
         );
       }
@@ -312,7 +319,9 @@ const ManageAssetPage = () => {
             <TextField
               label="Category"
               select
-              value={filterRequest.category === "" ? "All" : filterRequest.category}
+              value={
+                filterRequest.category === "" ? "All" : filterRequest.category
+              }
               onChange={handleCategoryChange}
               variant="outlined"
               fullWidth
@@ -455,7 +464,10 @@ const ManageAssetPage = () => {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={6} sx={{ textAlign: "center", padding: "28px" }}>
+                <TableCell
+                  colSpan={6}
+                  sx={{ textAlign: "center", padding: "28px" }}
+                >
                   <CircularProgress />
                 </TableCell>
               </TableRow>
@@ -494,17 +506,31 @@ const ManageAssetPage = () => {
                             <IconButton aria-label="edit" disabled>
                               <EditIcon />
                             </IconButton>
-                            <IconButton aria-label="delete" disabled style={{ color: "#D6001C", opacity: 0.5 }}>
+                            <IconButton
+                              aria-label="delete"
+                              disabled
+                              style={{ color: "#D6001C", opacity: 0.5 }}
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </>
                         ) : (
                           // Render edit and delete icons normally if state is not assigned
                           <>
-                            <IconButton aria-label="edit">
+                            <IconButton
+                              aria-label="edit"
+                              onClick={() =>
+                                navigate(
+                                  path.assetEdit.replace(":id", asset.id)
+                                )
+                              }
+                            >
                               <EditIcon />
                             </IconButton>
-                            <IconButton aria-label="delete" style={{ color: "#D6001C" }}>
+                            <IconButton
+                              aria-label="delete"
+                              style={{ color: "#D6001C" }}
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </>
@@ -594,7 +620,9 @@ const ManageAssetPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
-                  <Typography variant="body1">{selectedAsset.assetCode}</Typography>
+                  <Typography variant="body1">
+                    {selectedAsset.assetCode}
+                  </Typography>
                 </Grid>
 
                 <Grid item xs={5}>
@@ -603,7 +631,9 @@ const ManageAssetPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
-                  <Typography variant="body1">{selectedAsset.assetName}</Typography>
+                  <Typography variant="body1">
+                    {selectedAsset.assetName}
+                  </Typography>
                 </Grid>
 
                 <Grid item xs={5}>
@@ -612,7 +642,9 @@ const ManageAssetPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
-                  <Typography variant="body1">{selectedAsset.category.name}</Typography>
+                  <Typography variant="body1">
+                    {selectedAsset.category.name}
+                  </Typography>
                 </Grid>
 
                 <Grid item xs={5}>
@@ -621,7 +653,9 @@ const ManageAssetPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
-                  <Typography variant="body1">{assetStateEnum[selectedAsset.state]}</Typography>
+                  <Typography variant="body1">
+                    {assetStateEnum[selectedAsset.state]}
+                  </Typography>
                 </Grid>
 
                 <Grid item xs={5}>
@@ -630,7 +664,9 @@ const ManageAssetPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
-                  <Typography variant="body1">{formatDate(selectedAsset.installedDate)}</Typography>
+                  <Typography variant="body1">
+                    {formatDate(selectedAsset.installedDate)}
+                  </Typography>
                 </Grid>
 
                 <Grid item xs={5}>
@@ -639,43 +675,69 @@ const ManageAssetPage = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
-                  <Typography variant="body1">{selectedAsset.specification}</Typography>
+                  <Typography variant="body1">
+                    {selectedAsset.specification}
+                  </Typography>
                 </Grid>
               </Grid>
 
               {/* Assignment History */}
-              {selectedAsset.assignments && selectedAsset.assignments.length > 0 && (
-                <>
-                  <Typography variant="h6" sx={{ marginTop: 3 }} gutterBottom>
-                    {/* Assignment History */}
-                  </Typography>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell><strong>Assigned To</strong></TableCell>
-                          <TableCell><strong>Assigned By</strong></TableCell>
-                          <TableCell><strong>Assigned Date</strong></TableCell>
-                          <TableCell><strong>Note</strong></TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {selectedAsset.assignments.map((assignment, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{assignment.assignedTo.userName}</TableCell>
-                            <TableCell>{assignment.assignedBy.userName}</TableCell>
-                            <TableCell>{formatDate(assignment.assignedDate)}</TableCell>
-                            <TableCell>{assignment.note}</TableCell>
+              {selectedAsset.assignments &&
+                selectedAsset.assignments.length > 0 && (
+                  <>
+                    <Typography variant="h6" sx={{ marginTop: 3 }} gutterBottom>
+                      {/* Assignment History */}
+                    </Typography>
+                    <TableContainer component={Paper}>
+                      <Table>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell>
+                              <strong>Assigned To</strong>
+                            </TableCell>
+                            <TableCell>
+                              <strong>Assigned By</strong>
+                            </TableCell>
+                            <TableCell>
+                              <strong>Assigned Date</strong>
+                            </TableCell>
+                            <TableCell>
+                              <strong>Note</strong>
+                            </TableCell>
                           </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </>
-              )}
+                        </TableHead>
+                        <TableBody>
+                          {selectedAsset.assignments.map(
+                            (assignment, index) => (
+                              <TableRow key={index}>
+                                <TableCell>
+                                  {assignment.assignedTo.userName}
+                                </TableCell>
+                                <TableCell>
+                                  {assignment.assignedBy.userName}
+                                </TableCell>
+                                <TableCell>
+                                  {formatDate(assignment.assignedDate)}
+                                </TableCell>
+                                <TableCell>{assignment.note}</TableCell>
+                              </TableRow>
+                            )
+                          )}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                  </>
+                )}
             </>
           ) : (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "200px",
+              }}
+            >
               <CircularProgress />
             </Box>
           )}

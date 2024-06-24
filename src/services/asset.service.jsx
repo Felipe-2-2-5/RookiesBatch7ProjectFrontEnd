@@ -29,3 +29,8 @@ export const GetCategories = async () => {
   const response = await httpClient.get("/categories");
   return response;
 };
+
+export const DeleteAsset = async (id) => {
+  const response = await httpClient.delete(`/assets/${id}`);
+  return response;
+};

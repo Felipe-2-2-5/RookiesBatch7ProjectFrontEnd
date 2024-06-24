@@ -84,13 +84,21 @@ const ManageUserPage = () => {
     setTotalCount(res.data.totalCount);
 
     const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
+    const userUpdated = JSON.parse(sessionStorage.getItem("user_updated"));
     if (userCreated) {
       const updatedUsers = fetchedUsers.filter(
         (asset) => asset.id !== userCreated.id
       );
       setUser([userCreated, ...updatedUsers]);
       sessionStorage.removeItem("user_created");
-    } else {
+    } else if(userUpdated) {
+      const updatedUsers = fetchedUsers.filter(
+        (asset) => asset.id !== userCreated.id
+      );
+      setUser([userCreated, ...updatedUsers]);
+      sessionStorage.removeItem("user_updated");
+    }
+      else {
       setUser(fetchedUsers);
     }
     //Scroll to top of list
@@ -462,6 +470,7 @@ const ManageUserPage = () => {
                               }}
                               onClick={(e) => {
                                 // Prevent showing popup
+                                navigate(`/manage-user/edit-user/${user.id}`);
                                 e.stopPropagation();
                               }}
                             >

@@ -14,10 +14,8 @@ export const CreateAssignmentAPI = async (body) => {
   console.log(response);
   return response;
 };
-}
 
 export const EditAssignmentAPI = async (id, body) => {
-  const response = await httpClient.put(`/assignments/${id}`, body)
+  const response = await httpClient.put(`/assignments/${id}`, body);
   return response;
-}
-
+};

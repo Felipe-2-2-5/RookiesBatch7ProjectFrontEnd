@@ -366,7 +366,9 @@ const ManageAssetPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <FilterIcon />
+                      <IconButton onClick={handleStateChange}>
+                        <FilterIcon />
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
@@ -404,7 +406,9 @@ const ManageAssetPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <FilterIcon />
+                      <IconButton onClick={handleCategoryChange}>
+                        <FilterIcon />
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}

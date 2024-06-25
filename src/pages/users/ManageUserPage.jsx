@@ -1,11 +1,11 @@
 import {
   ArrowDropDown,
   ArrowDropUp,
-  CancelTwoTone,
   CreateTwoTone,
+  HighlightOff as DeleteIcon,
   DisabledByDefaultTwoTone,
   FilterAltOutlined,
-  Search,
+  Search
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
@@ -499,9 +499,12 @@ const ManageUserPage = () => {
                               onClick={(e) => handleDisableClick(user, e)}
                               sx={{
                                 color: "#D6001C",
-                                "&:hover": { backgroundColor: "#bcbcbc" },
-                              }}>
-                              <CancelTwoTone />
+                                "&:hover": {
+                                  backgroundColor: "#bcbcbc",
+                                },
+                              }}
+                            >
+                              <DeleteIcon />
                             </IconButton>
                           </TableCell>
                         </CustomTableRow>

@@ -1,11 +1,11 @@
 import {
   ArrowDropDown,
   ArrowDropUp,
-  CancelTwoTone,
   CreateTwoTone,
+  HighlightOff as DeleteIcon,
   DisabledByDefaultTwoTone,
   FilterAltOutlined,
-  RestartAltRounded,
+  RestartAltRounded
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
@@ -226,7 +226,7 @@ const ManageAssignmentPage = () => {
 
   const handleDetailDialog = async (assignment) => {
     const res = await GetAssignment(assignment.id);
-    setSelectedAssignment(res.data);
+    setSelectedAssignment(res);
     setDialogOpen(true);
   };
 
@@ -672,7 +672,7 @@ const ManageAssignmentPage = () => {
                                 e.stopPropagation();
                               }}
                             >
-                              <CancelTwoTone />
+                              <DeleteIcon />
                             </IconButton>
                             <IconButton
                               sx={{

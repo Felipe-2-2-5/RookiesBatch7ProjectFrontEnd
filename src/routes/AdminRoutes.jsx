@@ -126,6 +126,10 @@ export const AdminRoutes = () => {
       element: <ReportPage />,
       errorElement: <NotFound />,
     },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
   ]);
   return element;
 };

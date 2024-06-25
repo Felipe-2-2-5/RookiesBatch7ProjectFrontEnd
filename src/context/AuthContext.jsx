@@ -50,6 +50,9 @@ const AuthProvider = ({ children }) => {
           setIsAuthenticated(false);
           localStorage.removeItem("token");
         }
+      } else {
+        setIsAuthenticated(false);
+        localStorage.removeItem("token");
       }
     };
     UserData();

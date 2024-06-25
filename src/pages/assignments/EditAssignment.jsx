@@ -179,11 +179,8 @@ const EditAssignment = () => {
         }));
     }, [visibleAssetDialog, selectedAsset, touched.asset]);
 
-    //if change asset and user, that not edit
-    const isSingleFieldChanged = () => {
-        const assetChanged = initialValue.asset !== currentValue.asset;
-        const userChanged = initialValue.user !== currentValue.user;
-        return (assetChanged && !userChanged) || (!assetChanged && userChanged);
+    const isFormChanged = () => {
+        return initialValue.asset !== currentValue.asset || initialValue.user !== currentValue.user;
     };
 
     const isFormValid = () => {
@@ -464,7 +461,7 @@ const EditAssignment = () => {
                                         //     !selectedAssignment.asset ||
                                         //     !selectedAssignment.assignedDate
                                         // }
-                                        disabled={!isSingleFieldChanged() || !isFormValid()}
+                                        disabled={!isFormChanged() || !isFormValid()}
                                         onClick={handleSubmit}
                                     >
                                         Save

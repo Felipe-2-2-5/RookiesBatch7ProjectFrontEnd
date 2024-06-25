@@ -1,11 +1,11 @@
 import {
   ArrowDropDown,
   ArrowDropUp,
-  CancelTwoTone,
   CreateTwoTone,
+  HighlightOff as DeleteIcon,
   DisabledByDefaultTwoTone,
   FilterAltOutlined,
-  Search,
+  Search
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
@@ -479,7 +479,7 @@ const ManageUserPage = () => {
                                 e.stopPropagation();
                               }}
                             >
-                              <CancelTwoTone />
+                              <DeleteIcon />
                             </IconButton>
                           </TableCell>
                         </CustomTableRow>

@@ -6,7 +6,7 @@ export const FilterAssignment = async (body) => {
 };
 export const GetAssignment = async (id) => {
   const response = await httpClient.get(`assignments/${id}`);
-  return response;
+  return response.data;
 };
 
 export const CreateAssignmentAPI = async (body) => {
@@ -17,6 +17,6 @@ export const CreateAssignmentAPI = async (body) => {
 
 export const EditAssignmentAPI = async (id, body) => {
   const response = await httpClient.put(`/assignments/${id}`, body)
-  return response;
+  return response.data;
 }
 

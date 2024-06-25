@@ -282,7 +282,7 @@ const EditUser = () => {
               fontSize: "20px",
             }}
           >
-            Create New User
+            Edit User
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={1}>

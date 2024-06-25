@@ -614,7 +614,6 @@ const ManageAssignmentPage = () => {
                           <TableCell sx={{ paddingLeft: "50px" }}>
                             {formatDate(assignment.assignedDate)}
                           </TableCell>
-                          {console.log(assignment.state)}
                           <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignmentStateEnum[assignment.state]}
                           </TableCell>

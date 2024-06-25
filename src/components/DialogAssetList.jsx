@@ -21,7 +21,7 @@ import {
 
   styled,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AssetFilterRequest } from "../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -48,7 +48,7 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, selectedAsset, setSelectedAsset }) => {
+const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, firstAsset, selectedAsset, setSelectedAsset }) => {
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -70,9 +70,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       : Math.ceil(totalCount / pageSize);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // console.log("state", assets);
-
-  const getUsers = async (filterRequest) => {
+  const getAssets = useCallback(async (filterRequest) => {
     setLoading(true);
     const res = await AssetFilterRequest(filterRequest);
     const fetchedAssets = res.data.data;
@@ -80,10 +78,10 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
 
     const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
     if (userCreated) {
-      setAssets([userCreated, ...fetchedAssets]);
+      setAssets([userCreated, firstAsset, ...fetchedAssets]);
       sessionStorage.removeItem("user_created");
     } else {
-      setAssets(fetchedAssets);
+      setAssets([firstAsset, ...fetchedAssets]);
     }
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -92,11 +90,11 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       });
     }
     setLoading(false);
-  };
+  }, [firstAsset]);
 
   useEffect(() => {
-    getUsers(filterRequest);
-  }, [filterRequest]);
+    getAssets(filterRequest);
+  }, [filterRequest, getAssets]);
 
   const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
 

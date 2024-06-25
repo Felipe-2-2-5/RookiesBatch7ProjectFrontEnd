@@ -1,9 +1,9 @@
-import { httpClient } from "../httpClient/httpClient"
+import { httpClient } from "../httpClient/httpClient";
 
 export const AssetFilterRequest = async (body) => {
   const response = await httpClient.post("/assets/filter", body);
   return response;
-}
+};
 
 export const GetAssets = async () => {
   const response = await httpClient.get("/assets");
@@ -24,7 +24,10 @@ export const CreateAssetAPI = async (body) => {
   const response = await httpClient.post("/assets", body);
   return response;
 };
-
+export const EditAssetAPI = async (id, body) => {
+  const response = await httpClient.put(`/assets/${id}`, body);
+  return response;
+};
 export const GetCategories = async () => {
   const response = await httpClient.get("/categories");
   return response;

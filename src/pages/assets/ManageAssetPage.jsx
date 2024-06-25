@@ -713,7 +713,7 @@ const ManageAssetPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedAsset.category.name}
+                    {selectedAsset.category?.name}
                   </Typography>
                 </Grid>
 
@@ -781,10 +781,10 @@ const ManageAssetPage = () => {
                             (assignment, index) => (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {assignment.assignedTo.userName}
+                                  {assignment.assignedTo?.userName}
                                 </TableCell>
                                 <TableCell>
-                                  {assignment.assignedBy.userName}
+                                  {assignment.assignedBy?.userName}
                                 </TableCell>
                                 <TableCell>
                                   {formatDate(assignment.assignedDate)}

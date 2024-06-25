@@ -20,6 +20,10 @@ export const BaseRoutes = () => {
       element: <LoginPage />,
       errorElement: <NotFound />,
     },
+    {
+      path: "*",
+      element: <NotFound />,
+    },
   ]);
   return element;
 };

@@ -218,7 +218,7 @@ const ManageAssetPage = () => {
     const selectedState = e.target.value;
     setFilterRequest((prevState) => ({
       ...prevState,
-      state: selectedState === "All" ? "" : selectedState,
+      state: selectedState === "All" ? "All" : selectedState,
       searchTerm: "",
       sortColumn: "assetname",
       sortOrder: "",
@@ -925,15 +925,17 @@ const ManageAssetPage = () => {
           <Typography variant="body1">
             If the asset is not able to be used anymore, please update its state
             in{" "}
-            <Link
-              component={Link}
-              to="/edit-asset"
-              color="primary"
-              underline="always"
-            >
-              Edit Asset page
-            </Link>
-            .
+            {selectedAsset ? (
+              <Link
+                component={Link}
+                to={path.assetEdit.replace(":id", selectedAsset.id)}
+                color="primary"
+                underline="always"
+              >
+                Edit Asset page
+              </Link>
+            ) : null
+            }
           </Typography>
         </DialogContent>
       </Dialog>

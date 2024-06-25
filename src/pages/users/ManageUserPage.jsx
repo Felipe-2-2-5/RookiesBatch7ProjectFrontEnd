@@ -1,11 +1,11 @@
 import {
   ArrowDropDown,
   ArrowDropUp,
-  CancelTwoTone,
   CreateTwoTone,
+  HighlightOff as DeleteIcon,
   DisabledByDefaultTwoTone,
   FilterAltOutlined,
-  Search,
+  Search
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
@@ -62,9 +62,16 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 
 const tableHead = {
   width: "15%",
-  textAlign: "center",
+  paddingLeft: "50px",
 };
 
+const buttonTableHead = {
+  fontWeight: "bold",
+  textTransform: "none",
+  padding: 0,
+  minWidth: "auto",
+  color: "black",
+}
 const ManageUserPage = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
@@ -273,7 +280,7 @@ const ManageUserPage = () => {
         elevation={3}
         style={{
           padding: "20px",
-          width: "90%",
+          width: "100%",
           height: "calc(100vh - 150px)",
         }}>
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
@@ -359,13 +366,7 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("code")}
                       endIcon={getSortIcon("code")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}>
+                      sx={buttonTableHead}>
                       Staff Code
                     </Button>
                   </TableCell>
@@ -374,24 +375,12 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("name")}
                       endIcon={getSortIcon("name")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}>
+                      sx={buttonTableHead}>
                       Full Name
                     </Button>
                   </TableCell>
                   <TableCell
-                    sx={{
-                      fontWeight: "bold",
-                      textTransform: "none",
-                      minWidth: "auto",
-                      color: "black",
-                      padding: "16px",
-                    }}
+                    sx={buttonTableHead}
                     style={tableHead}>
                     Username
                   </TableCell>
@@ -400,13 +389,7 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("date")}
                       endIcon={getSortIcon("date")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}>
+                      sx={buttonTableHead}>
                       Joined Date
                     </Button>
                   </TableCell>
@@ -415,13 +398,7 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("type")}
                       endIcon={getSortIcon("type")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}>
+                      sx={buttonTableHead}>
                       Type
                     </Button>
                   </TableCell>
@@ -466,22 +443,22 @@ const ManageUserPage = () => {
                         <CustomTableRow
                           key={index}
                           onClick={() => handleDetailDialog(user)}>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {user.staffCode}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }} >
                             {user.firstName + " " + user.lastName}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }} >
                             {user.userName}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }} >
                             {user.joinedDate}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }} >
                             {user.type === 0 ? "Staff" : "Admin"}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell >
                             <IconButton
                               sx={{
                                 "&:hover": {
@@ -499,9 +476,12 @@ const ManageUserPage = () => {
                               onClick={(e) => handleDisableClick(user, e)}
                               sx={{
                                 color: "#D6001C",
-                                "&:hover": { backgroundColor: "#bcbcbc" },
-                              }}>
-                              <CancelTwoTone />
+                                "&:hover": {
+                                  backgroundColor: "#bcbcbc",
+                                },
+                              }}
+                            >
+                              <DeleteIcon />
                             </IconButton>
                           </TableCell>
                         </CustomTableRow>

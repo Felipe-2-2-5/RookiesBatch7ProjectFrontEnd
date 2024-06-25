@@ -75,8 +75,8 @@ const EditAssignment = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedAsset, setSelectedAsset] = useState(null);
     const [selectedAssignment, setSelectedAssignment] = useState({ assignedDate: null });
-    // const [initialAsset, setInitialAsset] = useState('');
-    // const [currentAsset, setCurrentAsset] = useState('');
+    const [initialValue, setInitialValue] = useState({ asset: "", user: "" });
+    const [currentValue, setCurrentValue] = useState({ asset: "", user: "" });
     const [formErrors, setFormErrors] = useState({
         user: false,
         asset: false,
@@ -113,13 +113,15 @@ const EditAssignment = () => {
             try {
                 const response = await GetAssignment(id);
                 if (response) {
-                    setSelectedUser(response.data.assignedTo);
-                    setSelectedAsset(response.data.asset);
-                    // setInitialAsset(response.data.asset.assetName);
-                    // setCurrentAsset(response.data.asset.assetName);
+                    setSelectedUser(response.assignedTo);
+                    setSelectedAsset(response.asset);
+                    const initialAsset = response.asset ? response.asset.assetName : "";
+                    const initialUser = response.assignedTo ? response.assignedTo.userName : "";
+                    setInitialValue({ asset: initialAsset, user: initialUser });
+                    setCurrentValue({ asset: initialAsset, user: initialUser });
                     setSelectedAssignment({
-                        ...response.data,
-                        assignedDate: new Date(response.data.assignedDate),
+                        ...response,
+                        assignedDate: new Date(response.assignedDate),
                     });
                 }
             } catch (error) {
@@ -132,7 +134,6 @@ const EditAssignment = () => {
         getAssignmentById(id);
     }, [id])
 
-    console.log("1", selectedAssignment);
     useEffect(() => {
         let errorMessage = "";
         if (touched.assignedDate) {
@@ -156,8 +157,6 @@ const EditAssignment = () => {
         }));
     }, [selectedAssignment.assignedDate, touched.assignedDate]);
 
-
-
     useEffect(() => {
         let errorMessage = "";
         if (touched.user && !selectedUser) {
@@ -180,19 +179,13 @@ const EditAssignment = () => {
         }));
     }, [visibleAssetDialog, selectedAsset, touched.asset]);
 
-    const handleAssetChange = (e) => {
-        const value = e.target.value;
-        console.log("value", value);
-        // setCurrentAsset(value);
+    const isFormChanged = () => {
+        return initialValue.asset !== currentValue.asset || initialValue.user !== currentValue.user;
     };
 
-    // const isAssetChanged = () => {
-    //     return initialAsset !== currentAsset;
-    // };
-
-    // const isAssetValid = () => {
-    //     return !formErrors.asset && currentAsset;
-    // };
+    const isFormValid = () => {
+        return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
+    };
 
     const handleDateChange = (name, date) => {
         setSelectedAssignment({ ...selectedAssignment, [name]: date });
@@ -228,6 +221,7 @@ const EditAssignment = () => {
             assignedTo: user,
             assignedToId: user.id
         }));
+        setCurrentValue(prevValues => ({ ...prevValues, user: user.userName }));
         handleUserDialogClose();
     };
 
@@ -237,9 +231,13 @@ const EditAssignment = () => {
             ...prev,
             asset: asset,
         }));
+        setCurrentValue(prevValues => ({ ...prevValues, asset: asset.assetName }));
         handleAssetDialogClose();
     };
 
+    console.log("initial: ", initialValue);
+    console.log("current: ", currentValue);
+    console.log("assignemnt: ", selectedAssignment);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -254,7 +252,7 @@ const EditAssignment = () => {
             const response = await EditAssignmentAPI(id, edit);
 
             if (response) {
-                sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
+                sessionStorage.setItem("assignment_created", JSON.stringify(response));
                 setTitlePopup("Notifications");
                 setContentPopup(
                     "Update successfully"
@@ -360,7 +358,6 @@ const EditAssignment = () => {
                                     name="asset"
                                     value={selectedAssignment.asset ? `${selectedAssignment.asset.assetName}` : ''}
                                     onClick={handleAssetDialogOpen}
-                                    onChange={handleAssetChange}
                                     margin="dense"
                                     error={formErrors.asset}
                                     InputProps={{
@@ -458,12 +455,13 @@ const EditAssignment = () => {
                                                 backgroundColor: "#a50000",
                                             },
                                         }}
-                                        disabled={
-                                            Object.values(formErrors).some((error) => error) ||
-                                            !selectedAssignment.assignedTo ||
-                                            !selectedAssignment.asset ||
-                                            !selectedAssignment.assignedDate
-                                        }
+                                        // disabled={
+                                        //     Object.values(formErrors).some((error) => error) ||
+                                        //     !selectedAssignment.assignedTo ||
+                                        //     !selectedAssignment.asset ||
+                                        //     !selectedAssignment.assignedDate
+                                        // }
+                                        disabled={!isFormChanged() || !isFormValid()}
                                         onClick={handleSubmit}
                                     >
                                         Save

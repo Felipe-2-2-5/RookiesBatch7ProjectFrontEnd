@@ -1,11 +1,11 @@
 import {
   ArrowDropDown,
   ArrowDropUp,
-  CancelTwoTone,
   CreateTwoTone,
+  HighlightOff as DeleteIcon,
   DisabledByDefaultTwoTone,
   FilterAltOutlined,
-  RestartAltRounded,
+  RestartAltRounded
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
@@ -60,9 +60,17 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const tableHead = {
-  width: "15%",
-  textAlign: "center",
+  width: "14%",
+  paddingLeft: "45px",
 };
+
+const buttonTableHead = {
+  fontWeight: "bold",
+  textTransform: "none",
+  padding: 0,
+  minWidth: "auto",
+  color: "black",
+}
 const ManageAssignmentPage = () => {
   const navigate = useNavigate();
   const scrollRef = useRef(null);
@@ -226,7 +234,7 @@ const ManageAssignmentPage = () => {
 
   const handleDetailDialog = async (assignment) => {
     const res = await GetAssignment(assignment.id);
-    setSelectedAssignment(res.data);
+    setSelectedAssignment(res);
     setDialogOpen(true);
   };
 
@@ -484,67 +492,43 @@ const ManageAssignmentPage = () => {
                 }}
               >
                 <TableRow>
-                  <TableCell sx={tableHead}>No.</TableCell>
+                  <TableCell sx={{ fontWeight: "bold", paddingLeft: "50px" }}>No.</TableCell>
                   <TableCell sx={tableHead}>
                     <Button
+                      sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("code")}
                       endIcon={getSortIcon("code")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}
                     >
                       Asset Code
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
                     <Button
+                      sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("name")}
                       endIcon={getSortIcon("name")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}
                     >
                       Asset Name
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
                     <Button
+                      sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("receiver")}
                       endIcon={getSortIcon("receiver")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}
                     >
                       Assigned To
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
                     <Button
+                      sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("provider")}
                       endIcon={getSortIcon("provider")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}
                     >
                       Assigned By
                     </Button>
@@ -554,29 +538,17 @@ const ManageAssignmentPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("date")}
                       endIcon={getSortIcon("date")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}
+                      sx={buttonTableHead}
                     >
                       Assigned Date
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
                     <Button
+                      sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
                       endIcon={getSortIcon("state")}
-                      sx={{
-                        fontWeight: "bold",
-                        textTransform: "none",
-                        padding: 0,
-                        minWidth: "auto",
-                        color: "black",
-                      }}
                     >
                       State
                     </Button>
@@ -616,15 +588,15 @@ const ManageAssignmentPage = () => {
                           key={assignment.id}
                           onClick={() => handleDetailDialog(assignment)}
                         >
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {index + 1}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignment.asset.assetCode}
                           </TableCell>
                           <TableCell
                             sx={{
-                              textAlign: "center",
+                              paddingLeft: "50px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -633,19 +605,20 @@ const ManageAssignmentPage = () => {
                           >
                             {assignment.asset.assetName}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignment.assignedTo.userName}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignment.assignedBy.userName}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {formatDate(assignment.assignedDate)}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          {console.log(assignment.state)}
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignmentStateEnum[assignment.state]}
                           </TableCell>
-                          <TableCell sx={{ textAlign: "center" }}>
+                          <TableCell>
                             <IconButton
                               disabled={assignment.state === 0}
                               sx={{
@@ -672,7 +645,7 @@ const ManageAssignmentPage = () => {
                                 e.stopPropagation();
                               }}
                             >
-                              <CancelTwoTone />
+                              <DeleteIcon />
                             </IconButton>
                             <IconButton
                               sx={{

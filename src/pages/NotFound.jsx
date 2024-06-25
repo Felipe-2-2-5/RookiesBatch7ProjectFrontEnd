@@ -13,10 +13,18 @@ const NotFound = () => {
           height: "100%",
         }}
       >
-        <Typography variant="h2" gutterBottom sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}>
+        <Typography
+          variant="h2"
+          gutterBottom
+          sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}
+        >
           404
         </Typography>
-        <Typography variant="h4" gutterBottom sx={{ color: "#D6001C", fontWeight: "bold" }}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ color: "#D6001C", fontWeight: "bold" }}
+        >
           Page Not Found
         </Typography>
         <Typography variant="body1" sx={{ mt: 2, textAlign: "center" }}>

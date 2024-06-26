@@ -12,12 +12,22 @@ import {
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-
+import {ChangePasswordDialog} from "./"
 const Header = () => {
   const { isAuthenticated, currentUser, setIsAuthenticated } = useAuthContext();
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+
+  const handleOpenChangePassword = () => {
+    setAnchorEl(null);
+    setChangePasswordOpen(true);
+  };
+
+  const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -34,11 +44,6 @@ const Header = () => {
     localStorage.removeItem("location");
     navigate("/login");
     window.location.reload();
-  };
-
-  const handleChangePassword = () => {
-    // Add your change password logic here
-    handleClose();
   };
 
   const formattedPathname = location.pathname
@@ -77,11 +82,15 @@ const Header = () => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}>
-                <MenuItem onClick={handleChangePassword}>
+                <MenuItem onClick={handleOpenChangePassword}>
                   Change Password
                 </MenuItem>
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               </Menu>
+              <ChangePasswordDialog
+                open={changePasswordOpen}
+                handleClose={handleCloseChangePassword}
+              />
             </div>
           ) : (
             <Button

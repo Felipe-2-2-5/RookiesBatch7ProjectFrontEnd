@@ -12,8 +12,8 @@ import {
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { ChangePasswordDialog } from "./";
 import PopupNotificationExtra from "./PopupNotifycationExtra";
-import {ChangePasswordDialog} from "./";
 
 const Header = () => {
   const [openCancelPopup, setOpenCancelPopup] = useState(false);
@@ -94,11 +94,15 @@ const Header = () => {
                   keepMounted
                   open={Boolean(anchorEl)}
                   onClose={handleClose}>
-                  <MenuItem onClick={handleChangePassword}>
+                  <MenuItem onClick={handleOpenChangePassword}>
                     Change Password
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
+                <ChangePasswordDialog
+                  open={changePasswordOpen}
+                  handleClose={handleCloseChangePassword}
+                />
               </div>
             ) : (
               <Button
@@ -106,32 +110,19 @@ const Header = () => {
                 href="/login">
                 Login
               </Button>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}>
-                <MenuItem onClick={handleOpenChangePassword}>
-                  Change Password
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>Logout</MenuItem>
-              </Menu>
-              <ChangePasswordDialog
-                open={changePasswordOpen}
-                handleClose={handleCloseChangePassword}
-              />
-            </div>
-          ) : (
-            <Button
-              color="inherit"
-              href="/login">
-              Login
-            </Button>
-          )}
-        </Box>
-      </Toolbar>
-    </AppBar>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
+      <PopupNotificationExtra
+        open={openCancelPopup}
+        title="Are you sure?"
+        content="Do you want to log out?"
+        Okbutton="Log out"
+        handleClose={handleCancelClose}
+        handleConfirm={handleCancelConfirm}
+      />
+    </>
   );
 };
 

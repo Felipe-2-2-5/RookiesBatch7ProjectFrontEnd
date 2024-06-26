@@ -137,6 +137,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
   };
 
   const handleCancel = () => {
+    setSelectedAsset(null)
     setVisibleAssetDialog(false);
   };
 

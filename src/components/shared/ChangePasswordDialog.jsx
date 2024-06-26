@@ -62,6 +62,13 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
       return;
     }
 
+    // Check if newPassword and confirmPassword match
+    if (confirmPassword && newPasswordValue !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match. Please re-enter.");
+    } else {
+      setConfirmPasswordError("");
+    }
+
     // Clear the error if all conditions are satisfied
     setNewPasswordError("");
   };
@@ -106,28 +113,6 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
     setError(null);
   };
 
-  // const handleSubmit = async () => {
-  //   if (!newPasswordError && !confirmPasswordError) {
-  //     try {
-  //       const body = {
-  //         Id: currentUser.id, // Use id from currentUser
-  //         OldPassword: oldPassword,
-  //         NewPassword: newPassword,
-  //         ConfirmPassword: confirmPassword,
-  //       };
-  //       const result = await ChangePassword(body);
-  //       if (result) {
-  //         clearFieldsAndErrors();
-  //         handleClose();
-  //       } else {
-  //         setOldPasswordError("Old password is not correct"); // Set oldPasswordError if old password is not correct
-  //       }
-  //     } catch (err) {
-  //       setError(err?.UserMessage);
-  //       setErrorPopupOpen(true);
-  //     }
-  //   }
-  // };
   const handleSubmit = async () => {
     try {
       const userId = currentUser.id;

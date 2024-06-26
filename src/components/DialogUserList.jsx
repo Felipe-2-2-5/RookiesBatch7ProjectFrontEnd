@@ -130,6 +130,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
   };
 
   const handleCancel = () => {
+    setSelectedUser(null)
     setVisibleDialog(false);
   };
 

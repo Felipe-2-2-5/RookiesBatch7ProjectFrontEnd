@@ -1,27 +1,40 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Box, Paper, Typography } from "@mui/material";
 
 const NotFound = () => {
-  const navigate = useNavigate();
   return (
-    <div className="flex h-screen flex-col items-center justify-center bg-gradient-to-r from-white to-red-600 text-center">
-      <div className="transform rounded-lg bg-white p-8 shadow-2xl transition-transform duration-300 hover:scale-105">
-        <h1 className="text-6xl font-extrabold text-red-700">404</h1>
-        <h2 className="mt-4 text-2xl font-semibold text-gray-800">
-          Page Not Found
-        </h2>
-        <p className="mt-2 max-w-xs text-gray-600">
-          The page you are looking for might have been removed or is temporarily
-          unavailable.
-        </p>
-        <button
-          className="mt-6 transform rounded-full bg-red-700 px-6 py-3 text-white transition-transform duration-300 hover:scale-105 hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300"
-          onClick={() => navigate("/")}
+    <Paper elevation={3} sx={{ p: 3, mt: 3, mb: 3 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+        }}
+      >
+        <Typography
+          variant="h2"
+          gutterBottom
+          sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}
         >
-          Back to Home
-        </button>
-      </div>
-    </div>
+          404
+        </Typography>
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ color: "#D6001C", fontWeight: "bold" }}
+        >
+          Page Not Found
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 2, textAlign: "center" }}>
+          Sorry, the page you are looking for does not exist.
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 2, textAlign: "center" }}>
+          Return to <a href="/">Home</a>
+        </Typography>
+      </Box>
+    </Paper>
   );
 };
 

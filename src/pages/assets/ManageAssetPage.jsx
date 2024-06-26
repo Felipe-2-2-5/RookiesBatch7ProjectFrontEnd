@@ -218,7 +218,7 @@ const ManageAssetPage = () => {
     const selectedState = e.target.value;
     setFilterRequest((prevState) => ({
       ...prevState,
-      state: selectedState === "All" ? "" : selectedState,
+      state: selectedState === "All" ? "All" : selectedState,
       searchTerm: "",
       sortColumn: "assetname",
       sortOrder: "",
@@ -366,7 +366,9 @@ const ManageAssetPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <FilterIcon />
+                      <IconButton onClick={handleStateChange}>
+                        <FilterIcon />
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
@@ -404,7 +406,9 @@ const ManageAssetPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <FilterIcon />
+                      <IconButton onClick={handleCategoryChange}>
+                        <FilterIcon />
+                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
@@ -675,6 +679,7 @@ const ManageAssetPage = () => {
             display: "flex",
             flexDirection: "column",
             padding: "20px",
+            maxHeight: "300px", overflowY: "auto", wordWrap: "break-word", wordBreak: "break-all"
           }}
         >
           {selectedAsset ? (
@@ -713,7 +718,7 @@ const ManageAssetPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedAsset.category.name}
+                    {selectedAsset.category?.name}
                   </Typography>
                 </Grid>
 
@@ -781,10 +786,10 @@ const ManageAssetPage = () => {
                             (assignment, index) => (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {assignment.assignedTo.userName}
+                                  {assignment.assignedTo?.userName}
                                 </TableCell>
                                 <TableCell>
-                                  {assignment.assignedBy.userName}
+                                  {assignment.assignedBy?.userName}
                                 </TableCell>
                                 <TableCell>
                                   {formatDate(assignment.assignedDate)}
@@ -925,15 +930,17 @@ const ManageAssetPage = () => {
           <Typography variant="body1">
             If the asset is not able to be used anymore, please update its state
             in{" "}
-            <Link
-              component={Link}
-              to="/edit-asset"
-              color="primary"
-              underline="always"
-            >
-              Edit Asset page
-            </Link>
-            .
+            {selectedAsset ? (
+              <Link
+                component={Link}
+                to={path.assetEdit.replace(":id", selectedAsset.id)}
+                color="primary"
+                underline="always"
+              >
+                Edit Asset page
+              </Link>
+            ) : null
+            }
           </Typography>
         </DialogContent>
       </Dialog>

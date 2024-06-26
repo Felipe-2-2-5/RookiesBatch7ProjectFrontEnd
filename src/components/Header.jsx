@@ -12,6 +12,7 @@ import {
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { ChangePasswordDialog } from "./";
 import PopupNotificationExtra from "./PopupNotifycationExtra";
 
 const Header = () => {
@@ -20,6 +21,16 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+
+  const handleOpenChangePassword = () => {
+    setAnchorEl(null);
+    setChangePasswordOpen(true);
+  };
+
+  const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -44,11 +55,6 @@ const Header = () => {
 
   const handleLogout = () => {
     setOpenCancelPopup(true);
-  };
-
-  const handleChangePassword = () => {
-    // Add your change password logic here
-    handleClose();
   };
 
   const formattedPathname = location.pathname
@@ -88,11 +94,15 @@ const Header = () => {
                   keepMounted
                   open={Boolean(anchorEl)}
                   onClose={handleClose}>
-                  <MenuItem onClick={handleChangePassword}>
+                  <MenuItem onClick={handleOpenChangePassword}>
                     Change Password
                   </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
+                <ChangePasswordDialog
+                  open={changePasswordOpen}
+                  handleClose={handleCloseChangePassword}
+                />
               </div>
             ) : (
               <Button
@@ -104,7 +114,6 @@ const Header = () => {
           </Box>
         </Toolbar>
       </AppBar>
-
       <PopupNotificationExtra
         open={openCancelPopup}
         title="Are you sure?"
@@ -113,9 +122,7 @@ const Header = () => {
         handleClose={handleCancelClose}
         handleConfirm={handleCancelConfirm}
       />
-
     </>
-
   );
 };
 

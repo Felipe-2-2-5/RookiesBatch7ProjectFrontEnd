@@ -76,12 +76,16 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     const fetchedAssets = res.data.data;
     setTotalCount(res.data.totalCount);
 
-    const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
-    if (userCreated) {
-      setAssets([userCreated, firstAsset, ...fetchedAssets]);
-      sessionStorage.removeItem("user_created");
-    } else {
+    // const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
+    // if (userCreated) {
+    //   setAssets([userCreated, firstAsset, ...fetchedAssets]);
+    //   sessionStorage.removeItem("user_created");
+    // } else 
+    if (firstAsset) {
       setAssets([firstAsset, ...fetchedAssets]);
+    }
+    else {
+      setAssets([...fetchedAssets]);
     }
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -171,7 +175,6 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       };
     });
   };
-
 
   const getSortIcon = (column) => {
     if (filterRequest.sortColumn === column) {

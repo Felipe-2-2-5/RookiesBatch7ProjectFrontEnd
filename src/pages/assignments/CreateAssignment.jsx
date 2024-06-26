@@ -204,20 +204,17 @@ const CreateAssignment = () => {
     handleAssetDialogClose();
   };
 
-
-  console.log(assignments.assignedDate);
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const response = await CreateAssignmentAPI({
-
         //custom input to match backend 
         assignedToId: assignments.user.id,
         assetId: assignments.asset.id,
         assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
         note: assignments.note
       });
-
+      console.log("1", response);
       if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
         setTitlePopup("Notifications");
@@ -457,6 +454,7 @@ const CreateAssignment = () => {
             <DialogAssetList
               visibleAssetDialog={visibleAssetDialog}
               setVisibleAssetDialog={setVisibleAssetDialog}
+              firstAsset={null}
               onSelect={handleAssetSelect}
               selectedAsset={selectedAsset}
               setSelectedAsset={setSelectedAsset}

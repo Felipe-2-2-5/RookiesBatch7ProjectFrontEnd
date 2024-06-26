@@ -82,7 +82,11 @@ export const AdminRoutes = () => {
     },
     {
       path: path.assets,
-      element: <ManageAssetPage />,
+      element: (
+        <RequireAuth>
+          <ManageAssetPage />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {
@@ -105,7 +109,11 @@ export const AdminRoutes = () => {
     },
     {
       path: path.assignments,
-      element: <ManageAssignmentPage />,
+      element: (
+        <RequireAuth>
+          <ManageAssignmentPage />
+        </RequireAuth>
+      ),
       errorElement: <NotFound />,
     },
     {
@@ -117,6 +125,10 @@ export const AdminRoutes = () => {
       path: path.report,
       element: <ReportPage />,
       errorElement: <NotFound />,
+    },
+    {
+      path: "*",
+      element: <NotFound />,
     },
   ]);
   return element;

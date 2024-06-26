@@ -1,9 +1,9 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
 import { HomePage, LoginPage, NotFound } from "../pages";
-import { path } from "./";
+import { path } from ".";
 
-export const StaffRoutes = () => {
+export const BaseRoutes = () => {
   const element = useRoutes([
     {
       path: path.default,

@@ -67,6 +67,7 @@ const formatDate = (date) => {
 const EditAssignment = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [firstAsset, setFirstAsset] = useState("");
     const [visibleDialog, setVisibleDialog] = useState(false);
     const [visibleAssetDialog, setVisibleAssetDialog] = useState(false);
     const [openPopup, setOpenPopup] = useState(false);
@@ -75,8 +76,8 @@ const EditAssignment = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedAsset, setSelectedAsset] = useState(null);
     const [selectedAssignment, setSelectedAssignment] = useState({ assignedDate: null });
-    // const [initialAsset, setInitialAsset] = useState('');
-    // const [currentAsset, setCurrentAsset] = useState('');
+    const [initialValue, setInitialValue] = useState({ asset: "", user: "", assignedDate: "", note: "" });
+    const [currentValue, setCurrentValue] = useState({ asset: "", user: "", assignedDate: "", note: "" });
     const [formErrors, setFormErrors] = useState({
         user: false,
         asset: false,
@@ -89,13 +90,17 @@ const EditAssignment = () => {
         asset: false
     });
 
-    const handleChange = (event) => {
+    const handleFieldChange = (name, value) => {
+        setCurrentValue(prevValues => ({ ...prevValues, [name]: value }));
+    };
+
+    const handleNoteChange = (event) => {
         const { name, value } = event.target;
         let errorMessage = "";
         if (name === "note" && value.length > 600) {
             errorMessage = "Note must not exceed 600 characters";
         }
-
+        handleFieldChange(name, value);
         setSelectedAssignment({ ...selectedAssignment, [name]: value });
         setFormErrors({ ...formErrors, [name]: errorMessage });
     };
@@ -107,19 +112,21 @@ const EditAssignment = () => {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-
     useEffect(() => {
         const getAssignmentById = async () => {
             try {
                 const response = await GetAssignment(id);
                 if (response) {
-                    setSelectedUser(response.data.assignedTo);
-                    setSelectedAsset(response.data.asset);
-                    // setInitialAsset(response.data.asset.assetName);
-                    // setCurrentAsset(response.data.asset.assetName);
+                    setSelectedUser(response.assignedTo);
+                    setSelectedAsset(response.asset);
+                    setFirstAsset(response.asset);
+                    const initialAsset = response.asset ? response.asset.assetName : "";
+                    const initialUser = response.assignedTo ? response.assignedTo.userName : "";
+                    setInitialValue({ asset: initialAsset, user: initialUser, assignedDate: new Date(response.assignedDate), note: response.note });
+                    setCurrentValue({ asset: initialAsset, user: initialUser, assignedDate: new Date(response.assignedDate), note: response.note });
                     setSelectedAssignment({
-                        ...response.data,
-                        assignedDate: new Date(response.data.assignedDate),
+                        ...response,
+                        assignedDate: new Date(response.assignedDate),
                     });
                 }
             } catch (error) {
@@ -128,11 +135,9 @@ const EditAssignment = () => {
                 displayPopupNotification();
             }
         }
-
         getAssignmentById(id);
     }, [id])
 
-    console.log("1", selectedAssignment);
     useEffect(() => {
         let errorMessage = "";
         if (touched.assignedDate) {
@@ -156,8 +161,6 @@ const EditAssignment = () => {
         }));
     }, [selectedAssignment.assignedDate, touched.assignedDate]);
 
-
-
     useEffect(() => {
         let errorMessage = "";
         if (touched.user && !selectedUser) {
@@ -180,22 +183,22 @@ const EditAssignment = () => {
         }));
     }, [visibleAssetDialog, selectedAsset, touched.asset]);
 
-    const handleAssetChange = (e) => {
-        const value = e.target.value;
-        console.log("value", value);
-        // setCurrentAsset(value);
+    const isSingleFieldChanged = () => {
+        const assetChanged = initialValue.asset !== currentValue.asset;
+        const userChanged = initialValue.user !== currentValue.user;
+        const assignedDateChanged = new Date(initialValue.assignedDate).getTime() !== new Date(currentValue.assignedDate).getTime();
+        const noteChanged = initialValue.note !== currentValue.note;
+
+        return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length === 1;
     };
 
-    // const isAssetChanged = () => {
-    //     return initialAsset !== currentAsset;
-    // };
-
-    // const isAssetValid = () => {
-    //     return !formErrors.asset && currentAsset;
-    // };
+    const isFormValid = () => {
+        return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
+    };
 
     const handleDateChange = (name, date) => {
         setSelectedAssignment({ ...selectedAssignment, [name]: date });
+        handleFieldChange(name, date);
         setTouched({ ...touched, [name]: true });
     };
 
@@ -207,7 +210,6 @@ const EditAssignment = () => {
         setTouched({ ...touched, user: true });
         setVisibleDialog(true);
     };
-
 
     const handleUserDialogClose = () => {
         setVisibleDialog(false);
@@ -228,6 +230,7 @@ const EditAssignment = () => {
             assignedTo: user,
             assignedToId: user.id
         }));
+        handleFieldChange("user", user.userName);
         handleUserDialogClose();
     };
 
@@ -237,9 +240,9 @@ const EditAssignment = () => {
             ...prev,
             asset: asset,
         }));
+        handleFieldChange('asset', asset.assetName);
         handleAssetDialogClose();
     };
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -250,11 +253,10 @@ const EditAssignment = () => {
                 assetId: selectedAssignment.asset.id,
                 note: selectedAssignment.note
             }
-            console.log("edit", edit);
             const response = await EditAssignmentAPI(id, edit);
 
             if (response) {
-                sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
+                sessionStorage.setItem("assignment_created", JSON.stringify(response));
                 setTitlePopup("Notifications");
                 setContentPopup(
                     "Update successfully"
@@ -360,7 +362,6 @@ const EditAssignment = () => {
                                     name="asset"
                                     value={selectedAssignment.asset ? `${selectedAssignment.asset.assetName}` : ''}
                                     onClick={handleAssetDialogOpen}
-                                    onChange={handleAssetChange}
                                     margin="dense"
                                     error={formErrors.asset}
                                     InputProps={{
@@ -436,7 +437,7 @@ const EditAssignment = () => {
                                     fullWidth
                                     name="note"
                                     value={selectedAssignment.note}
-                                    onChange={handleChange}
+                                    onChange={handleNoteChange}
                                     margin="dense"
                                     error={formErrors.note}
                                 />
@@ -458,12 +459,13 @@ const EditAssignment = () => {
                                                 backgroundColor: "#a50000",
                                             },
                                         }}
-                                        disabled={
-                                            Object.values(formErrors).some((error) => error) ||
-                                            !selectedAssignment.assignedTo ||
-                                            !selectedAssignment.asset ||
-                                            !selectedAssignment.assignedDate
-                                        }
+                                        // disabled={
+                                        //     Object.values(formErrors).some((error) => error) ||
+                                        //     !selectedAssignment.assignedTo ||
+                                        //     !selectedAssignment.asset ||
+                                        //     !selectedAssignment.assignedDate
+                                        // }
+                                        disabled={!isSingleFieldChanged() || !isFormValid()}
                                         onClick={handleSubmit}
                                     >
                                         Save
@@ -491,6 +493,7 @@ const EditAssignment = () => {
 
                     {visibleAssetDialog && (
                         <DialogAssetList
+                            firstAsset={firstAsset}
                             visibleAssetDialog={visibleAssetDialog}
                             setVisibleAssetDialog={setVisibleAssetDialog}
                             onSelect={handleAssetSelect}

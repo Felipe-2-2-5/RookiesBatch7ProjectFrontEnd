@@ -16,7 +16,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { AdminRoutes } from "../routes";
+import { AdminRoutes, StaffRoutes, BaseRoutes } from "../routes";
 import { ChangePassword, LoginUser } from "../services/users.service";
 import Footer from "./Footer";
 import Header from "./Header";
@@ -151,9 +151,7 @@ const Layout = () => {
     <div>
       <CssBaseline />
       <Header />
-      <Box
-        display="flex"
-        p={2}>
+      <Box display="flex" p={2}>
         <Box>
           {isAuthenticated &&
             (currentUser.role === "Admin" ? (
@@ -162,17 +160,15 @@ const Layout = () => {
               <VerticalNavbarStaff />
             ))}
         </Box>
-        <Box
-          flexGrow={1}
-          ml={2}>
+        <Box flexGrow={1} ml={2}>
           <main style={{ p: "2" }}>
-            {/* {isAuthenticated &&
+            {!isAuthenticated && <BaseRoutes />}
+            {isAuthenticated &&
               (currentUser.role === "Admin" ? (
                 <AdminRoutes />
               ) : (
                 <StaffRoutes />
-              ))} */}
-            <AdminRoutes />
+              ))}
           </main>
         </Box>
       </Box>
@@ -182,7 +178,8 @@ const Layout = () => {
         open={currentUser.isFirst}
         onClose={!currentUser.isFirst}
         disablebackdropclick="true"
-        disableEscapeKeyDown>
+        disableEscapeKeyDown
+      >
         <DialogTitle sx={{ color: "#D6001C" }}>Change Password</DialogTitle>
         <DialogContent>
           <Typography>
@@ -222,10 +219,7 @@ const Layout = () => {
               }}
             />
             {newPasswordError && (
-              <Typography
-                color="error"
-                variant="caption"
-                component="div">
+              <Typography color="error" variant="caption" component="div">
                 {newPasswordError}
               </Typography>
             )}
@@ -262,10 +256,7 @@ const Layout = () => {
               }}
             />
             {confirmPasswordError && (
-              <Typography
-                color="error"
-                variant="caption"
-                component="div">
+              <Typography color="error" variant="caption" component="div">
                 {confirmPasswordError}
               </Typography>
             )}
@@ -284,7 +275,8 @@ const Layout = () => {
             sx={{
               bgcolor: "#D6001C",
               "&:hover": { bgcolor: "#D6001C" },
-            }}>
+            }}
+          >
             Save
           </Button>
         </DialogActions>
@@ -294,7 +286,8 @@ const Layout = () => {
         open={showSuccessDialog}
         onClose={() => setShowSuccessDialog(false)}
         disableBackdropClick
-        disableEscapeKeyDown>
+        disableEscapeKeyDown
+      >
         <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold" }}>
           Success
         </DialogTitle>
@@ -308,7 +301,8 @@ const Layout = () => {
               color: "white",
               bgcolor: "#D6001C",
               "&:hover": { bgcolor: "#D6001C" },
-            }}>
+            }}
+          >
             OK
           </Button>
         </DialogActions>

@@ -44,7 +44,9 @@ instance.interceptors.response.use(
         } else if (err.response.status === 404) {
           errorMessage = "Resource not found";
         } else if (err.response.status === 500) {
-          errorMessage = "An error occured while processing your request.";
+          errorMessage =
+            "An error occured while processing your request. Please try again later.";
+          popupEventEmitter.emit("showPopup", errorMessage);
         } else {
           errorMessage = err.response.data;
         }

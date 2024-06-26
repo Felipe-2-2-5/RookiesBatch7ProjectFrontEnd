@@ -24,6 +24,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import {  GetUser, UpdateUser } from "../../services/users.service";
 import PopupNotification from "../../components/PopupNotification";
+import PopupNotificationExtra from "../../components/PopupNotifycationExtra";
 
 const EditUser = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const EditUser = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
+  const [openCancelPopup, setOpenCancelPopup] = useState(false);
   const {id} = useParams();
 
   const [users, setUsers] = useState({
@@ -81,6 +83,21 @@ const EditUser = () => {
     dateOfBirth: false,
     joinedDate: false,
   });
+
+  const handleCancel = () => {
+    setOpenCancelPopup(true);
+  };
+
+  const handleCancelConfirm = () => {
+    setOpenCancelPopup(false);
+    navigate("/manage-user");
+  };
+
+  const handleCancelClose = () => {
+    setOpenCancelPopup(false);
+  };
+
+
 
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
@@ -269,6 +286,8 @@ const EditUser = () => {
     setOpenPopup(false);
     navigate("/manage-user");
   };
+
+
   return (
     <>
       <Container sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -561,7 +580,7 @@ const EditUser = () => {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-user")}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </Button>
@@ -576,6 +595,13 @@ const EditUser = () => {
         handleClose={handleClosePopup}
         title={titlePopup}
         content={contentPopup}
+      />
+       <PopupNotificationExtra
+        open={openCancelPopup}
+        title="Confirm Cancel"
+        content="Changes will not be saved. Are you sure?"
+        handleClose={handleCancelClose}
+        handleConfirm={handleCancelConfirm}
       />
     </>
   );

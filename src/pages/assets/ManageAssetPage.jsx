@@ -28,7 +28,7 @@ import {
   HighlightOff as DeleteIcon,
   ArrowDropDown,
   ArrowDropUp,
-  FilterAlt as FilterIcon,
+  FilterAltOutlined as FilterIcon,
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
@@ -366,7 +366,7 @@ const ManageAssetPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleStateChange}>
+                      <IconButton>
                         <FilterIcon />
                       </IconButton>
                     </InputAdornment>
@@ -406,7 +406,7 @@ const ManageAssetPage = () => {
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton onClick={handleCategoryChange}>
+                      <IconButton>
                         <FilterIcon />
                       </IconButton>
                     </InputAdornment>
@@ -679,7 +679,10 @@ const ManageAssetPage = () => {
             display: "flex",
             flexDirection: "column",
             padding: "20px",
-            maxHeight: "300px", overflowY: "auto", wordWrap: "break-word", wordBreak: "break-all"
+            // maxHeight: "300px",
+            overflowY: "auto",
+            wordWrap: "break-word",
+            wordBreak: "break-all"
           }}
         >
           {selectedAsset ? (
@@ -718,7 +721,7 @@ const ManageAssetPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedAsset.category?.name}
+                    {selectedAsset.category.name}
                   </Typography>
                 </Grid>
 
@@ -761,22 +764,26 @@ const ManageAssetPage = () => {
                 selectedAsset.assignments.length > 0 && (
                   <>
                     <Typography variant="h6" sx={{ marginTop: 3 }} gutterBottom>
-                      {/* Assignment History */}
+                      Assignment History
                     </Typography>
                     <TableContainer component={Paper}>
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell>
+                            <TableCell style={{ width: "15%" }} // Adjust width as needed
+                            >
                               <strong>Assigned To</strong>
                             </TableCell>
-                            <TableCell>
+                            <TableCell style={{ width: "15%" }} // Adjust width as needed
+                            >
                               <strong>Assigned By</strong>
                             </TableCell>
-                            <TableCell>
+                            <TableCell style={{ width: "16%" }} // Adjust width as needed
+                            >
                               <strong>Assigned Date</strong>
                             </TableCell>
-                            <TableCell>
+                            <TableCell style={{ width: "54%" }} // Adjust width as needed
+                            >
                               <strong>Note</strong>
                             </TableCell>
                           </TableRow>
@@ -786,10 +793,10 @@ const ManageAssetPage = () => {
                             (assignment, index) => (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {assignment.assignedTo?.userName}
+                                  {assignment.assignedTo.userName}
                                 </TableCell>
                                 <TableCell>
-                                  {assignment.assignedBy?.userName}
+                                  {assignment.assignedBy.userName}
                                 </TableCell>
                                 <TableCell>
                                   {formatDate(assignment.assignedDate)}

@@ -3,7 +3,7 @@ import {
   ArrowDropUp,
   CreateTwoTone,
   HighlightOff as DeleteIcon,
-  DisabledByDefaultTwoTone,
+  DisabledByDefault,
   FilterAltOutlined,
   RestartAltRounded
 } from "@mui/icons-material";
@@ -13,7 +13,6 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -31,7 +30,7 @@ import {
   TableRow,
   TextField,
   Typography,
-  styled,
+  styled
 } from "@mui/material";
 import { DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -412,6 +411,16 @@ const ManageAssignmentPage = () => {
                 startText="Start date"
                 endText="End date"
                 value={dateRange}
+                sx={{
+                  "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                  {
+                    color: "black",
+                  },
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: dateError ? "red" : "black",
+                  },
+                }}
                 onChange={(newValue) => {
                   setDateRange(newValue);
                   if (newValue[0] && newValue[1]) {
@@ -683,7 +692,15 @@ const ManageAssignmentPage = () => {
           fullWidth={true}
         >
           <DialogTitle
-            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
+            sx={{
+              bgcolor: "grey.300",
+              color: "#D6001C",
+              fontWeight: "bold",
+              borderBottom: "1px solid black",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
             Detailed Assignment Information
             <IconButton
@@ -696,10 +713,19 @@ const ManageAssignmentPage = () => {
                 color: "#D6001C",
               }}
             >
-              <DisabledByDefaultTwoTone />
+              <DisabledByDefault />
             </IconButton>
           </DialogTitle>
-          <DialogContent dividers>
+          <DialogContent dividers sx={{
+            borderTop: "1px solid black",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+            // maxHeight: "300px",
+            overflowY: "auto",
+            wordWrap: "break-word",
+            wordBreak: "break-all"
+          }}>
             <Grid container spacing={2}>
               <Grid item xs={4}>
                 <Typography variant="body1">
@@ -809,11 +835,6 @@ const ManageAssignmentPage = () => {
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose} sx={{ color: "#D6001C" }}>
-              OK
-            </Button>
-          </DialogActions>
         </Dialog>
       )}
     </>

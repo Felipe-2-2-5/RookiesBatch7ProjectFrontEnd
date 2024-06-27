@@ -214,7 +214,6 @@ const CreateAssignment = () => {
         assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
         note: assignments.note
       });
-      console.log("1", response);
       if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
         setTitlePopup("Notifications");

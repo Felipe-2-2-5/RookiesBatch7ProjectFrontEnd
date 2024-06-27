@@ -22,7 +22,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
-import {  GetUser, UpdateUser } from "../../services/users.service";
+import { GetUser, UpdateUser } from "../../services/users.service";
 import PopupNotification from "../../components/PopupNotification";
 import PopupNotificationExtra from "../../components/PopupNotifycationExtra";
 
@@ -33,7 +33,7 @@ const EditUser = () => {
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
   const [openCancelPopup, setOpenCancelPopup] = useState(false);
-  const {id} = useParams();
+  const { id } = useParams();
 
   const [users, setUsers] = useState({
     firstName: "",
@@ -55,7 +55,7 @@ const EditUser = () => {
     location: false,
   });
 
- useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await GetUser(id);
@@ -254,10 +254,11 @@ const EditUser = () => {
       }
       try {
         const response = await UpdateUser(id,
-          {...users,
-          dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
-          joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
-        });
+          {
+            ...users,
+            dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
+            joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+          });
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
@@ -326,7 +327,7 @@ const EditUser = () => {
                   onChange={handleNameChange}
                   margin="dense"
                   error={formErrors.firstName}
-                  disabled 
+                  disabled
                 />
                 {formErrors.firstName && (
                   <FormHelperText error>{formErrors.firstName}</FormHelperText>
@@ -596,12 +597,13 @@ const EditUser = () => {
         title={titlePopup}
         content={contentPopup}
       />
-       <PopupNotificationExtra
+      <PopupNotificationExtra
         open={openCancelPopup}
-        title="Confirm Cancel"
+        title="Confirm cancel"
         content="Changes will not be saved. Are you sure?"
         handleClose={handleCancelClose}
         handleConfirm={handleCancelConfirm}
+        Okbutton="Confirm"
       />
     </>
   );

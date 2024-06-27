@@ -503,7 +503,7 @@ const ManageAssetPage = () => {
                 <TableRow>
                   <TableCell
                     style={{
-                      fontWeight: "bold", width: "15%",
+                      fontWeight: "bold", width: "15%", paddingLeft: "50px"
                     }} // Adjust width as needed
                     onClick={() => handleHeaderClick("assetcode")}
                   >
@@ -517,7 +517,7 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
+                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
                     onClick={() => handleHeaderClick("assetname")}
                   >
                     <Button
@@ -530,7 +530,7 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
                     onClick={() => handleHeaderClick("category")}
                   >
                     <Button
@@ -543,7 +543,7 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
                     onClick={() => handleHeaderClick("state")}
                   >
                     <Button
@@ -556,7 +556,7 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%" }}
+                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }}
                   ></TableCell>
                 </TableRow>
               </TableHead>
@@ -594,11 +594,19 @@ const ManageAssetPage = () => {
                           onClick={() => handleDetailDialog(asset)}
                           style={{ cursor: "pointer" }} // Set cursor to pointer on hover
                         >
-                          <TableCell>{asset.assetCode}</TableCell>
-                          <TableCell>{asset.assetName}</TableCell>
-                          <TableCell>{asset.category?.name}</TableCell>
-                          <TableCell>{assetStateEnum[asset.state]}</TableCell>
-                          <TableCell>
+                          <TableCell sx={{ paddingLeft: "50px" }}>{asset.assetCode}</TableCell>
+                          <TableCell
+                            sx={{
+                              paddingLeft: "50px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              maxWidth: 150,
+                            }}
+                          >{asset.assetName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "50px" }}>{asset.category?.name}</TableCell>
+                          <TableCell sx={{ paddingLeft: "50px" }}>{assetStateEnum[asset.state]}</TableCell>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {assetStateEnum[asset.state] === "Assigned" ? (
                               // Disable edit and delete icons if state is assigned
                               <>

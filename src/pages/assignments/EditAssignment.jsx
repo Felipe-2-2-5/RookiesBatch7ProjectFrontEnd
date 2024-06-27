@@ -22,6 +22,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DialogAssetList from '../../components/DialogAssetList';
 import DialogUserList from '../../components/DialogUserList';
 import { EditAssignmentAPI, GetAssignment } from '../../services/assignments.service';
+import PopupNotificationExtra from "../../components/PopupNotifycationExtra";
 // import { format } from 'date-fns';
 
 const PopupNotification = ({
@@ -67,6 +68,7 @@ const formatDate = (date) => {
 const EditAssignment = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [firstAsset, setFirstAsset] = useState("");
     const [visibleDialog, setVisibleDialog] = useState(false);
     const [visibleAssetDialog, setVisibleAssetDialog] = useState(false);
     const [openPopup, setOpenPopup] = useState(false);
@@ -75,8 +77,9 @@ const EditAssignment = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [selectedAsset, setSelectedAsset] = useState(null);
     const [selectedAssignment, setSelectedAssignment] = useState({ assignedDate: null });
-    const [initialValue, setInitialValue] = useState({ asset: "", user: "" });
-    const [currentValue, setCurrentValue] = useState({ asset: "", user: "" });
+    const [initialValue, setInitialValue] = useState({ asset: "", user: "", assignedDate: "", note: "" });
+    const [currentValue, setCurrentValue] = useState({ asset: "", user: "", assignedDate: "", note: "" });
+    const [openCancelPopup, setOpenCancelPopup] = useState(false);
     const [formErrors, setFormErrors] = useState({
         user: false,
         asset: false,
@@ -89,13 +92,17 @@ const EditAssignment = () => {
         asset: false
     });
 
-    const handleChange = (event) => {
+    const handleFieldChange = (name, value) => {
+        setCurrentValue(prevValues => ({ ...prevValues, [name]: value }));
+    };
+
+    const handleNoteChange = (event) => {
         const { name, value } = event.target;
         let errorMessage = "";
         if (name === "note" && value.length > 600) {
             errorMessage = "Note must not exceed 600 characters";
         }
-
+        handleFieldChange(name, value);
         setSelectedAssignment({ ...selectedAssignment, [name]: value });
         setFormErrors({ ...formErrors, [name]: errorMessage });
     };
@@ -115,10 +122,11 @@ const EditAssignment = () => {
                 if (response) {
                     setSelectedUser(response.assignedTo);
                     setSelectedAsset(response.asset);
+                    setFirstAsset(response.asset);
                     const initialAsset = response.asset ? response.asset.assetName : "";
                     const initialUser = response.assignedTo ? response.assignedTo.userName : "";
-                    setInitialValue({ asset: initialAsset, user: initialUser });
-                    setCurrentValue({ asset: initialAsset, user: initialUser });
+                    setInitialValue({ asset: initialAsset, user: initialUser, assignedDate: new Date(response.assignedDate), note: response.note });
+                    setCurrentValue({ asset: initialAsset, user: initialUser, assignedDate: new Date(response.assignedDate), note: response.note });
                     setSelectedAssignment({
                         ...response,
                         assignedDate: new Date(response.assignedDate),
@@ -130,9 +138,24 @@ const EditAssignment = () => {
                 displayPopupNotification();
             }
         }
-
         getAssignmentById(id);
     }, [id])
+
+    const handleCancel = () => {
+        if (isSingleFieldChanged()) {
+            setOpenCancelPopup(true);
+        }
+        else { navigate("/manage-assignment"); }
+    };
+
+    const handleCancelConfirm = () => {
+        setOpenCancelPopup(false);
+        navigate("/manage-assignment");
+    };
+
+    const handleCancelClose = () => {
+        setOpenCancelPopup(false);
+    };
 
     useEffect(() => {
         let errorMessage = "";
@@ -179,8 +202,13 @@ const EditAssignment = () => {
         }));
     }, [visibleAssetDialog, selectedAsset, touched.asset]);
 
-    const isFormChanged = () => {
-        return initialValue.asset !== currentValue.asset || initialValue.user !== currentValue.user;
+    const isSingleFieldChanged = () => {
+        const assetChanged = initialValue.asset !== currentValue.asset;
+        const userChanged = initialValue.user !== currentValue.user;
+        const assignedDateChanged = new Date(initialValue.assignedDate).getTime() !== new Date(currentValue.assignedDate).getTime();
+        const noteChanged = initialValue.note !== currentValue.note;
+
+        return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length === 1;
     };
 
     const isFormValid = () => {
@@ -189,6 +217,7 @@ const EditAssignment = () => {
 
     const handleDateChange = (name, date) => {
         setSelectedAssignment({ ...selectedAssignment, [name]: date });
+        handleFieldChange(name, date);
         setTouched({ ...touched, [name]: true });
     };
 
@@ -200,7 +229,6 @@ const EditAssignment = () => {
         setTouched({ ...touched, user: true });
         setVisibleDialog(true);
     };
-
 
     const handleUserDialogClose = () => {
         setVisibleDialog(false);
@@ -221,7 +249,7 @@ const EditAssignment = () => {
             assignedTo: user,
             assignedToId: user.id
         }));
-        setCurrentValue(prevValues => ({ ...prevValues, user: user.userName }));
+        handleFieldChange("user", user.userName);
         handleUserDialogClose();
     };
 
@@ -231,13 +259,9 @@ const EditAssignment = () => {
             ...prev,
             asset: asset,
         }));
-        setCurrentValue(prevValues => ({ ...prevValues, asset: asset.assetName }));
+        handleFieldChange('asset', asset.assetName);
         handleAssetDialogClose();
     };
-
-    console.log("initial: ", initialValue);
-    console.log("current: ", currentValue);
-    console.log("assignemnt: ", selectedAssignment);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -248,7 +272,6 @@ const EditAssignment = () => {
                 assetId: selectedAssignment.asset.id,
                 note: selectedAssignment.note
             }
-            console.log("edit", edit);
             const response = await EditAssignmentAPI(id, edit);
 
             if (response) {
@@ -433,7 +456,7 @@ const EditAssignment = () => {
                                     fullWidth
                                     name="note"
                                     value={selectedAssignment.note}
-                                    onChange={handleChange}
+                                    onChange={handleNoteChange}
                                     margin="dense"
                                     error={formErrors.note}
                                 />
@@ -461,7 +484,7 @@ const EditAssignment = () => {
                                         //     !selectedAssignment.asset ||
                                         //     !selectedAssignment.assignedDate
                                         // }
-                                        disabled={!isFormChanged() || !isFormValid()}
+                                        disabled={!isSingleFieldChanged() || !isFormValid()}
                                         onClick={handleSubmit}
                                     >
                                         Save
@@ -469,7 +492,7 @@ const EditAssignment = () => {
                                     <Button
                                         variant="outlined"
                                         color="secondary"
-                                        onClick={() => navigate("/manage-assignment")}
+                                        onClick={handleCancel}
                                     >
                                         Cancel
                                     </Button>
@@ -489,6 +512,7 @@ const EditAssignment = () => {
 
                     {visibleAssetDialog && (
                         <DialogAssetList
+                            firstAsset={firstAsset}
                             visibleAssetDialog={visibleAssetDialog}
                             setVisibleAssetDialog={setVisibleAssetDialog}
                             onSelect={handleAssetSelect}
@@ -503,6 +527,14 @@ const EditAssignment = () => {
                 handleClose={handleClosePopup}
                 title={titlePopup}
                 content={contentPopup}
+            />
+            <PopupNotificationExtra
+                open={openCancelPopup}
+                title="Confirm cancel"
+                content="Changes will not be saved. Are you sure?"
+                handleClose={handleCancelClose}
+                handleConfirm={handleCancelConfirm}
+                Okbutton="Confirm"
             />
         </>
     );

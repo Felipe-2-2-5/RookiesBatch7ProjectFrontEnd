@@ -22,8 +22,9 @@ import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
-import {  GetUser, UpdateUser } from "../../services/users.service";
+import { GetUser, UpdateUser } from "../../services/users.service";
 import PopupNotification from "../../components/PopupNotification";
+import PopupNotificationExtra from "../../components/PopupNotifycationExtra";
 
 const EditUser = () => {
   const navigate = useNavigate();
@@ -31,7 +32,8 @@ const EditUser = () => {
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
-  const {id} = useParams();
+  const [openCancelPopup, setOpenCancelPopup] = useState(false);
+  const { id } = useParams();
 
   const [users, setUsers] = useState({
     firstName: "",
@@ -53,7 +55,7 @@ const EditUser = () => {
     location: false,
   });
 
- useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         const response = await GetUser(id);
@@ -81,6 +83,21 @@ const EditUser = () => {
     dateOfBirth: false,
     joinedDate: false,
   });
+
+  const handleCancel = () => {
+    setOpenCancelPopup(true);
+  };
+
+  const handleCancelConfirm = () => {
+    setOpenCancelPopup(false);
+    navigate("/manage-user");
+  };
+
+  const handleCancelClose = () => {
+    setOpenCancelPopup(false);
+  };
+
+
 
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
@@ -237,10 +254,11 @@ const EditUser = () => {
       }
       try {
         const response = await UpdateUser(id,
-          {...users,
-          dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
-          joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
-        });
+          {
+            ...users,
+            dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
+            joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+          });
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
@@ -269,6 +287,8 @@ const EditUser = () => {
     setOpenPopup(false);
     navigate("/manage-user");
   };
+
+
   return (
     <>
       <Container sx={{ display: "flex", justifyContent: "center", my: 4 }}>
@@ -307,7 +327,7 @@ const EditUser = () => {
                   onChange={handleNameChange}
                   margin="dense"
                   error={formErrors.firstName}
-                  disabled 
+                  disabled
                 />
                 {formErrors.firstName && (
                   <FormHelperText error>{formErrors.firstName}</FormHelperText>
@@ -561,7 +581,7 @@ const EditUser = () => {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-user")}
+                    onClick={handleCancel}
                   >
                     Cancel
                   </Button>
@@ -576,6 +596,14 @@ const EditUser = () => {
         handleClose={handleClosePopup}
         title={titlePopup}
         content={contentPopup}
+      />
+      <PopupNotificationExtra
+        open={openCancelPopup}
+        title="Confirm cancel"
+        content="Changes will not be saved. Are you sure?"
+        handleClose={handleCancelClose}
+        handleConfirm={handleCancelConfirm}
+        Okbutton="Confirm"
       />
     </>
   );

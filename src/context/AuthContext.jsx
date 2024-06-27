@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 const AuthContext = createContext({
   isAuthenticated: false,
-  setIsAuthenticated: () => {},
+  setIsAuthenticated: () => { },
   currentUser: {
     name: "",
     id: "",
@@ -11,7 +11,7 @@ const AuthContext = createContext({
     isFirst: false,
     expires: "",
   },
-  setCurrentUser: () => {},
+  setCurrentUser: () => { },
 });
 
 export const useAuthContext = () => useContext(AuthContext);
@@ -26,6 +26,8 @@ const AuthProvider = ({ children }) => {
     locality: "",
   });
 
+  console.log("Authen", isAuthenticated);
+  console.log("token", token);
   useEffect(() => {
     const UserData = () => {
       if (token) {
@@ -37,7 +39,7 @@ const AuthProvider = ({ children }) => {
             ],
             id: parseInt(
               decodedToken[
-                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+              "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
               ]
             ),
             role: decodedToken[

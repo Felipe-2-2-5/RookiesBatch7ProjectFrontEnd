@@ -18,6 +18,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  FormControl,
+  InputLabel,
+  Select,
   Box,
   CircularProgress,
   Pagination,
@@ -28,7 +31,7 @@ import {
   HighlightOff as DeleteIcon,
   ArrowDropDown,
   ArrowDropUp,
-  FilterAltOutlined as FilterIcon,
+  FilterAltOutlined,
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
@@ -49,6 +52,13 @@ const formatDate = (dateString) => {
   return date.toLocaleDateString("en-GB");
 };
 
+const buttonTableHead = {
+  fontWeight: "bold",
+  textTransform: "none",
+  padding: 0,
+  minWidth: "auto",
+  color: "black",
+};
 const ManageAssetPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -116,6 +126,8 @@ const ManageAssetPage = () => {
 
     fetchCategories();
   }, []);
+
+  const [selectedState] = useState("All");
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
@@ -332,46 +344,40 @@ const ManageAssetPage = () => {
           height: "calc(100vh - 150px)",
         }}
       >
-        <Typography
-          variant="h5"
-          component="h2"
-          style={{ color: "#D6001C", fontWeight: "bold", marginBottom: 20 }}
-        >
+        <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Asset List
-        </Typography>
-
-        {/* Filters, Search, and Create New Asset */}
-        <Grid container spacing={2} alignItems="center">
-          {/* Left side: Filters and Search */}
-          <Grid item xs={12} md={8} container spacing={2}>
-            {/* State Filter */}
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="State"
-                select
-                value={filterRequest.state === "" ? "All" : filterRequest.state}
-                onChange={handleStateChange}
-                variant="outlined"
-                fullWidth
+        </h2>
+        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <FormControl
+              variant="outlined"
+              sx={{
+                minWidth: 240,
+                "& .MuiOutlinedInput-root": {
+                  "&:hover fieldset": { borderColor: "black" },
+                  "&.Mui-focused fieldset": { borderColor: "black" },
+                },
+              }}
+            >
+              <InputLabel
                 sx={{
-                  "& label.Mui-focused": { color: "#000" },
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": { borderColor: "#000" },
+                  color: "black",
+                  "&.Mui-focused": {
+                    color: "black",
                   },
-                  "& .MuiSelect-icon": {
-                    color: "transparent",
-                  },
-                  width: "70%",
                 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        <FilterIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+              >
+                State
+              </InputLabel>
+              <Select
+                label="State"
+                value={selectedState}
+                name="state"
+                IconComponent={(props) => (
+                  <FilterAltOutlined {...props} style={{ transform: "none" }} />
+                )}
+                onChange={handleStateChange}
+                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
               >
                 <MenuItem value="All">All</MenuItem>
                 {Object.values(assetStateEnum).map((state) => (
@@ -379,39 +385,39 @@ const ManageAssetPage = () => {
                     {state}
                   </MenuItem>
                 ))}
-              </TextField>
-            </Grid>
+              </Select>
+            </FormControl>
 
-            {/* Category Filter */}
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="Category"
-                select
-                value={
-                  filterRequest.category === "" ? "All" : filterRequest.category
-                }
-                onChange={handleCategoryChange}
-                variant="outlined"
-                fullWidth
+            <FormControl
+              variant="outlined"
+              sx={{
+                minWidth: 240,
+                marginLeft: "16px",
+                "& .MuiOutlinedInput-root": {
+                  "&:hover fieldset": { borderColor: "black" },
+                  "&.Mui-focused fieldset": { borderColor: "black" },
+                },
+              }}
+            >
+              <InputLabel
                 sx={{
-                  "& label.Mui-focused": { color: "#000" },
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": { borderColor: "#000" },
+                  color: "black",
+                  "&.Mui-focused": {
+                    color: "black",
                   },
-                  "& .MuiSelect-icon": {
-                    color: "transparent",
-                  },
-                  width: "70%",
                 }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton>
-                        <FilterIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
+              >
+                Category
+              </InputLabel>
+              <Select
+                label="Category"
+                value={selectedState}
+                name="category"
+                IconComponent={(props) => (
+                  <FilterAltOutlined {...props} style={{ transform: "none" }} />
+                )}
+                onChange={handleCategoryChange}
+                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
               >
                 <MenuItem value="All">All</MenuItem>
                 {categories ? (
@@ -425,57 +431,66 @@ const ManageAssetPage = () => {
                     Loading categories...
                   </MenuItem>
                 )}
-              </TextField>
-            </Grid>
+              </Select>
+            </FormControl>
 
-            {/* Search Box */}
-            <Grid item xs={12} sm={4}>
-              <TextField
-                label="Search"
-                variant="outlined"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onKeyPress={handleKeyPress}
-                fullWidth
-                sx={{
-                  "& label.Mui-focused": { color: "#000" },
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": { borderColor: "#000" },
-                  },
-                  width: "120%",
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={handleSearchClick}>
-                        <SearchIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </Grid>
-          </Grid>
-
-          {/* Right side: Create New Asset Button */}
-          <Grid item xs={12} md={4} container justifyContent="flex-end">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate(path.assetCreate)}
+            <TextField
+              variant="outlined"
+              label="Search"
+              value={searchTerm}
+              name="search"
+              onChange={handleSearchChange}
+              onKeyPress={handleKeyPress}
+              error={false}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      sx={{
+                        "& label.Mui-focused": { color: "#000" },
+                        "& .MuiOutlinedInput-root": {
+                          "&.Mui-focused fieldset": { borderColor: "#000" },
+                        },
+                        width: "120%",
+                      }}
+                      onClick={handleSearchClick}
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
               sx={{
-                backgroundColor: "#D6001C",
-                color: "white",
-                height: 56, // Set height to 56px
-                "&:hover": {
-                  bgcolor: "rgba(214, 0, 28, 0.8)",
+                marginLeft: "16px",
+                "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                {
+                  color: "black",
+                },
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "black",
                 },
               }}
-            >
-              Create New Asset
-            </Button>
-          </Grid>
-        </Grid>
+            />
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate(path.assetCreate)}
+            sx={{
+              backgroundColor: "#D6001C",
+              color: "white",
+              height: 56, // Set height to 56px
+              marginLeft: "16px",
+              "&:hover": {
+                bgcolor: "rgba(214, 0, 28, 0.8)",
+              },
+            }}
+          >
+            Create New Asset
+          </Button>
+        </Box>
+
 
         {/* Asset Table */}
         <TableContainer
@@ -487,40 +502,58 @@ const ManageAssetPage = () => {
               <TableHead>
                 <TableRow>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
+                    style={{
+                      fontWeight: "bold", width: "15%",
+                    }} // Adjust width as needed
                     onClick={() => handleHeaderClick("assetcode")}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("assetcode")}
+                      endIcon={getSortIcon("assetcode")}
+                      sx={buttonTableHead}
+                    >
                       Asset Code
-                      {getSortIcon("assetcode")}
-                    </div>
+                    </Button>
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "40%" }} // Adjust width as needed
                     onClick={() => handleHeaderClick("assetname")}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("assetname")}
+                      endIcon={getSortIcon("assetname")}
+                      sx={buttonTableHead}
+                    >
                       Asset Name
-                      {getSortIcon("assetname")}
-                    </div>
+                    </Button>
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
                     onClick={() => handleHeaderClick("category")}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("category")}
+                      endIcon={getSortIcon("category")}
+                      sx={buttonTableHead}
+                    >
                       Category
-                      {getSortIcon("category")}
-                    </div>
+                    </Button>
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%" }} // Adjust width as needed
                     onClick={() => handleHeaderClick("state")}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("state")}
+                      endIcon={getSortIcon("state")}
+                      sx={buttonTableHead}
+                    >
                       State
-                      {getSortIcon("state")}
-                    </div>
+                    </Button>
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%" }}
@@ -573,9 +606,7 @@ const ManageAssetPage = () => {
                                   <EditIcon />
                                 </IconButton>
                                 <IconButton
-                                  aria-label="delete"
-                                  disabled
-                                  style={{ color: "#D6001C", opacity: 0.5 }}
+                                  aria-label="delete" disabled
                                 >
                                   <DeleteIcon />
                                 </IconButton>
@@ -666,7 +697,9 @@ const ManageAssetPage = () => {
             aria-label="close"
             onClick={handleDialogClose}
             sx={{
-              bgcolor: "grey.300",
+              position: "absolute",
+              right: 10,
+              top: 12,
               color: "#D6001C",
             }}
           >
@@ -763,7 +796,7 @@ const ManageAssetPage = () => {
               {selectedAsset.assignments &&
                 selectedAsset.assignments.length > 0 && (
                   <>
-                    <Typography variant="h6" sx={{ marginTop: 3 }} gutterBottom>
+                    <Typography variant="h6" sx={{ marginTop: 3, fontStyle: "italic" }} gutterBottom>
                       Assignment History
                     </Typography>
                     <TableContainer component={Paper}>

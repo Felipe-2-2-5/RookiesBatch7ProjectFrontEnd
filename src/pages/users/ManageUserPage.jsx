@@ -131,6 +131,7 @@ const ManageUserPage = () => {
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1
     }));
   };
   const handleKeyPress = (e) => {
@@ -292,8 +293,19 @@ const ManageUserPage = () => {
             title="Can not disable user"
             content={disableError}
           />
-          <FormControl variant="outlined" sx={{ minWidth: 120 }}>
-            <InputLabel>Type</InputLabel>
+          <FormControl variant="outlined" sx={{
+            minWidth: 240,
+            "& .MuiOutlinedInput-root": {
+              "&:hover fieldset": { borderColor: "black" },
+              "&.Mui-focused fieldset": { borderColor: "black" },
+            },
+          }}>
+            <InputLabel sx={{
+              color: "black",
+              "&.Mui-focused": {
+                color: "black",
+              },
+            }}>Type</InputLabel>
             <Select
               label="Type"
               value={filterRequest.type === "" ? "All" : filterRequest.type}
@@ -620,11 +632,6 @@ const ManageUserPage = () => {
               </Grid>
             </Grid>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose} sx={{ color: "#D6001C" }}>
-              OK
-            </Button>
-          </DialogActions>
         </Dialog>
       )}
       {/* Dialog to confirm disable user */}

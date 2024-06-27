@@ -40,16 +40,17 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  const handleCancelConfirm = () => {
+  const handleLogoutConfirm = () => {
     setOpenCancelPopup(false);
     localStorage.removeItem("token");
     localStorage.removeItem("password");
+    localStorage.removeItem("location");
     setIsAuthenticated(false);
-    window.location.reload();
     navigate("/login");
+    window.location.reload();
   };
 
-  const handleCancelClose = () => {
+  const handleLogoutClose = () => {
     setOpenCancelPopup(false);
   };
 
@@ -119,8 +120,8 @@ const Header = () => {
         title="Are you sure?"
         content="Do you want to log out?"
         Okbutton="Log out"
-        handleClose={handleCancelClose}
-        handleConfirm={handleCancelConfirm}
+        handleClose={handleLogoutClose}
+        handleConfirm={handleLogoutConfirm}
       />
     </>
   );

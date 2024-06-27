@@ -1,47 +1,28 @@
 import {
   ArrowDropDown,
   ArrowDropUp,
-  CreateTwoTone,
-  HighlightOff as DeleteIcon,
-  DisabledByDefaultTwoTone,
-  FilterAltOutlined,
   RestartAltRounded,
 } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import DoneIcon from "@mui/icons-material/Done";
 import { Sheet } from "@mui/joy";
 import {
   Box,
   Button,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  Grid,
   IconButton,
-  InputLabel,
-  MenuItem,
   Paper,
-  Select,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
-  Typography,
   styled,
 } from "@mui/material";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
-import { PaginationBar, SearchBar } from "../../components";
+import { AssignmentDetailDialog, PaginationBar } from "../../components";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
-import { path } from "../../routes/routeContants";
 import {
   FilterAssignment,
   GetAssignment,
@@ -72,7 +53,6 @@ const buttonTableHead = {
   color: "black",
 };
 const MyAssignmentPage = () => {
-  const navigate = useNavigate();
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState();
   const [assignments, setAssignments] = useState([]);
@@ -87,9 +67,6 @@ const MyAssignmentPage = () => {
     fromDate: "",
     toDate: "",
   });
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [selectedState, setSelectedState] = useState("All");
-  const [dateError, setDateError] = useState(false);
 
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -102,49 +79,14 @@ const MyAssignmentPage = () => {
     let fetchedAssignments = res?.data?.data;
 
     if (res.status === 200) {
-      let fetchedAssignments = res.data.data;
-
-      if (filterRequest.state !== "" && filterRequest.state !== "All") {
-        fetchedAssignments = fetchedAssignments.filter(
-          (assignment) => assignment.state === filterRequest.state
-        );
-      }
-
-      if (filterRequest.searchTerm !== "") {
-        const searchTerm = filterRequest.searchTerm || "";
-        fetchedAssignments = fetchedAssignments.filter(
-          (assignment) =>
-            assignment.asset.assetName.includes(searchTerm) ||
-            assignment.asset.assetCode.includes(searchTerm) ||
-            assignment.assignedTo.userName.includes(searchTerm)
-        );
-      }
-
-      if (filterRequest.fromDate && filterRequest.toDate) {
-        const fromDate = new Date(filterRequest.fromDate);
-        fromDate.setHours(0, 0, 0, 0);
-        const toDate = new Date(filterRequest.toDate);
-        toDate.setHours(23, 59, 59, 999);
-
-        fetchedAssignments = fetchedAssignments.filter((assignment) => {
-          const assignmentDate = new Date(assignment.assignedDate);
-          return assignmentDate >= fromDate && assignmentDate <= toDate;
-        });
-      }
+      let fetchedAssignments = res?.data?.data;
 
       setAssignments(fetchedAssignments);
-      setTotalCount(res.data.totalCount);
+      setTotalCount(res?.data?.totalCount);
     } else {
       setAssignments([]);
       setTotalCount(0);
     }
-
-    // if (filterRequest.state !== "" && filterRequest.state !== "All") {
-    //   fetchedAssignments = fetchedAssignments.filter(
-    //     (assignment) => assignment.state === filterRequest.state
-    //   );
-    //   setAssignments(fetchedAssignments);
-    // }
 
     if (
       filterRequest.sortOrder !== "" &&
@@ -204,31 +146,6 @@ const MyAssignmentPage = () => {
     getAssignments(filterRequest);
   }, [filterRequest]);
 
-  //search term
-  const [searchTerm, setSearchTerm] = useState("");
-  const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-  const handleSearch = () => {
-    setFilterRequest((prev) => ({
-      ...prev,
-      searchTerm: trimmedSearchTerm,
-      page: 1,
-    }));
-  };
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      setSearchTerm(trimmedSearchTerm);
-      handleSearch();
-    }
-  };
-  const handleSearchClick = () => {
-    setSearchTerm(trimmedSearchTerm);
-    handleSearch();
-  };
-
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
 
@@ -243,18 +160,6 @@ const MyAssignmentPage = () => {
     setSelectedAssignment(null);
   };
 
-  const handleStateChange = (e) => {
-    const selectedState = e.target.value;
-    setSelectedState(selectedState);
-    setFilterRequest((prevState) => ({
-      ...prevState,
-      state: selectedState === "All" ? "" : selectedState,
-      searchTerm: "",
-      sortColumn: "date",
-      sortOrder: "descend",
-      page: 1,
-    }));
-  };
   const handlePageChange = (e, value) => {
     setFilterRequest((prev) => ({
       ...prev,
@@ -348,131 +253,10 @@ const MyAssignmentPage = () => {
           height: "calc(100vh - 150px)",
         }}>
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
-          My assignments
+          My Assignments
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-          <FormControl
-            variant="outlined"
-            sx={{
-              minWidth: 240,
-              "& .MuiOutlinedInput-root": {
-                "&:hover fieldset": { borderColor: "black" },
-                "&.Mui-focused fieldset": { borderColor: "black" },
-              },
-            }}>
-            <InputLabel
-              sx={{
-                color: "black",
-                "&.Mui-focused": {
-                  color: "black",
-                },
-              }}>
-              {" "}
-              State
-            </InputLabel>
-            <Select
-              label="State"
-              value={selectedState}
-              name="state"
-              IconComponent={(props) => (
-                <FilterAltOutlined
-                  {...props}
-                  style={{ transform: "none" }}
-                />
-              )}
-              onChange={handleStateChange}
-              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Accepted">Accepted</MenuItem>
-              <MenuItem value="Waiting for acceptance">
-                Waiting for acceptance
-              </MenuItem>
-            </Select>
-          </FormControl>
-          <Grid
-            item
-            xs={9}
-            InputLabelProps={{
-              style: { color: "black" },
-            }}
-            sx={{
-              marginLeft: "20px",
-              marginRight: "20px",
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
-            }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateRangePicker
-                startText="Start date"
-                endText="End date"
-                value={dateRange}
-                onChange={(newValue) => {
-                  setDateRange(newValue);
-                  if (newValue[0] && newValue[1]) {
-                    if (
-                      !(newValue[0] instanceof Date) ||
-                      isNaN(newValue[0].getTime()) ||
-                      !(newValue[1] instanceof Date) ||
-                      isNaN(newValue[1].getTime())
-                    ) {
-                      setDateError(true);
-                    } else {
-                      setDateError(false);
-                      setFilterRequest((prev) => ({
-                        ...prev,
-                        fromDate: format(newValue[0], "dd/MM/yyyy"),
-                        toDate: format(newValue[1], "dd/MM/yyyy"),
-                      }));
-                    }
-                  }
-                }}
-                renderInput={(startProps, endProps) => (
-                  <TextField
-                    {...startProps}
-                    {...endProps}
-                    margin="dense"
-                    required
-                    InputLabelProps={{
-                      style: { color: "black" },
-                    }}
-                    sx={{
-                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                        {
-                          color: "black",
-                        },
-                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: dateError ? "red" : "black",
-                        },
-                    }}
-                  />
-                )}
-                format="dd/MM/yyyy"
-              />
-            </LocalizationProvider>
-          </Grid>
-          <SearchBar
-            searchTerm={searchTerm}
-            handleSearchChange={handleSearchChange}
-            handleKeyPress={handleKeyPress}
-            handleSearchClick={handleSearchClick}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "#D6001C",
-              height: "56px",
-              "&:hover": {
-                backgroundColor: "#d32f2f",
-              },
-            }}
-            onClick={() => navigate(path.assignmentCreate)}>
-            Create new assignment
-          </Button>
-        </Box>{" "}
+          sx={{ display: "flex", alignItems: "center", padding: "40px" }}></Box>
         <TableContainer
           component={Paper}
           sx={{ height: "calc(100% - 180px)", position: "relative" }}>
@@ -488,9 +272,6 @@ const MyAssignmentPage = () => {
                   zIndex: 1,
                 }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: "bold", paddingLeft: "50px" }}>
-                    No.
-                  </TableCell>
                   <TableCell sx={tableHead}>
                     <Button
                       sx={buttonTableHead}
@@ -507,24 +288,6 @@ const MyAssignmentPage = () => {
                       onClick={() => handleHeaderClick("name")}
                       endIcon={getSortIcon("name")}>
                       Asset Name
-                    </Button>
-                  </TableCell>
-                  <TableCell sx={tableHead}>
-                    <Button
-                      sx={buttonTableHead}
-                      variant="text"
-                      onClick={() => handleHeaderClick("receiver")}
-                      endIcon={getSortIcon("receiver")}>
-                      Assigned To
-                    </Button>
-                  </TableCell>
-                  <TableCell sx={tableHead}>
-                    <Button
-                      sx={buttonTableHead}
-                      variant="text"
-                      onClick={() => handleHeaderClick("provider")}
-                      endIcon={getSortIcon("provider")}>
-                      Assigned By
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
@@ -573,13 +336,10 @@ const MyAssignmentPage = () => {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      assignments.map((assignment, index) => (
+                      assignments.map((assignment) => (
                         <CustomTableRow
                           key={assignment.id}
                           onClick={() => handleDetailDialog(assignment)}>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
-                            {index + 1}
-                          </TableCell>
                           <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignment.asset.assetCode}
                           </TableCell>
@@ -594,36 +354,12 @@ const MyAssignmentPage = () => {
                             {assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "50px" }}>
-                            {assignment.assignedTo.userName}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
-                            {assignment.assignedBy.userName}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {formatDate(assignment.assignedDate)}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "50px" }}>
                             {assignmentStateEnum[assignment.state]}
                           </TableCell>
                           <TableCell>
-                            <IconButton
-                              disabled={assignment.state === 0}
-                              sx={{
-                                "&:hover": {
-                                  backgroundColor: "#bcbcbc",
-                                },
-                              }}
-                              onClick={(e) => {
-                                navigate(
-                                  `${path.assignmentEdit.replace(
-                                    ":id",
-                                    assignment.id
-                                  )}`
-                                );
-                                e.stopPropagation();
-                              }}>
-                              <CreateTwoTone />
-                            </IconButton>
                             <IconButton
                               disabled={assignment.state === 0}
                               sx={{
@@ -635,7 +371,20 @@ const MyAssignmentPage = () => {
                               onClick={(e) => {
                                 e.stopPropagation();
                               }}>
-                              <DeleteIcon />
+                              <DoneIcon />
+                            </IconButton>
+                            <IconButton
+                              disabled={assignment.state === 0}
+                              sx={{
+                                color: "black",
+                                "&:hover": {
+                                  backgroundColor: "#bcbcbc",
+                                },
+                              }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}>
+                              <CloseIcon />
                             </IconButton>
                             <IconButton
                               sx={{
@@ -666,175 +415,11 @@ const MyAssignmentPage = () => {
         />
       </Paper>
       {selectedAssignment && (
-        <Dialog
-          open={dialogOpen}
-          onClose={handleDialogClose}
-          maxWidth="md"
-          fullWidth={true}>
-          <DialogTitle
-            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}>
-            Detailed Assignment Information
-            <IconButton
-              aria-label="close"
-              onClick={handleDialogClose}
-              sx={{
-                position: "absolute",
-                right: 10,
-                top: 12,
-                color: "#D6001C",
-              }}>
-              <DisabledByDefaultTwoTone />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            <Grid
-              container
-              spacing={2}>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Asset Code:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <Typography variant="body1">
-                  {selectedAssignment.asset.assetCode}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Asset Name:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <div
-                  style={{
-                    maxHeight: "100px",
-                    overflowY: "auto",
-                    wordWrap: "break-word",
-                    wordBreak: "break-all",
-                  }}></div>
-                <Typography variant="body1">
-                  {selectedAssignment.asset.assetName}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Specification:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <div
-                  style={{
-                    maxHeight: "100px",
-                    overflowY: "auto",
-                    wordWrap: "break-word",
-                    wordBreak: "break-all",
-                  }}>
-                  <Typography variant="body1">
-                    {selectedAssignment.asset.specification}
-                  </Typography>
-                </div>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Assigned to:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <Typography variant="body1">
-                  {selectedAssignment.assignedTo.userName}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Assigned by:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <Typography variant="body1">
-                  {selectedAssignment.assignedBy.userName}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Assigned Date:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <Typography variant="body1">
-                  {formatDate(selectedAssignment.assignedDate)}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>State:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <Typography variant="body1">
-                  {assignmentStateEnum[selectedAssignment.state]}
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={4}>
-                <Typography variant="body1">
-                  <strong>Note:</strong>
-                </Typography>
-              </Grid>
-              <Grid
-                item
-                xs={8}>
-                <div
-                  style={{
-                    maxHeight: "100px",
-                    overflowY: "auto",
-                    wordWrap: "break-word",
-                    wordBreak: "break-all",
-                  }}>
-                  <Typography variant="body1">
-                    {selectedAssignment.note}
-                  </Typography>
-                </div>
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleDialogClose}
-              sx={{ color: "#D6001C" }}>
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <AssignmentDetailDialog
+          selectedAssignment={selectedAssignment}
+          dialogOpen={dialogOpen}
+          handleDialogClose={handleDialogClose}
+        />
       )}
     </>
   );

@@ -7,7 +7,6 @@ import {
   ManageAssetPage,
   ManageAssignmentPage,
   ManageUserPage,
-  MyAssignmentPage,
   NotFound,
   ReportPage,
   RequestForReturningPage,
@@ -28,7 +27,12 @@ export const AdminRoutes = () => {
     },
     {
       path: path.home,
-      element: <MyAssignmentPage />,
+      // element: (
+      //   <RequireAuth>
+      //     <MyAssignmentPage />
+      //   </RequireAuth>
+      // ),
+      element: <HomePage />,
       errorElement: <NotFound />,
     },
     {

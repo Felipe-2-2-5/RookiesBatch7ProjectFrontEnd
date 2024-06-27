@@ -42,6 +42,14 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
       return;
     }
 
+    // Check if oldPassword and newPassword match
+    if (newPassword && oldPasswordValue === newPassword) {
+      setNewPasswordError(
+        "Old password must be different from the new password."
+      );
+      return;
+    }
+
     // Clear the error if all conditions are satisfied
     setOldPasswordError("");
   };
@@ -126,7 +134,6 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
   const handleSubmit = async () => {
     try {
       const userId = currentUser.id;
-      console.log(userId);
       const body = {
         Id: userId,
         OldPassword: oldPassword,

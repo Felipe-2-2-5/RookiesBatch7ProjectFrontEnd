@@ -61,9 +61,13 @@ const Header = () => {
   const formattedPathname = location.pathname
     .split("/")
     .filter((x) => x)
+    .filter((x) => !/^\d+$/.test(x))
     .map((x) => x.replace(/-/g, " "))
     .map((x) => x.replace(/\b\w/g, (c) => c.toUpperCase()))
     .join(" > ");
+  
+
+
 
   return (
     <>

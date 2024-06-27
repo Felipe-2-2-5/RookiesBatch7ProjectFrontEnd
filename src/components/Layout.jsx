@@ -13,7 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { AdminRoutes, StaffRoutes, BaseRoutes } from "../routes";
@@ -38,12 +38,13 @@ const Layout = () => {
   const [showErrorDialog, setShowErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    if (new Date(currentUser.expires * 1000) < new Date()) {
-      setIsAuthenticated(false);
-      localStorage.removeItem("token");
-    }
-  }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
+  //   if (new Date(currentUser.expires * 1000) < new Date()) {
+  //     setIsAuthenticated(false);
+  //     localStorage.removeItem("token");
+
+  //   }
+  //   console.log(currentUser.expires);
+  // }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
   const handelSubmit = async () => {
     try {
       const token = localStorage.getItem("token");

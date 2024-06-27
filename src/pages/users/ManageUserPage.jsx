@@ -3,7 +3,7 @@ import {
   ArrowDropUp,
   CreateTwoTone,
   HighlightOff as DeleteIcon,
-  DisabledByDefaultTwoTone,
+  DisabledByDefault,
   FilterAltOutlined,
   Search,
 } from "@mui/icons-material";
@@ -333,9 +333,11 @@ const ManageUserPage = () => {
                 <InputAdornment position="end">
                   <IconButton
                     sx={{
-                      "&:hover": {
-                        backgroundColor: "#bcbcbc",
+                      "& label.Mui-focused": { color: "#000" },
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": { borderColor: "#000" },
                       },
+                      width: "120%",
                     }}
                     onClick={handleSearchClick}
                   >
@@ -344,11 +346,27 @@ const ManageUserPage = () => {
                 </InputAdornment>
               ),
             }}
-            sx={{ marginLeft: "auto", marginRight: "20px" }}
+            sx={{
+              marginLeft: "auto", marginRight: "20px",
+              "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+              {
+                color: "black",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "black",
+              },
+            }}
           />
           <Button
             variant="contained"
-            sx={{ backgroundColor: "#D6001C", height: "56px" }}
+            sx={{
+              backgroundColor: "#D6001C",
+              height: "56px",
+              "&:hover": {
+                backgroundColor: "#d32f2f",
+              },
+            }}
             onClick={() => navigate(path.userCreate)}
           >
             Create new user
@@ -455,6 +473,7 @@ const ManageUserPage = () => {
                       users?.map((user, index) => (
                         <CustomTableRow
                           key={index}
+                          hover
                           onClick={() => handleDetailDialog(user)}
                         >
                           <TableCell sx={{ paddingLeft: "50px" }}>
@@ -540,7 +559,15 @@ const ManageUserPage = () => {
       {selectedUser && (
         <Dialog open={dialogOpen} onClose={handleDialogClose}>
           <DialogTitle
-            sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
+            sx={{
+              bgcolor: "grey.300",
+              color: "#D6001C",
+              fontWeight: "bold",
+              borderBottom: "1px solid black",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
             Detailed User Information
             <IconButton
@@ -553,10 +580,19 @@ const ManageUserPage = () => {
                 color: "#D6001C",
               }}
             >
-              <DisabledByDefaultTwoTone />
+              <DisabledByDefault />
             </IconButton>
           </DialogTitle>
-          <DialogContent dividers>
+          <DialogContent dividers sx={{
+            borderTop: "1px solid black",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+            // maxHeight: "300px",
+            overflowY: "auto",
+            wordWrap: "break-word",
+            wordBreak: "break-all"
+          }}>
             <Grid container spacing={2}>
               <Grid item xs={4}>
                 <Typography variant="body1">
@@ -643,15 +679,27 @@ const ManageUserPage = () => {
       >
         <DialogTitle
           sx={{
-            color: "#D6001C",
             bgcolor: "grey.300",
-            borderBottom: "3px solid grey",
+            color: "#D6001C",
             fontWeight: "bold",
+            borderBottom: "1px solid black",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
           Are you sure?
         </DialogTitle>
-        <DialogContent>Do you want to disable this user?</DialogContent>
+        <DialogContent sx={{
+          borderTop: "1px solid black",
+          display: "flex",
+          flexDirection: "column",
+          padding: "20px",
+          // maxHeight: "300px",
+          overflowY: "auto",
+          wordWrap: "break-word",
+          wordBreak: "break-all"
+        }}>Do you want to disable this user?</DialogContent>
         <DialogActions>
           <Button
             onClick={handleDisableUser}

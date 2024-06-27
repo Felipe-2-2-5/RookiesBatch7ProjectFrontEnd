@@ -43,7 +43,6 @@ const EditAsset = () => {
   const fetchAsset = async (id) => {
     const res = await GetAsset(id);
     const asset = res.data;
-    console.log(asset);
     setAsset({
       assetName: asset.assetName,
       category: asset.category,

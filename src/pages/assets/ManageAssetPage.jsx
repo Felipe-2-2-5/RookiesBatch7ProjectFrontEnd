@@ -344,13 +344,9 @@ const ManageAssetPage = () => {
           height: "calc(100vh - 150px)",
         }}
       >
-        <Typography
-          variant="h5"
-          component="h2"
-          style={{ color: "#D6001C", fontWeight: "bold", marginBottom: 20 }}
-        >
+        <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Asset List
-        </Typography>
+        </h2>
         <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
             <FormControl
@@ -437,46 +433,46 @@ const ManageAssetPage = () => {
                 )}
               </Select>
             </FormControl>
-
-            <TextField
-              variant="outlined"
-              label="Search"
-              value={searchTerm}
-              name="search"
-              onChange={handleSearchChange}
-              onKeyPress={handleKeyPress}
-              error={false}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      sx={{
-                        "& label.Mui-focused": { color: "#000" },
-                        "& .MuiOutlinedInput-root": {
-                          "&.Mui-focused fieldset": { borderColor: "#000" },
-                        },
-                        width: "120%",
-                      }}
-                      onClick={handleSearchClick}
-                    >
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-              sx={{
-                marginLeft: "16px",
-                "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
-              }}
-            />
           </Box>
+          <TextField
+            variant="outlined"
+            label="Search"
+            value={searchTerm}
+            name="search"
+            onChange={handleSearchChange}
+            onKeyPress={handleKeyPress}
+            error={false}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    sx={{
+                      "& label.Mui-focused": { color: "#000" },
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": { borderColor: "#000" },
+                      },
+                      width: "120%",
+                    }}
+                    onClick={handleSearchClick}
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              marginLeft: "16px",
+              "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+              {
+                color: "black",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "black",
+              },
+            }}
+          />
+
           <Button
             variant="contained"
             color="primary"

@@ -131,6 +131,7 @@ const ManageUserPage = () => {
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1
     }));
   };
   const handleKeyPress = (e) => {
@@ -293,19 +294,18 @@ const ManageUserPage = () => {
             content={disableError}
           />
           <FormControl variant="outlined" sx={{
-            minWidth: 120,
+            minWidth: 240,
             "& .MuiOutlinedInput-root": {
               "&:hover fieldset": { borderColor: "black" },
               "&.Mui-focused fieldset": { borderColor: "black" },
             },
           }}>
-            <InputLabel
-              sx={{
+            <InputLabel sx={{
+              color: "black",
+              "&.Mui-focused": {
                 color: "black",
-                "&.Mui-focused": {
-                  color: "black",
-                },
-              }}>Type</InputLabel>
+              },
+            }}>Type</InputLabel>
             <Select
               label="Type"
               value={filterRequest.type === "" ? "All" : filterRequest.type}
@@ -691,15 +691,15 @@ const ManageUserPage = () => {
           Are you sure?
         </DialogTitle>
         <DialogContent sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-            // maxHeight: "300px",
-            overflowY: "auto",
-            wordWrap: "break-word",
-            wordBreak: "break-all"
-          }}>Do you want to disable this user?</DialogContent>
+          borderTop: "1px solid black",
+          display: "flex",
+          flexDirection: "column",
+          padding: "20px",
+          // maxHeight: "300px",
+          overflowY: "auto",
+          wordWrap: "break-word",
+          wordBreak: "break-all"
+        }}>Do you want to disable this user?</DialogContent>
         <DialogActions>
           <Button
             onClick={handleDisableUser}

@@ -25,9 +25,6 @@ const AuthProvider = ({ children }) => {
     role: "",
     locality: "",
   });
-
-  console.log("Authen", isAuthenticated);
-  console.log("token", token);
   useEffect(() => {
     const UserData = () => {
       if (token) {

@@ -44,9 +44,10 @@ const Header = () => {
     setOpenCancelPopup(false);
     localStorage.removeItem("token");
     localStorage.removeItem("password");
+    localStorage.removeItem("location");
     setIsAuthenticated(false);
-    window.location.reload();
     navigate("/login");
+    window.location.reload();
   };
 
   const handleCancelClose = () => {
@@ -57,7 +58,7 @@ const Header = () => {
     setOpenCancelPopup(true);
   };
 
-    const formattedPathname = location.pathname
+  const formattedPathname = location.pathname
     .split("/")
     .filter((x) => x)
     .filter((x) => !/^\d+$/.test(x))

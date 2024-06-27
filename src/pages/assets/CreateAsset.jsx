@@ -80,12 +80,12 @@ const CreateAsset = () => {
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
       errorMessage = `Name is required`;
-    } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
+    } else if (trimmedValue.length > 50 || trimmedValue.trim().length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
     } else if (!isValid) {
       errorMessage = `Name must contain only alphabetical characters, numbers and spaces.`;
     }
-    setAsset({ ...asset, [name]: trimmedValue });
+    setAsset({ ...asset, [name]: trimmedValue.trim() });
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
@@ -96,7 +96,7 @@ const CreateAsset = () => {
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
       errorMessage = `Name is required`;
-    } else if (trimmedValue.length > 50 || trimmedValue.length < 2) {
+    } else if (trimmedValue.length > 50 || trimmedValue.trim().length < 2) {
       errorMessage = "The length of Name should be 2-50 characters.";
     } else if (!isValid) {
       errorMessage = `Name must contain only alphabetical characters, numbers and spaces.`;

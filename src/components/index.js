@@ -8,4 +8,5 @@
 export { default as PaginationBar } from "./PaginationBar";
 export { default as PopupNotification } from "./PopupNotification";
 export { default as SearchBar } from "./SearchBar";
+export { default as AssignmentDetailDialog } from "./assignments/AssignmentDetailDialog";
 export { default as ChangePasswordDialog } from "./shared/ChangePasswordDialog";

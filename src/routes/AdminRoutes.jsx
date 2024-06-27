@@ -7,16 +7,17 @@ import {
   ManageAssetPage,
   ManageAssignmentPage,
   ManageUserPage,
+  MyAssignmentPage,
   NotFound,
   ReportPage,
   RequestForReturningPage,
 } from "../pages";
-import { path } from "./routeContants";
-import CreateAssignment from "../pages/assignments/CreateAssignment";
 import CreateAsset from "../pages/assets/CreateAsset";
+import EditAsset from "../pages/assets/EditAsset";
+import CreateAssignment from "../pages/assignments/CreateAssignment";
 import EditAssignment from "../pages/assignments/EditAssignment";
 import EditUser from "../pages/users/EditUser";
-import EditAsset from "../pages/assets/EditAsset";
+import { path } from "./routeContants";
 
 export const AdminRoutes = () => {
   const element = useRoutes([
@@ -27,7 +28,7 @@ export const AdminRoutes = () => {
     },
     {
       path: path.home,
-      element: <HomePage />,
+      element: <MyAssignmentPage />,
       errorElement: <NotFound />,
     },
     {

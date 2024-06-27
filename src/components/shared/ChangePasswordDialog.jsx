@@ -33,23 +33,24 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleOldPasswordChange = (event) => {
-    const oldPasswordValue = event.target.value;
+    const oldPasswordValue = event.target.value.trim();
     setOldPassword(oldPasswordValue);
     setOldPasswordError("");
-
+  
     if (!oldPasswordValue) {
       setOldPasswordError("Old password cannot be empty.");
       return;
     }
-
+  
     // Check if oldPassword and newPassword match
     if (newPassword && oldPasswordValue === newPassword) {
       setNewPasswordError(
         "Old password must be different from the new password."
       );
-      return;
+    } else {
+      setNewPasswordError("");
     }
-
+  
     // Clear the error if all conditions are satisfied
     setOldPasswordError("");
   };

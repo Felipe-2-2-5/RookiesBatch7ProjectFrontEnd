@@ -22,7 +22,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import DialogAssetList from '../../components/DialogAssetList';
 import DialogUserList from '../../components/DialogUserList';
 import { EditAssignmentAPI, GetAssignment } from '../../services/assignments.service';
-import PopupNotificationExtra from "../../components/PopupNotifycationExtra";
 // import { format } from 'date-fns';
 
 const PopupNotification = ({
@@ -79,7 +78,6 @@ const EditAssignment = () => {
     const [selectedAssignment, setSelectedAssignment] = useState({ assignedDate: null });
     const [initialValue, setInitialValue] = useState({ asset: "", user: "", assignedDate: "", note: "" });
     const [currentValue, setCurrentValue] = useState({ asset: "", user: "", assignedDate: "", note: "" });
-    const [openCancelPopup, setOpenCancelPopup] = useState(false);
     const [formErrors, setFormErrors] = useState({
         user: false,
         asset: false,
@@ -141,21 +139,6 @@ const EditAssignment = () => {
         getAssignmentById(id);
     }, [id])
 
-    const handleCancel = () => {
-        if (isSingleFieldChanged()) {
-            setOpenCancelPopup(true);
-        }
-        else { navigate("/manage-assignment"); }
-    };
-
-    const handleCancelConfirm = () => {
-        setOpenCancelPopup(false);
-        navigate("/manage-assignment");
-    };
-
-    const handleCancelClose = () => {
-        setOpenCancelPopup(false);
-    };
 
     useEffect(() => {
         let errorMessage = "";
@@ -478,12 +461,6 @@ const EditAssignment = () => {
                                                 backgroundColor: "#a50000",
                                             },
                                         }}
-                                        // disabled={
-                                        //     Object.values(formErrors).some((error) => error) ||
-                                        //     !selectedAssignment.assignedTo ||
-                                        //     !selectedAssignment.asset ||
-                                        //     !selectedAssignment.assignedDate
-                                        // }
                                         disabled={!isSingleFieldChanged() || !isFormValid()}
                                         onClick={handleSubmit}
                                     >
@@ -492,7 +469,7 @@ const EditAssignment = () => {
                                     <Button
                                         variant="outlined"
                                         color="secondary"
-                                        onClick={handleCancel}
+                                        onClick={() => navigate("/manage-assignment")}
                                     >
                                         Cancel
                                     </Button>
@@ -527,14 +504,6 @@ const EditAssignment = () => {
                 handleClose={handleClosePopup}
                 title={titlePopup}
                 content={contentPopup}
-            />
-            <PopupNotificationExtra
-                open={openCancelPopup}
-                title="Confirm cancel"
-                content="Changes will not be saved. Are you sure?"
-                handleClose={handleCancelClose}
-                handleConfirm={handleCancelConfirm}
-                Okbutton="Confirm"
             />
         </>
     );

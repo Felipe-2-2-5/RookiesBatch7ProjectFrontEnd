@@ -105,7 +105,7 @@ const EditAsset = () => {
   const handleSpecChange = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (value === "") {
+    if (value.trim() === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Specification should be 2-500 characters.";
@@ -116,7 +116,7 @@ const EditAsset = () => {
   const handleSpecBlur = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (value === "") {
+    if (value.trim() === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Specification should be 2-500 characters.";

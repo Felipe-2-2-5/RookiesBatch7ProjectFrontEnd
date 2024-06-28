@@ -197,9 +197,9 @@ const EditAssignment = () => {
         return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length !== 0;
     };
 
-    const isFormValid = () => {
-        return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
-    };
+    // const isFormValid = () => {
+    //     return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
+    // };
 
     const handleDateChange = (name, date) => {
         setSelectedAssignment({ ...selectedAssignment, [name]: date });
@@ -464,7 +464,9 @@ const EditAssignment = () => {
                                                 backgroundColor: "#a50000",
                                             },
                                         }}
-                                        disabled={!isSingleFieldChanged() || !isFormValid()}
+                                        disabled={
+                                            Object.values(formErrors).some((error) => error) || !isSingleFieldChanged()
+                                        }
                                         onClick={handleSubmit}
                                     >
                                         Save

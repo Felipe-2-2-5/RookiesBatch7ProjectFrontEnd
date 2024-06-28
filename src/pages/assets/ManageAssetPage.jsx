@@ -127,7 +127,8 @@ const ManageAssetPage = () => {
     fetchCategories();
   }, []);
 
-  const [selectedState] = useState("All");
+  const [selectedState, setSelectedState] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
@@ -228,6 +229,7 @@ const ManageAssetPage = () => {
 
   const handleStateChange = (e) => {
     const selectedState = e.target.value;
+    setSelectedState(selectedState);
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "All" : selectedState,
@@ -240,6 +242,7 @@ const ManageAssetPage = () => {
 
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
+    setSelectedCategory(selectedCategory);
     setFilterRequest((prevState) => ({
       ...prevState,
       category: selectedCategory === "All" ? "" : selectedCategory,
@@ -411,7 +414,7 @@ const ManageAssetPage = () => {
               </InputLabel>
               <Select
                 label="Category"
-                value={selectedState}
+                value={selectedCategory}
                 name="category"
                 IconComponent={(props) => (
                   <FilterAltOutlined {...props} style={{ transform: "none" }} />
@@ -505,7 +508,6 @@ const ManageAssetPage = () => {
                     style={{
                       fontWeight: "bold", width: "15%", paddingLeft: "50px"
                     }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("assetcode")}
                   >
                     <Button
                       variant="text"
@@ -518,7 +520,6 @@ const ManageAssetPage = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("assetname")}
                   >
                     <Button
                       variant="text"
@@ -531,7 +532,6 @@ const ManageAssetPage = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("category")}
                   >
                     <Button
                       variant="text"
@@ -544,7 +544,6 @@ const ManageAssetPage = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("state")}
                   >
                     <Button
                       variant="text"
@@ -624,6 +623,11 @@ const ManageAssetPage = () => {
                               <>
                                 <IconButton
                                   aria-label="edit"
+                                  sx={{
+                                    "&:hover": {
+                                      backgroundColor: "#bcbcbc",
+                                    },
+                                  }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     navigate(
@@ -636,6 +640,11 @@ const ManageAssetPage = () => {
                                 <IconButton
                                   aria-label="delete"
                                   style={{ color: "#D6001C" }}
+                                  sx={{
+                                    "&:hover": {
+                                      backgroundColor: "#bcbcbc",
+                                    },
+                                  }}
                                   onClick={(e) => {
                                     // Prevent showing popup
                                     e.stopPropagation();
@@ -834,10 +843,10 @@ const ManageAssetPage = () => {
                             (assignment, index) => (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {assignment.assignedTo.userName}
+                                  {assignment.assignedTo?.userName}
                                 </TableCell>
                                 <TableCell>
-                                  {assignment.assignedBy.userName}
+                                  {assignment.assignedBy?.userName}
                                 </TableCell>
                                 <TableCell>
                                   {formatDate(assignment.assignedDate)}

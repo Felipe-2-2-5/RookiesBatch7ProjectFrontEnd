@@ -168,7 +168,6 @@ const EditUser = () => {
       errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
         } is required`;
     } else if (value.length > 20 || value.length < 2) {
-      console.log("sting length: " + value.length);
       errorMessage = "The length of Firstname should be 2-20 characters.";
     } else if (!isValid) {
       errorMessage = `First name must contain only alphabetical characters.`;

@@ -7,3 +7,4 @@ export { default as ManageAssetPage } from "./assets/ManageAssetPage";
 export { default as ManageAssignmentPage } from "./assignments/ManageAssignmentPage";
 export { default as CreateUser } from "./users/CreateUser";
 export { default as ManageUserPage } from "./users/ManageUserPage";
+export { default as MyAssignmentPage} from "./assignments/MyAssignmentPage";

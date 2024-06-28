@@ -115,7 +115,7 @@ const CreateAsset = () => {
   const handleSpecChange = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (value === "") {
+    if (value.trim() === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Specification should be 2-500 characters.";
@@ -126,7 +126,7 @@ const CreateAsset = () => {
   const handleSpecBlur = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (value === "") {
+    if (value.trim() === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Specification should be 2-500 characters.";
@@ -162,7 +162,6 @@ const CreateAsset = () => {
       installedDate: formatDate(asset.installedDate),
       state: parseInt(asset.state, 10),
     };
-    console.log(newAsset);
     var res = await CreateAssetAPI(newAsset);
     if (res) {
       sessionStorage.setItem("asset_created", JSON.stringify(res.data));

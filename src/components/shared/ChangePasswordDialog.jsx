@@ -33,7 +33,7 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleOldPasswordChange = (event) => {
-    const oldPasswordValue = event.target.value;
+    const oldPasswordValue = event.target.value.trim();
     setOldPassword(oldPasswordValue);
     setOldPasswordError("");
 
@@ -47,7 +47,8 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
       setNewPasswordError(
         "Old password must be different from the new password."
       );
-      return;
+    } else {
+      setNewPasswordError("");
     }
 
     // Clear the error if all conditions are satisfied
@@ -275,9 +276,10 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
         </DialogContent>
         <DialogActions>
           <Button
+            variant="contained"
             onClick={handleSubmit}
             sx={{
-              bgcolor: "#D6001C",
+              backgroundColor: "#D6001C",
               color: "white",
               borderColor: "black",
               "&:hover": {

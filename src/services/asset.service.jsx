@@ -37,3 +37,9 @@ export const DeleteAsset = async (id) => {
   const response = await httpClient.delete(`/assets/${id}`);
   return response;
 };
+
+//get all report with two parameter: sortColumn, sortDirection
+export const FilterReport = async (body) => {
+  const response = await httpClient.post("/assets/report", body);
+  return response;
+};

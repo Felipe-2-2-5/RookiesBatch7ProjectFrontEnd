@@ -20,10 +20,13 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   const [contentPopup, setContentPopup] = useState(false);
   const handlePrefixChange = (event) => {
     const input = event.target.value
-      .replace(/[^A-Z]/, "")
+      .replace(/[^a-zA-Z]/g, "") // Allow both uppercase and lowercase letters
       .slice(0, 4)
-      .trim();
+      .trim()
+      .toUpperCase(); // Convert to uppercase
+
     setPrefix(input);
+
     setPrefixError(
       input.length === 0 || input.length > 4 ? "Prefix is required" : ""
     );

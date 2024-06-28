@@ -40,10 +40,24 @@ const EditAsset = () => {
     installedDate: null,
     state: 0,
   });
+  const [initialAsset, setInitialAsset] = useState({
+    assetName: "",
+    category: null,
+    specification: "",
+    installedDate: null,
+    state: 0,
+  });
   const fetchAsset = async (id) => {
     const res = await GetAsset(id);
     const asset = res.data;
     setAsset({
+      assetName: asset.assetName,
+      category: asset.category,
+      specification: asset.specification,
+      installedDate: new Date(asset.installedDate),
+      state: parseInt(asset.state, 10),
+    });
+    setInitialAsset({
       assetName: asset.assetName,
       category: asset.category,
       specification: asset.specification,
@@ -68,6 +82,18 @@ const EditAsset = () => {
       }));
     }
   }, [touched, asset.installedDate]);
+
+  const isSingleFieldChanged = () => {
+    const assetChanged = initialAsset.assetName !== asset.assetName;
+    const userChanged = initialAsset.category !== asset.category ;
+    const dateOfBirthChange = new Date(initialAsset.installedDate).getTime() !== new Date(asset.installedDate).getTime();
+    const specificationChange = initialAsset.specification !== asset.specification;
+    const stateChange = initialAsset.state !== asset.state;
+
+
+    return [assetChanged, userChanged,dateOfBirthChange,specificationChange, stateChange].filter(Boolean).length !== 0;
+};
+
 
   const handleNameBlur = (event) => {
     const { name, value } = event.target;
@@ -105,7 +131,7 @@ const EditAsset = () => {
   const handleSpecChange = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (value === "") {
+    if (value.trim() === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Specification should be 2-500 characters.";
@@ -116,7 +142,7 @@ const EditAsset = () => {
   const handleSpecBlur = (event) => {
     const { name, value } = event.target;
     let errorMessage = "";
-    if (value === "") {
+    if (value.trim() === "") {
       errorMessage = `Specification is required`;
     } else if (value.length > 500 || value.length < 2) {
       errorMessage = "The length of Specification should be 2-500 characters.";
@@ -378,11 +404,7 @@ const EditAsset = () => {
                       },
                     }}
                     disabled={
-                      Object.values(formErrors).some((error) => error) ||
-                      !asset.assetName ||
-                      !asset.category ||
-                      !asset.specification ||
-                      !asset.installedDate
+                      Object.values(formErrors).some((error) => error) || !isSingleFieldChanged()
                     }
                     onClick={handleSubmit}
                   >

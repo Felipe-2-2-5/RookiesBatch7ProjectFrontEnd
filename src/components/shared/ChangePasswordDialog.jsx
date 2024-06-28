@@ -36,12 +36,12 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
     const oldPasswordValue = event.target.value.trim();
     setOldPassword(oldPasswordValue);
     setOldPasswordError("");
-  
+
     if (!oldPasswordValue) {
       setOldPasswordError("Old password cannot be empty.");
       return;
     }
-  
+
     // Check if oldPassword and newPassword match
     if (newPassword && oldPasswordValue === newPassword) {
       setNewPasswordError(
@@ -50,7 +50,7 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
     } else {
       setNewPasswordError("");
     }
-  
+
     // Clear the error if all conditions are satisfied
     setOldPasswordError("");
   };
@@ -276,9 +276,10 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
         </DialogContent>
         <DialogActions>
           <Button
+            variant="contained"
             onClick={handleSubmit}
             sx={{
-              bgcolor: "#D6001C",
+              backgroundColor: "#D6001C",
               color: "white",
               borderColor: "black",
               "&:hover": {

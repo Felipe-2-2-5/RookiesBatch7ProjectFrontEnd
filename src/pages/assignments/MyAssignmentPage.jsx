@@ -387,6 +387,7 @@ const MyAssignmentPage = () => {
                               <CloseIcon />
                             </IconButton>
                             <IconButton
+                              disabled={assignment.state === 1}
                               sx={{
                                 color: "blue",
                                 "&:hover": {

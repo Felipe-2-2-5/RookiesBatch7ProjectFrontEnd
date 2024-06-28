@@ -191,7 +191,7 @@ const EditAssignment = () => {
         const assignedDateChanged = new Date(initialValue.assignedDate).getTime() !== new Date(currentValue.assignedDate).getTime();
         const noteChanged = initialValue.note !== currentValue.note;
 
-        return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length === 1;
+        return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length !== 0;
     };
 
     const isFormValid = () => {

@@ -8,7 +8,6 @@ import {
   ManageAssignmentPage,
   ManageUserPage,
   NotFound,
-  ReportPage,
   RequestForReturningPage,
 } from "../pages";
 import { path } from "./routeContants";
@@ -17,6 +16,7 @@ import CreateAsset from "../pages/assets/CreateAsset";
 import EditAssignment from "../pages/assignments/EditAssignment";
 import EditUser from "../pages/users/EditUser";
 import EditAsset from "../pages/assets/EditAsset";
+import ReportPage from "../pages/reports/ReportPage";
 
 export const AdminRoutes = () => {
   const element = useRoutes([

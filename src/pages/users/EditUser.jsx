@@ -42,6 +42,15 @@ const EditUser = () => {
     type: 0,
     location: localStorage.getItem("location"),
   });
+  const [initialUser, setInitialUser] = useState({
+    firstName: "",
+    lastName: "",
+    dateOfBirth: null,
+    gender: 2,
+    joinedDate: null,
+    type: 0,
+    location: localStorage.getItem("location"),
+  });
 
   const [formErrors, setFormErrors] = useState({
     firstName: false,
@@ -66,6 +75,12 @@ const EditUser = () => {
             joinedDate: parsedJoinedDate,
             location: response.data.location === 1 ? "HaNoi" : "HoChiMinh",
           });
+          setInitialUser({
+            ...response.data,
+            dateOfBirth: parsedDateOfBirth,
+            joinedDate: parsedJoinedDate,
+            location: response.data.location === 1 ? "HaNoi" : "HoChiMinh",
+          });
         }
       } catch (error) {
         setTitlePopup("Error");
@@ -82,6 +97,15 @@ const EditUser = () => {
     joinedDate: false,
   });
 
+  const isSingleFieldChanged = () => {
+    const assetChanged = initialUser.type !== users.type;
+    const userChanged = initialUser.gender !== users.gender;
+    const dateOfBirthChange = new Date(initialUser.dateOfBirth).getTime() !== new Date(users.dateOfBirth).getTime();
+    const joinedDateChange = new Date(initialUser.joinedDate).getTime() !== new Date(users.joinedDate).getTime();
+    const locationChange = initialUser.location !== users.location;
+
+    return [assetChanged, userChanged, joinedDateChange,dateOfBirthChange, locationChange].filter(Boolean).length !== 0;
+};
 
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
@@ -552,11 +576,7 @@ const EditUser = () => {
                       },
                     }}
                     disabled={
-                      Object.values(formErrors).some((error) => error) ||
-                      !users.firstName ||
-                      !users.lastName ||
-                      !users.dateOfBirth ||
-                      !users.joinedDate
+                      Object.values(formErrors).some((error) => error) || !isSingleFieldChanged()
                     }
                     onClick={handleSubmit}
                   >

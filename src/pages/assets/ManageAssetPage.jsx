@@ -508,7 +508,6 @@ const ManageAssetPage = () => {
                     style={{
                       fontWeight: "bold", width: "15%", paddingLeft: "50px"
                     }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("assetcode")}
                   >
                     <Button
                       variant="text"
@@ -521,7 +520,6 @@ const ManageAssetPage = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("assetname")}
                   >
                     <Button
                       variant="text"
@@ -534,7 +532,6 @@ const ManageAssetPage = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("category")}
                   >
                     <Button
                       variant="text"
@@ -547,7 +544,6 @@ const ManageAssetPage = () => {
                   </TableCell>
                   <TableCell
                     style={{ fontWeight: "bold", width: "15%", paddingLeft: "50px" }} // Adjust width as needed
-                    onClick={() => handleHeaderClick("state")}
                   >
                     <Button
                       variant="text"
@@ -847,10 +843,10 @@ const ManageAssetPage = () => {
                             (assignment, index) => (
                               <TableRow key={index}>
                                 <TableCell>
-                                  {assignment.assignedTo.userName}
+                                  {assignment.assignedTo?.userName}
                                 </TableCell>
                                 <TableCell>
-                                  {assignment.assignedBy.userName}
+                                  {assignment.assignedBy?.userName}
                                 </TableCell>
                                 <TableCell>
                                   {formatDate(assignment.assignedDate)}

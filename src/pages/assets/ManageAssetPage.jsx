@@ -127,8 +127,8 @@ const ManageAssetPage = () => {
     fetchCategories();
   }, []);
 
-  const [selectedState] = useState("All");
-  const [selectedCategory] = useState("All");
+  const [selectedState, setSelectedState] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
@@ -229,6 +229,7 @@ const ManageAssetPage = () => {
 
   const handleStateChange = (e) => {
     const selectedState = e.target.value;
+    setSelectedState(selectedState);
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "All" : selectedState,
@@ -241,6 +242,7 @@ const ManageAssetPage = () => {
 
   const handleCategoryChange = (e) => {
     const selectedCategory = e.target.value;
+    setSelectedCategory(selectedCategory);
     setFilterRequest((prevState) => ({
       ...prevState,
       category: selectedCategory === "All" ? "" : selectedCategory,

@@ -50,6 +50,7 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
 
 const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, firstAsset, selectedAsset, setSelectedAsset }) => {
   const scrollRef = useRef(null);
+  const [chosenAsset, setChosenAsset] = useState(selectedAsset);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
@@ -110,6 +111,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1
     }));
   };
 
@@ -126,18 +128,16 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
   };
 
   const handleSelectAsset = (asset) => {
-    setSelectedAsset(asset);
+    setChosenAsset(asset);
   };
 
   const handleSave = () => {
-    if (selectedAsset) {
-      onSelect(selectedAsset);
-      setVisibleAssetDialog(false);
-    }
+    onSelect(chosenAsset);
+    setVisibleAssetDialog(false);
   };
 
   const handleCancel = () => {
-    setSelectedAsset(null)
+    // setSelectedAsset(null)
     setVisibleAssetDialog(false);
   };
 
@@ -239,13 +239,27 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleSearchClick}>
+                  <IconButton sx={{
+                    "& label.Mui-focused": { color: "#000" },
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": { borderColor: "#000" },
+                    },
+                  }} onClick={handleSearchClick}>
                     <Search />
                   </IconButton>
                 </InputAdornment>
               ),
             }}
-            sx={{ width: "300px" }}
+            sx={{
+              width: "300px", "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+              {
+                color: "black",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "black",
+              },
+            }}
           />
         </Box>
         <TableContainer component={Paper}>
@@ -253,7 +267,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
-                  <TableCell sx={{ width: "5%", padding: "0px" }}></TableCell>
+                  <TableCell sx={{ width: "3%", padding: "0px" }}></TableCell>
                   <TableCell sx={tableHeadStyle}>
                     <Button
                       variant="text"
@@ -263,7 +277,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                         fontWeight: "bold",
                         textTransform: "none",
                         padding: 0,
-                        minWidth: "auto",
+                        minWidth: "20%",
                         color: "black",
                       }}
                     >
@@ -279,7 +293,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                         fontWeight: "bold",
                         textTransform: "none",
                         padding: 0,
-                        minWidth: "auto",
+                        width: "auto",
                         color: "black",
                       }}
                     >
@@ -295,7 +309,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                         fontWeight: "bold",
                         textTransform: "none",
                         padding: 0,
-                        minWidth: "auto",
+                        width: "20%",
                         color: "black",
                       }}
                     >
@@ -325,20 +339,27 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                   </TableRow>
                 ) : (
                   assets.map((asset, index) => (
-                    <CustomTableRow key={index} onClick={() => handleSelectAsset(asset)}>
+                    // <CustomTableRow key={index} onClick={() => handleSelectAsset(asset)}>
+                    <CustomTableRow
+                      key={index}
+                      onClick={() => handleSelectAsset(asset)}
+                      sx={{
+                        backgroundColor: firstAsset && index === 0 ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
+                      }}
+                    >
                       <TableCell>
                         <Radio
                           sx={{
                             color: "#000",
                             "&.Mui-checked": { color: "#d32f2f" },
                           }}
-                          checked={selectedAsset?.assetCode === asset.assetCode}
+                          checked={chosenAsset?.assetCode === asset.assetCode}
                           onChange={() => handleSelectAsset(asset)}
                           value={asset.assetCode}
                         />
                       </TableCell>
                       <TableCell sx={{ textAlign: "center" }}>{asset.assetCode}</TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>
+                      <TableCell sx={{ textAlign: "center", maxWidth: "120px", wordWrap: "break-word" }}>
                         {asset.assetName}
                       </TableCell>
                       <TableCell sx={{ textAlign: "center" }}>{asset.category.name}</TableCell>
@@ -382,7 +403,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
         <Button
           variant="contained"
           onClick={handleSave}
-          disabled={!selectedAsset}
+          disabled={!chosenAsset}
           sx={{
             backgroundColor: "#d32f2f",
             "&:hover": {

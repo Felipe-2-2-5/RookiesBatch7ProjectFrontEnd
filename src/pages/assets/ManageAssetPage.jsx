@@ -128,6 +128,7 @@ const ManageAssetPage = () => {
   }, []);
 
   const [selectedState] = useState("All");
+  const [selectedCategory] = useState("All");
 
   // Search state to set in filter request after entered
   const [searchTerm, setSearchTerm] = useState("");
@@ -411,7 +412,7 @@ const ManageAssetPage = () => {
               </InputLabel>
               <Select
                 label="Category"
-                value={selectedState}
+                value={selectedCategory}
                 name="category"
                 IconComponent={(props) => (
                   <FilterAltOutlined {...props} style={{ transform: "none" }} />
@@ -624,6 +625,11 @@ const ManageAssetPage = () => {
                               <>
                                 <IconButton
                                   aria-label="edit"
+                                  sx={{
+                                    "&:hover": {
+                                      backgroundColor: "#bcbcbc",
+                                    },
+                                  }}
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     navigate(
@@ -636,6 +642,11 @@ const ManageAssetPage = () => {
                                 <IconButton
                                   aria-label="delete"
                                   style={{ color: "#D6001C" }}
+                                  sx={{
+                                    "&:hover": {
+                                      backgroundColor: "#bcbcbc",
+                                    },
+                                  }}
                                   onClick={(e) => {
                                     // Prevent showing popup
                                     e.stopPropagation();

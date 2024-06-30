@@ -340,12 +340,12 @@ const MyAssignmentPage = () => {
                         <CustomTableRow
                           key={assignment.id}
                           onClick={() => handleDetailDialog(assignment)}>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignment.asset.assetCode}
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "50px",
+                              paddingLeft: "40px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -353,10 +353,10 @@ const MyAssignmentPage = () => {
                             }}>
                             {assignment.asset.assetName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {formatDate(assignment.assignedDate)}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignmentStateEnum[assignment.state]}
                           </TableCell>
                           <TableCell>

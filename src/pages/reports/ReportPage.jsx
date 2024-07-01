@@ -378,12 +378,11 @@ const ReportPage = () => {
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "40px",
+                              paddingLeft: "60px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                               maxWidth: 150,
-                              paddingLeft:"60px"
                             }}
                           >
                             {report.assigned}

@@ -34,10 +34,9 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
+import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { PopupNotificationExtra } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
@@ -133,8 +132,14 @@ const RequestForReturningPage = () => {
     }));
   };
 
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [dateError, setDateError] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setFilterRequest((prev) => ({
+      ...prev,
+      returnedDate: date ? date : null,
+    }));
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
   const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
@@ -310,83 +315,29 @@ const RequestForReturningPage = () => {
             </FormControl>
 
             {/* Returned date Filter */}
-            <Grid
-              item
-              xs={9}
-              InputLabelProps={{
-                style: { color: "black" },
-              }}
-              sx={{
-                marginLeft: "16px",
-                marginRight: "16px",
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: "black",
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Returned Date"
+                format="dd/MM/yyyy"
+                value={selectedDate}
+                onChange={handleDateChange}
+                sx={{
+                  marginLeft: "16px",
+                  minWidth: 200,
+                  "& .MuiInputLabel-root": {
+                    color: "black",
                   },
-              }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateRangePicker
-                  startText="Start date"
-                  endText="End date"
-                  value={dateRange}
-                  sx={{
-                    "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
-                      },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: dateError ? "red" : "black",
-                      },
-                    width: "60%",
-                  }}
-                  onChange={(newValue) => {
-                    setDateRange(newValue);
-                    if (newValue[0] && newValue[1]) {
-                      if (
-                        !(newValue[0] instanceof Date) ||
-                        isNaN(newValue[0].getTime()) ||
-                        !(newValue[1] instanceof Date) ||
-                        isNaN(newValue[1].getTime())
-                      ) {
-                        setDateError(true);
-                      } else {
-                        setDateError(false);
-                        setFilterRequest((prev) => ({
-                          ...prev,
-                          returnedDateFrom: format(newValue[0], "dd/MM/yyyy"),
-                          returnedDateTo: format(newValue[1], "dd/MM/yyyy"),
-                        }));
-                      }
-                    }
-                  }}
-                  renderInput={(startProps, endProps) => (
-                    <TextField
-                      {...startProps}
-                      {...endProps}
-                      margin="dense"
-                      required
-                      InputLabelProps={{
-                        style: { color: "black" },
-                      }}
-                      sx={{
-                        marginLeft: "auto",
-                        "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                          {
-                            color: "black",
-                          },
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: dateError ? "red" : "black",
-                          },
-                        width: "60%",
-                      }}
-                    />
-                  )}
-                  format="dd/MM/yyyy"
-                />
-              </LocalizationProvider>
-            </Grid>
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "black",
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "black",
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
           </Box>
 
           {/* Search Box*/}
@@ -418,13 +369,13 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
         </Box>
@@ -625,7 +576,7 @@ const RequestForReturningPage = () => {
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                            "Completed" ? (
+                              "Completed" ? (
                               <>
                                 <IconButton
                                   aria-label="complete"
@@ -643,6 +594,7 @@ const RequestForReturningPage = () => {
                                 <IconButton
                                   aria-label="complete"
                                   sx={{
+                                    color: "#008000",
                                     "&:hover": {
                                       backgroundColor: "#bcbcbc",
                                     },

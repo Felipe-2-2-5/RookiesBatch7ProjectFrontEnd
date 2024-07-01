@@ -370,15 +370,15 @@ const ReportPage = () => {
                         <CustomTableRow
                           key={report.category}
                         >
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.category}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.total}
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "50px",
+                              paddingLeft: "40px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -387,16 +387,16 @@ const ReportPage = () => {
                           >
                             {report.assigned}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.available}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.notAvailable}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.waitingForRecycling}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.recycled}
                           </TableCell>
                         </CustomTableRow>

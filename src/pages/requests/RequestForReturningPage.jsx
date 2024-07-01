@@ -17,7 +17,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
+  // DialogActions,
   FormControl,
   InputLabel,
   Select,
@@ -27,8 +27,8 @@ import {
   styled,
 } from "@mui/material";
 import {
-  Edit as EditIcon,
-  HighlightOff as DeleteIcon,
+  Check as CompleteIcon,
+  Clear as Cancelcon,
   ArrowDropDown,
   ArrowDropUp,
   FilterAltOutlined as FilterIcon,
@@ -36,16 +36,17 @@ import {
   DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
-import { useNavigate } from "react-router";
-import { Link } from "react-router-dom";
-import { path } from "../../routes/routeContants";
+import { format } from "date-fns";
+import { DateRangePicker } from "@mui/x-date-pickers-pro";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+// import { useNavigate } from "react-router";
+// import { path } from "../../routes/routeContants";
 import {
-  FilterRequest,
-  GetAsset,
-  GetCategories,
-  DeleteAsset,
-} from "../../services/asset.service";
-import { assetStateEnum } from "../../enum/assetStateEnum";
+  ReturnRequestFilterRequest,
+  GetReturnRequest,
+} from "../../services/requestsForReturning.service";
+import { requestStateEnum } from "../../enum/requestStateEnum";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -59,17 +60,19 @@ const buttonTableHead = {
   minWidth: "auto",
   color: "black",
 };
-const ManageAssetPage = () => {
-  const navigate = useNavigate();
+
+const RequestForReturningPage = () => {
+  // const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
-    category: "",
+    returnedDateFrom: "",
+    returnedDateTo: "",
     searchTerm: "",
-    sortColumn: "assetName",
-    sortOrder: "",
+    sortColumn: "returnedDate",
+    sortOrder: "descend",
     page: 1,
     pageSize: "20",
   });
@@ -84,23 +87,13 @@ const ManageAssetPage = () => {
     }));
   };
 
-  const [assets, setAsset] = useState([]);
+  const [returnRequests, setReturnRequests] = useState([]);
   useEffect(() => {
-    const getAssets = async (filterRequest) => {
-      const res = await FilterRequest(filterRequest);
-      const fetchedAssets = res.data.data;
+    const getReturnRequests = async (filterRequest) => {
+      const res = await ReturnRequestFilterRequest(filterRequest);
+      const fetchedReturnRequests = res.data.data;
       setTotalCount(res.data.totalCount);
-
-      const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
-      if (assetCreated) {
-        const updatedAssets = fetchedAssets.filter(
-          (asset) => asset.id !== assetCreated.id
-        );
-        setAsset([assetCreated, ...updatedAssets]);
-        sessionStorage.removeItem("asset_created");
-      } else {
-        setAsset(fetchedAssets);
-      }
+      setReturnRequests(fetchedReturnRequests);
 
       if (scrollRef.current) {
         scrollRef.current.scrollTo({
@@ -111,49 +104,25 @@ const ManageAssetPage = () => {
       setLoading(false);
     };
 
-    getAssets(filterRequest);
+    getReturnRequests(filterRequest);
   }, [filterRequest]);
 
-  const [categories, setCategories] = useState(null);
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await GetCategories();
-        setCategories(res.data);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
-    fetchCategories();
-  }, []);
-
   const [selectedState, setSelectedState] = useState("All");
-  const [selectedCategory, setSelectedCategory] = useState("All");
   const handleStateChange = (e) => {
     const selectedState = e.target.value;
     setSelectedState(selectedState);
     setFilterRequest((prevState) => ({
       ...prevState,
-      state: selectedState === "All" ? "All" : selectedState,
+      state: selectedState === "All" ? "" : selectedState,
       searchTerm: "",
-      sortColumn: "assetName",
+      sortColumn: "assetname",
       sortOrder: "",
       page: 1,
     }));
   };
-  const handleCategoryChange = (e) => {
-    const selectedCategory = e.target.value;
-    setSelectedCategory(selectedCategory);
-    setFilterRequest((prevState) => ({
-      ...prevState,
-      category: selectedCategory === "All" ? "" : selectedCategory,
-      searchTerm: "",
-      sortColumn: "assetName",
-      sortOrder: "",
-      page: 1,
-    }));
-  };
+
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [dateError, setDateError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
@@ -232,7 +201,7 @@ const ManageAssetPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "assetName";
+          newSortColumn = "assetname";
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -251,62 +220,15 @@ const ManageAssetPage = () => {
   };
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedAsset, setSelectedAsset] = useState(null);
-  const handleDetailDialog = async (asset) => {
-    const res = await GetAsset(asset.id);
-    const sortedAssignments = res.data.assignments.sort((a, b) => {
-      return new Date(b.assignedDate) - new Date(a.assignedDate);
-    });
-    setSelectedAsset({ ...res.data, assignments: sortedAssignments });
+  const [selectedReturnRequest, setSelectedReturnRequest] = useState(null);
+  const handleDetailDialog = async (returnRequest) => {
+    const res = await GetReturnRequest(returnRequest.id);
+    setSelectedReturnRequest({ ...res.data });
     setDialogOpen(true);
   };
   const handleDialogClose = () => {
     setDialogOpen(false);
-    setSelectedAsset(null);
-    setShowDeleteConfirmation(false);
-    setShowNotification(false);
-    setErrorDialog(false);
-    setErrorMessage("");
-  };
-
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
-  const [errorDialog, setErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const handleDeleteIconClick = (asset) => {
-    setSelectedAsset(asset);
-
-    if (asset.assignments && asset.assignments.length > 0) {
-      setShowNotification(true);
-    } else {
-      setShowDeleteConfirmation(true);
-    }
-  };
-  const handleDeleteConfirmation = async () => {
-    if (selectedAsset) {
-      try {
-        const res = await DeleteAsset(selectedAsset.id);
-
-        if (res.status === 204) {
-          setFilterRequest((prev) => ({
-            ...prev,
-            page: 1,
-          }));
-          setShowDeleteConfirmation(false);
-          console.log("Asset deleted successfully");
-        } else {
-          setErrorMessage(
-            "Error deleting asset: " + res.status + " " + res.data
-          );
-          setErrorDialog(true);
-        }
-      } catch (error) {
-        setErrorMessage("Error deleting asset: " + error.message);
-        setErrorDialog(true);
-      } finally {
-        setShowDeleteConfirmation(false);
-      }
-    }
+    setSelectedReturnRequest(null);
   };
 
   return (
@@ -320,7 +242,7 @@ const ManageAssetPage = () => {
         }}
       >
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
-          Asset List
+          Request List
         </h2>
         <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
@@ -356,7 +278,7 @@ const ManageAssetPage = () => {
                 sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
               >
                 <MenuItem value="All">All</MenuItem>
-                {Object.values(assetStateEnum).map((state) => (
+                {Object.values(requestStateEnum).map((state) => (
                   <MenuItem key={state} value={state}>
                     {state}
                   </MenuItem>
@@ -364,52 +286,83 @@ const ManageAssetPage = () => {
               </Select>
             </FormControl>
 
-            {/* Category Filter */}
-            <FormControl
-              variant="outlined"
-              sx={{
-                minWidth: 240,
-                marginLeft: "16px",
-                "& .MuiOutlinedInput-root": {
-                  "&:hover fieldset": { borderColor: "black" },
-                  "&.Mui-focused fieldset": { borderColor: "black" },
-                },
+            {/* Returned date Filter */}
+            <Grid
+              item
+              xs={9}
+              InputLabelProps={{
+                style: { color: "black" },
               }}
-            >
-              <InputLabel
-                sx={{
-                  color: "black",
-                  "&.Mui-focused": {
-                    color: "black",
-                  },
-                }}
-              >
-                Category
-              </InputLabel>
-              <Select
-                label="Category"
-                value={selectedCategory}
-                name="category"
-                IconComponent={(props) => (
-                  <FilterIcon {...props} style={{ transform: "none" }} />
-                )}
-                onChange={handleCategoryChange}
-                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
-              >
-                <MenuItem value="All">All</MenuItem>
-                {categories ? (
-                  categories.map((category) => (
-                    <MenuItem key={category.id} value={category.name}>
-                      {category.name}
-                    </MenuItem>
-                  ))
-                ) : (
-                  <MenuItem value="" disabled>
-                    Loading categories...
-                  </MenuItem>
-                )}
-              </Select>
-            </FormControl>
+              sx={{
+                marginLeft: "20px",
+                marginRight: "20px",
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "black",
+                },
+              }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateRangePicker
+                  startText="Start date"
+                  endText="End date"
+                  value={dateRange}
+                  sx={{
+                    "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                    {
+                      color: "black",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: dateError ? "red" : "black",
+                    },
+                    width: "60%",
+                  }}
+                  onChange={(newValue) => {
+                    setDateRange(newValue);
+                    if (newValue[0] && newValue[1]) {
+                      if (
+                        !(newValue[0] instanceof Date) ||
+                        isNaN(newValue[0].getTime()) ||
+                        !(newValue[1] instanceof Date) ||
+                        isNaN(newValue[1].getTime())
+                      ) {
+                        setDateError(true);
+                      } else {
+                        setDateError(false);
+                        setFilterRequest((prev) => ({
+                          ...prev,
+                          fromDate: format(newValue[0], "dd/MM/yyyy"),
+                          toDate: format(newValue[1], "dd/MM/yyyy"),
+                        }));
+                      }
+                    }
+                  }}
+                  renderInput={(startProps, endProps) => (
+                    <TextField
+                      {...startProps}
+                      {...endProps}
+                      margin="dense"
+                      required
+                      InputLabelProps={{
+                        style: { color: "black" },
+                      }}
+                      sx={{
+                        "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                        {
+                          color: "black",
+                        },
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        {
+                          borderColor: dateError ? "red" : "black",
+                        },
+                        width: "60%",
+                      }}
+                    />
+                  )}
+                  format="dd/MM/yyyy"
+                />
+              </LocalizationProvider>
+            </Grid>
           </Box>
 
           {/* Search Box*/}
@@ -451,27 +404,9 @@ const ManageAssetPage = () => {
               },
             }}
           />
-
-          {/* Create new Button*/}
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => navigate(path.assetCreate)}
-            sx={{
-              backgroundColor: "#D6001C",
-              color: "white",
-              height: 56,
-              marginLeft: "16px",
-              "&:hover": {
-                bgcolor: "rgba(214, 0, 28, 0.8)",
-              },
-            }}
-          >
-            Create New Asset
-          </Button>
         </Box>
 
-        {/* Asset Table */}
+        {/* Request Table */}
         <TableContainer
           component={Paper}
           sx={{ height: "calc(100% - 180px)", position: "relative" }}
@@ -486,9 +421,10 @@ const ManageAssetPage = () => {
                   zIndex: 1,
                 }}>
                 <TableRow>
-                  <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
-                  >
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
+                    No.
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetCode")}
@@ -498,9 +434,7 @@ const ManageAssetPage = () => {
                       Asset Code
                     </Button>
                   </TableCell>
-                  <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
-                  >
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetName")}
@@ -510,21 +444,47 @@ const ManageAssetPage = () => {
                       Asset Name
                     </Button>
                   </TableCell>
-                  <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
-                  >
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("category")}
-                      endIcon={getSortIcon("category")}
+                      onClick={() => handleHeaderClick("requestor")}
+                      endIcon={getSortIcon("requestor")}
                       sx={buttonTableHead}
                     >
-                      Category
+                      Requested By
                     </Button>
                   </TableCell>
-                  <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
-                  >
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("assignedDate")}
+                      endIcon={getSortIcon("assignedDate")}
+                      sx={buttonTableHead}
+                    >
+                      Assigned Date
+                    </Button>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("acceptor")}
+                      endIcon={getSortIcon("acceptor")}
+                      sx={buttonTableHead}
+                    >
+                      Accepted By
+                    </Button>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("returnedDate")}
+                      endIcon={getSortIcon("returnedDate")}
+                      sx={buttonTableHead}
+                    >
+                      Returned Date
+                    </Button>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
@@ -558,7 +518,7 @@ const ManageAssetPage = () => {
                   </TableRow>
                 ) : (
                   <>
-                    {assets.length === 0 ? (
+                    {returnRequests.length === 0 ? (
                       <TableRow>
                         <TableCell
                           colSpan={6}
@@ -569,35 +529,38 @@ const ManageAssetPage = () => {
                             fontWeight: "bold",
                           }}
                         >
-                          No asset found
+                          No Request for Returning found
                         </TableCell>
                       </TableRow>
                     ) : (
-                      assets.map((asset) => (
+                      returnRequests.map((returnRequest) => (
                         <TableRow
-                          key={asset.id}
+                          key={returnRequest.id}
                           hover
-                          onClick={() => handleDetailDialog(asset)}
+                          onClick={() => handleDetailDialog(returnRequest)}
                           style={{ cursor: "pointer" }}
                         >
-                          <TableCell sx={{ paddingLeft: "40px" }}>{asset.assetCode}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{asset.assetName}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{asset.category?.name}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{assetStateEnum[asset.state]}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.assignment.asset.assetCode}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.assignment.asset.assetName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.requestor.UserName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.assignment.asset.assignedDate}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.acceptor.UserName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.returnedDate}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{requestStateEnum[returnRequest.state]}</TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
-                            {assetStateEnum[asset.state] === "Assigned" ? (
+                            {requestStateEnum[returnRequest.state] === "Completed" ? (
                               <>
-                                <IconButton aria-label="edit" disabled>
-                                  <EditIcon />
+                                <IconButton aria-label="complete" disabled>
+                                  <CompleteIcon />
                                 </IconButton>
-                                <IconButton aria-label="delete" disabled>
-                                  <DeleteIcon />
+                                <IconButton aria-label="cancel" disabled>
+                                  <Cancelcon />
                                 </IconButton>
                               </>
                             ) : (
                               <>
                                 <IconButton
-                                  aria-label="edit"
+                                  aria-label="complete"
                                   sx={{
                                     "&:hover": {
                                       backgroundColor: "#bcbcbc",
@@ -605,15 +568,12 @@ const ManageAssetPage = () => {
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    navigate(
-                                      path.assetEdit.replace(":id", asset.id)
-                                    );
                                   }}
                                 >
-                                  <EditIcon />
+                                  <CompleteIcon />
                                 </IconButton>
                                 <IconButton
-                                  aria-label="delete"
+                                  aria-label="cancel"
                                   sx={{
                                     color: "#D6001C",
                                     "&:hover": {
@@ -622,10 +582,9 @@ const ManageAssetPage = () => {
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    handleDeleteIconClick(asset);
                                   }}
                                 >
-                                  <DeleteIcon />
+                                  <Cancelcon />
                                 </IconButton>
                               </>
                             )}
@@ -665,7 +624,7 @@ const ManageAssetPage = () => {
         </Box>
       </Paper>
 
-      {/* Asset Details Dialog*/}
+      {/* Request Details Dialog*/}
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
@@ -683,7 +642,7 @@ const ManageAssetPage = () => {
             alignItems: "center",
           }}
         >
-          Detailed Asset Information
+          Detailed Request Information
           <IconButton
             aria-label="close"
             onClick={handleDialogClose}
@@ -703,16 +662,15 @@ const ManageAssetPage = () => {
             display: "flex",
             flexDirection: "column",
             padding: "20px",
-            // maxHeight: "300px",
             overflowY: "auto",
             wordWrap: "break-word",
             wordBreak: "break-all"
           }}
         >
-          {selectedAsset ? (
+          {selectedReturnRequest ? (
             <>
               <Typography variant="h6" sx={{ marginTop: 2 }} gutterBottom>
-                {/* Asset Details */}
+                Request Details
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={5}>
@@ -722,7 +680,7 @@ const ManageAssetPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedAsset.assetCode}
+                    {selectedReturnRequest.assignment.asset.assetCode}
                   </Typography>
                 </Grid>
 
@@ -733,18 +691,51 @@ const ManageAssetPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedAsset.assetName}
+                    {selectedReturnRequest.assignment.asset.assetName}
                   </Typography>
                 </Grid>
 
                 <Grid item xs={5}>
                   <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    Category:
+                    Requested By:
                   </Typography>
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedAsset.category.name}
+                    {selectedReturnRequest.requestor.UserName}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Assigned Date:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">
+                    {formatDate(selectedReturnRequest.assignment.asset.assignedDate)}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Accepted By:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">
+                    {selectedReturnRequest.acceptor.UserName}
+                  </Typography>
+                </Grid>
+
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    Returned Date:
+                  </Typography>
+                </Grid>
+                <Grid item xs={7}>
+                  <Typography variant="body1">
+                    {formatDate(selectedReturnRequest.returnedDate)}
                   </Typography>
                 </Grid>
 
@@ -755,84 +746,10 @@ const ManageAssetPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {assetStateEnum[selectedAsset.state]}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    Installed Date:
-                  </Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">
-                    {formatDate(selectedAsset.installedDate)}
-                  </Typography>
-                </Grid>
-
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                    Specification:
-                  </Typography>
-                </Grid>
-                <Grid item xs={7}>
-                  <Typography variant="body1">
-                    {selectedAsset.specification}
+                    {requestStateEnum[selectedReturnRequest.state]}
                   </Typography>
                 </Grid>
               </Grid>
-
-              {/* Assignment History */}
-              {selectedAsset.assignments &&
-                selectedAsset.assignments.length > 0 && (
-                  <>
-                    <Typography variant="h6" sx={{ marginTop: 3, fontStyle: "italic" }} gutterBottom>
-                      Assignment History
-                    </Typography>
-                    <TableContainer component={Paper}>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell style={{ width: "15%" }}
-                            >
-                              <strong>Assigned To</strong>
-                            </TableCell>
-                            <TableCell style={{ width: "15%" }}
-                            >
-                              <strong>Assigned By</strong>
-                            </TableCell>
-                            <TableCell style={{ width: "16%" }}
-                            >
-                              <strong>Assigned Date</strong>
-                            </TableCell>
-                            <TableCell style={{ width: "54%" }}
-                            >
-                              <strong>Note</strong>
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {selectedAsset.assignments.map(
-                            (assignment, index) => (
-                              <TableRow key={index}>
-                                <TableCell>
-                                  {assignment.assignedTo?.userName}
-                                </TableCell>
-                                <TableCell>
-                                  {assignment.assignedBy?.userName}
-                                </TableCell>
-                                <TableCell>
-                                  {formatDate(assignment.assignedDate)}
-                                </TableCell>
-                                <TableCell>{assignment.note}</TableCell>
-                              </TableRow>
-                            )
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </>
-                )}
             </>
           ) : (
             <Box
@@ -848,134 +765,8 @@ const ManageAssetPage = () => {
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={showDeleteConfirmation}
-        onClose={() => setShowDeleteConfirmation(false)}
-      >
-        <DialogTitle
-          sx={{
-            bgcolor: "grey.300",
-            color: "#D6001C",
-            fontWeight: "bold",
-            borderBottom: "1px solid black",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Are you sure?
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-          }}
-        >
-          <Typography variant="body1">
-            Do you want to delete this asset?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleDeleteConfirmation}
-            autoFocus
-            sx={{
-              color: "white",
-              bgcolor: "#D6001C",
-              "&:hover": {
-                bgcolor: "rgba(214, 0, 28, 0.8)",
-              },
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            onClick={() => setShowDeleteConfirmation(false)}
-            sx={{
-              color: "black",
-            }}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Error Dialog */}
-      <Dialog open={errorDialog} onClose={() => setErrorDialog(false)}>
-        <DialogTitle>Error</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">{errorMessage}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setErrorDialog(false)} color="primary">
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Notification Dialog for Historical Assignments */}
-      <Dialog
-        open={showNotification}
-        onClose={() => setShowNotification(false)}
-      >
-        <DialogTitle
-          sx={{
-            bgcolor: "grey.300",
-            color: "#D6001C",
-            fontWeight: "bold",
-            borderBottom: "1px solid black",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Cannot Delete Asset
-          <IconButton
-            aria-label="close"
-            onClick={handleDialogClose}
-            sx={{
-              bgcolor: "grey.300",
-              color: "#D6001C",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-          }}
-        >
-          <Typography variant="body1">
-            Cannot delete the asset because it belongs to one or more historical
-            assignments.
-          </Typography>
-          <Typography variant="body1">
-            If the asset is not able to be used anymore, please update its state
-            in{" "}
-            {selectedAsset ? (
-              <Link
-                component={Link}
-                to={path.assetEdit.replace(":id", selectedAsset.id)}
-                color="primary"
-                underline="always"
-              >
-                Edit Asset page
-              </Link>
-            ) : null
-            }
-          </Typography>
-        </DialogContent>
-      </Dialog>
     </>
   );
 };
 
-export default ManageAssetPage;
+export default RequestForReturningPage;

@@ -21,7 +21,7 @@ import {
 
   styled,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FilterRequest } from "../services/users.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -48,8 +48,9 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUser, setSelectedUser }) => {
+const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, selectedUser, setSelectedUser }) => {
   const scrollRef = useRef(null);
+  const [chosenUser, setChosenUser] = useState(selectedUser);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
@@ -68,18 +69,22 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
       : Math.ceil(totalCount / pageSize);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const getUsers = async (filterRequest) => {
+  const getUsers = useCallback(async (filterRequest) => {
     setLoading(true);
     const res = await FilterRequest(filterRequest);
     const fetchedUsers = res.data.data;
     setTotalCount(res.data.totalCount);
-
-    const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
-    if (userCreated) {
-      setUsers([userCreated, ...fetchedUsers]);
-      sessionStorage.removeItem("user_created");
+    console.log(firstUser);
+    if (firstUser) {
+      if (fetchedUsers.some(user => user.id === firstUser.id)) {
+        // Filter fetchedUsers to exclude selectedUser
+        const filteredUsers = fetchedUsers.filter(user => user.id !== firstUser.id);
+        setUsers([firstUser, ...filteredUsers]);
+      } else {
+        setUsers([firstUser, ...fetchedUsers]);
+      }
     } else {
-      setUsers(fetchedUsers);
+      setUsers([...fetchedUsers])
     }
     if (scrollRef.current) {
       scrollRef.current.scrollTo({
@@ -88,10 +93,10 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
       });
     }
     setLoading(false);
-  };
+  }, [firstUser]);
   useEffect(() => {
     getUsers(filterRequest);
-  }, [filterRequest]);
+  }, [filterRequest, getUsers]);
 
   const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
 
@@ -103,6 +108,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
+      page: 1
     }));
   };
 
@@ -119,18 +125,17 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
   };
 
   const handleSelectUser = (user) => {
-    setSelectedUser(user);
+    setChosenUser(user)
+    // setSelectedUser(user);
   };
 
   const handleSave = () => {
-    if (selectedUser) {
-      onSelect(selectedUser);
-      setVisibleDialog(false);
-    }
+    onSelect(chosenUser);
+    setVisibleDialog(false);
   };
 
   const handleCancel = () => {
-    setSelectedUser(null)
+    // setSelectedUser(null)
     setVisibleDialog(false);
   };
 
@@ -231,13 +236,27 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton onClick={handleSearchClick}>
+                  <IconButton sx={{
+                    "& label.Mui-focused": { color: "#000" },
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused fieldset": { borderColor: "#000" },
+                    },
+                  }} onClick={handleSearchClick}>
                     <Search />
                   </IconButton>
                 </InputAdornment>
               ),
             }}
-            sx={{ width: "300px" }}
+            sx={{
+              width: "300px", "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+              {
+                color: "black",
+              },
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+              {
+                borderColor: "black",
+              },
+            }}
           />
         </Box>
         <TableContainer component={Paper}>
@@ -255,7 +274,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
                         fontWeight: "bold",
                         textTransform: "none",
                         padding: 0,
-                        minWidth: "auto",
+                        minWidth: "15%",
                         color: "black",
                       }}
                     >
@@ -271,7 +290,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
                         fontWeight: "bold",
                         textTransform: "none",
                         padding: 0,
-                        minWidth: "auto",
+                        minWidth: "15%",
                         color: "black",
                       }}
                     >
@@ -287,7 +306,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
                         fontWeight: "bold",
                         textTransform: "none",
                         padding: 0,
-                        minWidth: "auto",
+                        minWidth: "15%",
                         color: "black",
                       }}
                     >
@@ -318,14 +337,21 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
                   </TableRow>
                 ) : (
                   users.map((user, index) => (
-                    <CustomTableRow key={index} onClick={() => handleSelectUser(user)}>
+                    // <CustomTableRow key={index} onClick={() => handleSelectUser(user)}>
+                    <CustomTableRow
+                      key={index}
+                      onClick={() => handleSelectUser(user)}
+                      sx={{
+                        backgroundColor: firstUser && index === 0 ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
+                      }}
+                    >
                       <TableCell>
                         <Radio
                           sx={{
                             color: "#000",
                             "&.Mui-checked": { color: "#d32f2f" },
                           }}
-                          checked={selectedUser?.staffCode === user.staffCode}
+                          checked={chosenUser?.staffCode === user.staffCode}
                           onChange={() => handleSelectUser(user)}
                           value={user.staffCode}
                         />
@@ -375,7 +401,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, selectedUse
         <Button
           variant="contained"
           onClick={handleSave}
-          disabled={!selectedUser}
+          disabled={!chosenUser}
           sx={{
             backgroundColor: "#d32f2f",
             "&:hover": {

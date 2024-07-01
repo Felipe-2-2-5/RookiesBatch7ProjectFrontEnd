@@ -1,4 +1,4 @@
-import { Search } from "@mui/icons-material";
+import { Search as SearchIcon } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import React from "react";
 
@@ -22,26 +22,28 @@ const SearchBar = ({
           <InputAdornment position="end">
             <IconButton
               sx={{
-                "&:hover": {
-                  backgroundColor: "#bcbcbc",
+                "& label.Mui-focused": { color: "#000" },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
+                width: "120%",
               }}
               onClick={handleSearchClick}>
-              <Search />
+              <SearchIcon />
             </IconButton>
           </InputAdornment>
         ),
       }}
-      InputLabelProps={{
-        style: { color: "black" },
-      }}
       sx={{
-        marginLeft: "auto",
-        marginRight: "20px",
+        marginLeft: "16px",
+        "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+        {
+          color: "black",
+        },
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-          {
-            borderColor: "black",
-          },
+        {
+          borderColor: "black",
+        },
       }}
     />
   );

@@ -441,6 +441,7 @@ const CreateAssignment = () => {
           </form>
           {visibleDialog && (
             <DialogUserList
+              firstUser={null}
               visibleDialog={visibleDialog}
               setVisibleDialog={setVisibleDialog}
               onSelect={handleUserSelect}

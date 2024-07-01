@@ -58,8 +58,8 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const tableHead = {
-  width: "14%",
-  paddingLeft: "45px",
+  width: "15%",
+  paddingLeft: "40px",
 };
 
 const buttonTableHead = {
@@ -397,9 +397,9 @@ const ManageAssignmentPage = () => {
               marginLeft: "20px",
               marginRight: "20px",
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateRangePicker
@@ -408,13 +408,13 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 sx={{
                   "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                    {
-                      color: "black",
-                    },
+                  {
+                    color: "black",
+                  },
                   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                    {
-                      borderColor: dateError ? "red" : "black",
-                    },
+                  {
+                    borderColor: dateError ? "red" : "black",
+                  },
                 }}
                 onChange={(newValue) => {
                   setDateRange(newValue);
@@ -447,13 +447,13 @@ const ManageAssignmentPage = () => {
                     }}
                     sx={{
                       "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                        {
-                          color: "black",
-                        },
+                      {
+                        color: "black",
+                      },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: dateError ? "red" : "black",
-                        },
+                      {
+                        borderColor: dateError ? "red" : "black",
+                      },
                     }}
                   />
                 )}
@@ -495,7 +495,7 @@ const ManageAssignmentPage = () => {
                   zIndex: 1,
                 }}>
                 <TableRow>
-                  <TableCell sx={{ fontWeight: "bold", paddingLeft: "50px" }}>
+                  <TableCell sx={{ fontWeight: "bold", paddingLeft: "40px" }}>
                     No.
                   </TableCell>
                   <TableCell sx={tableHead}>
@@ -552,7 +552,16 @@ const ManageAssignmentPage = () => {
                       State
                     </Button>
                   </TableCell>
-                  <TableCell sx={tableHead}></TableCell>
+                  <TableCell
+                    sx={{
+                      width: "10%",
+                      fontWeight: "bold",
+                      textTransform: "none",
+                      minWidth: "auto",
+                      color: "black",
+                      padding: "16px",
+                    }}
+                  ></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -584,15 +593,15 @@ const ManageAssignmentPage = () => {
                         <CustomTableRow
                           key={assignment.id}
                           onClick={() => handleDetailDialog(assignment)}>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {index + 1}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignment.asset.assetCode}
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "50px",
+                              paddingLeft: "40px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -600,16 +609,16 @@ const ManageAssignmentPage = () => {
                             }}>
                             {assignment.asset.assetName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignment.assignedTo.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignment.assignedBy.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {formatDate(assignment.assignedDate)}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignmentStateEnum[assignment.state]}
                           </TableCell>
                           <TableCell>

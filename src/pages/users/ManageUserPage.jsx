@@ -57,7 +57,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
 
 const tableHead = {
   width: "15%",
-  paddingLeft: "50px",
+  paddingLeft: "40px",
 };
 
 const buttonTableHead = {
@@ -476,19 +476,19 @@ const ManageUserPage = () => {
                           hover
                           onClick={() => handleDetailDialog(user)}
                         >
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.staffCode}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.firstName + " " + user.lastName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.joinedDate}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "50px" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.type === 0 ? "Staff" : "Admin"}
                           </TableCell>
                           <TableCell>

@@ -68,6 +68,7 @@ const EditAssignment = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [firstAsset, setFirstAsset] = useState("");
+    const [firstUser, setFirstUser] = useState("");
     const [visibleDialog, setVisibleDialog] = useState(false);
     const [visibleAssetDialog, setVisibleAssetDialog] = useState(false);
     const [openPopup, setOpenPopup] = useState(false);
@@ -121,6 +122,8 @@ const EditAssignment = () => {
                     setSelectedUser(response.assignedTo);
                     setSelectedAsset(response.asset);
                     setFirstAsset(response.asset);
+                    setFirstUser(response.assignedTo);
+
                     const initialAsset = response.asset ? response.asset.assetName : "";
                     const initialUser = response.assignedTo ? response.assignedTo.userName : "";
                     setInitialValue({ asset: initialAsset, user: initialUser, assignedDate: new Date(response.assignedDate), note: response.note });
@@ -191,12 +194,12 @@ const EditAssignment = () => {
         const assignedDateChanged = new Date(initialValue.assignedDate).getTime() !== new Date(currentValue.assignedDate).getTime();
         const noteChanged = initialValue.note !== currentValue.note;
 
-        return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length === 1;
+        return [assetChanged, userChanged, assignedDateChanged, noteChanged].filter(Boolean).length !== 0;
     };
 
-    const isFormValid = () => {
-        return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
-    };
+    // const isFormValid = () => {
+    //     return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
+    // };
 
     const handleDateChange = (name, date) => {
         setSelectedAssignment({ ...selectedAssignment, [name]: date });
@@ -461,7 +464,9 @@ const EditAssignment = () => {
                                                 backgroundColor: "#a50000",
                                             },
                                         }}
-                                        disabled={!isSingleFieldChanged() || !isFormValid()}
+                                        disabled={
+                                            Object.values(formErrors).some((error) => error) || !isSingleFieldChanged()
+                                        }
                                         onClick={handleSubmit}
                                     >
                                         Save
@@ -479,6 +484,7 @@ const EditAssignment = () => {
                     </form>
                     {visibleDialog && (
                         <DialogUserList
+                            firstUser={firstUser}
                             visibleDialog={visibleDialog}
                             setVisibleDialog={setVisibleDialog}
                             onSelect={handleUserSelect}

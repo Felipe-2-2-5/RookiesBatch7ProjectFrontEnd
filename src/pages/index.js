@@ -1,10 +1,10 @@
 export { default as HomePage } from "./HomePage";
 export { default as LoginPage } from "./LoginPage";
 export { default as NotFound } from "./NotFound";
-export { default as ReportPage } from "./ReportPage";
-export { default as RequestForReturningPage } from "./RequestForReturningPage";
+export { default as ReportPage } from "./reports/ReportPage";
+export { default as RequestForReturningPage } from "./requests/RequestForReturningPage";
 export { default as ManageAssetPage } from "./assets/ManageAssetPage";
 export { default as ManageAssignmentPage } from "./assignments/ManageAssignmentPage";
 export { default as CreateUser } from "./users/CreateUser";
 export { default as ManageUserPage } from "./users/ManageUserPage";
-export { default as MyAssignmentPage} from "./assignments/MyAssignmentPage";
+export { default as MyAssignmentPage } from "./assignments/MyAssignmentPage";

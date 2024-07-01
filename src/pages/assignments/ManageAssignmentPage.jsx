@@ -397,9 +397,9 @@ const ManageAssignmentPage = () => {
               marginLeft: "20px",
               marginRight: "20px",
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
+                {
+                  borderColor: "black",
+                },
             }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateRangePicker
@@ -408,13 +408,13 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 sx={{
                   "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                  {
-                    color: "black",
-                  },
+                    {
+                      color: "black",
+                    },
                   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: dateError ? "red" : "black",
-                  },
+                    {
+                      borderColor: dateError ? "red" : "black",
+                    },
                 }}
                 onChange={(newValue) => {
                   setDateRange(newValue);
@@ -447,13 +447,13 @@ const ManageAssignmentPage = () => {
                     }}
                     sx={{
                       "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
-                      },
+                        {
+                          color: "black",
+                        },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: dateError ? "red" : "black",
-                      },
+                        {
+                          borderColor: dateError ? "red" : "black",
+                        },
                     }}
                   />
                 )}
@@ -560,8 +560,7 @@ const ManageAssignmentPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}
-                  ></TableCell>
+                    }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

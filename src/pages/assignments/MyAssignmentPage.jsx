@@ -21,11 +21,11 @@ import {
   styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { AssignmentDetailDialog, PaginationBar } from "../../components";
+import { AssignmentDetailDialog } from "../../components";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
 import {
-  FilterAssignment,
   GetAssignment,
+  GetMyAssignments,
 } from "../../services/assignments.service";
 
 const formatDate = (dateString) => {
@@ -54,7 +54,7 @@ const buttonTableHead = {
 };
 const MyAssignmentPage = () => {
   const scrollRef = useRef(null);
-  const [totalCount, setTotalCount] = useState();
+  //const [totalCount, setTotalCount] = useState();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
@@ -68,24 +68,23 @@ const MyAssignmentPage = () => {
     toDate: "",
   });
 
-  const pageSize = filterRequest.pageSize || 1;
-  const pageCount =
-    Number.isNaN(totalCount) || totalCount === 0
-      ? 1
-      : Math.ceil(totalCount / pageSize);
+  //const pageSize = filterRequest.pageSize || 1;
+  // const pageCount =
+  //   Number.isNaN(totalCount) || totalCount === 0
+  //     ? 1
+  //     : Math.ceil(totalCount / pageSize);
 
   const getAssignments = async (filterRequest) => {
-    const res = await FilterAssignment(filterRequest);
-    let fetchedAssignments = res?.data?.data;
+    const res = await GetMyAssignments(filterRequest);
+    // setLoading(true);
+    let fetchedMyAssignments = res?.data;
 
     if (res.status === 200) {
-      let fetchedAssignments = res?.data?.data;
-
-      setAssignments(fetchedAssignments);
-      setTotalCount(res?.data?.totalCount);
+      setAssignments(fetchedMyAssignments?.data);
+      //setTotalCount(fetchedMyAssignments?.totalCount);
     } else {
       setAssignments([]);
-      setTotalCount(0);
+      //setTotalCount(0);
     }
 
     if (
@@ -95,8 +94,6 @@ const MyAssignmentPage = () => {
       const sortColumnMap = {
         code: "assetCode",
         name: "assetName",
-        receiver: "assignedTo",
-        provider: "assignedBy",
         date: "assignedDate",
         state: "state",
       };
@@ -121,13 +118,13 @@ const MyAssignmentPage = () => {
         sessionStorage.getItem("assignment_created")
       );
       if (assignmentCreated) {
-        const updatedAssignments = fetchedAssignments.filter(
+        const updatedAssignments = fetchedMyAssignments.filter(
           (asset) => asset.id !== assignmentCreated.id
         );
         setAssignments([assignmentCreated, ...updatedAssignments]);
         sessionStorage.removeItem("assignment_created");
       } else {
-        setAssignments(fetchedAssignments);
+        setAssignments(fetchedMyAssignments);
       }
 
       if (scrollRef.current) {
@@ -139,7 +136,7 @@ const MyAssignmentPage = () => {
       setLoading(false);
     }
 
-    setTotalCount(res.data.totalCount);
+    //setTotalCount(res?.data?.totalCount);
   };
 
   useEffect(() => {
@@ -160,12 +157,12 @@ const MyAssignmentPage = () => {
     setSelectedAssignment(null);
   };
 
-  const handlePageChange = (e, value) => {
-    setFilterRequest((prev) => ({
-      ...prev,
-      page: value,
-    }));
-  };
+  // const handlePageChange = (e, value) => {
+  //   setFilterRequest((prev) => ({
+  //     ...prev,
+  //     page: value,
+  //   }));
+  // };
 
   const handleHeaderClick = (column) => {
     setFilterRequest((prev) => {
@@ -409,11 +406,11 @@ const MyAssignmentPage = () => {
             </Table>
           </Sheet>
         </TableContainer>
-        <PaginationBar
+        {/* <PaginationBar
           filterRequest={filterRequest}
           pageCount={pageCount}
           handlePageChange={handlePageChange}
-        />
+        /> */}
       </Paper>
       {selectedAssignment && (
         <AssignmentDetailDialog

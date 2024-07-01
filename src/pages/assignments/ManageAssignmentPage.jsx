@@ -348,120 +348,122 @@ const ManageAssignmentPage = () => {
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Assignment List
         </h2>
-        <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-          <FormControl
-            variant="outlined"
-            sx={{
-              minWidth: 240,
-              "& .MuiOutlinedInput-root": {
-                "&:hover fieldset": { borderColor: "black" },
-                "&.Mui-focused fieldset": { borderColor: "black" },
-              },
-            }}>
-            <InputLabel
+        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+            <FormControl
+              variant="outlined"
               sx={{
-                color: "black",
-                "&.Mui-focused": {
-                  color: "black",
+                minWidth: 240,
+                "& .MuiOutlinedInput-root": {
+                  "&:hover fieldset": { borderColor: "black" },
+                  "&.Mui-focused fieldset": { borderColor: "black" },
                 },
               }}>
-              {" "}
-              State
-            </InputLabel>
-            <Select
-              label="State"
-              value={selectedState}
-              name="state"
-              IconComponent={(props) => (
-                <FilterAltOutlined
-                  {...props}
-                  style={{ transform: "none" }}
-                />
-              )}
-              onChange={handleStateChange}
-              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
-              <MenuItem value="All">All</MenuItem>
-              <MenuItem value="Accepted">Accepted</MenuItem>
-              <MenuItem value="Waiting for acceptance">
-                Waiting for acceptance
-              </MenuItem>
-            </Select>
-          </FormControl>
-          <Grid
-            item
-            xs={9}
-            InputLabelProps={{
-              style: { color: "black" },
-            }}
-            sx={{
-              marginLeft: "20px",
-              marginRight: "20px",
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
-            }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateRangePicker
-                startText="Start date"
-                endText="End date"
-                value={dateRange}
+              <InputLabel
                 sx={{
-                  "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                  {
+                  color: "black",
+                  "&.Mui-focused": {
                     color: "black",
                   },
-                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: dateError ? "red" : "black",
-                  },
-                }}
-                onChange={(newValue) => {
-                  setDateRange(newValue);
-                  if (newValue[0] && newValue[1]) {
-                    if (
-                      !(newValue[0] instanceof Date) ||
-                      isNaN(newValue[0].getTime()) ||
-                      !(newValue[1] instanceof Date) ||
-                      isNaN(newValue[1].getTime())
-                    ) {
-                      setDateError(true);
-                    } else {
-                      setDateError(false);
-                      setFilterRequest((prev) => ({
-                        ...prev,
-                        fromDate: format(newValue[0], "dd/MM/yyyy"),
-                        toDate: format(newValue[1], "dd/MM/yyyy"),
-                      }));
-                    }
-                  }
-                }}
-                renderInput={(startProps, endProps) => (
-                  <TextField
-                    {...startProps}
-                    {...endProps}
-                    margin="dense"
-                    required
-                    InputLabelProps={{
-                      style: { color: "black" },
-                    }}
-                    sx={{
-                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
-                      },
-                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: dateError ? "red" : "black",
-                      },
-                    }}
+                }}>
+                {" "}
+                State
+              </InputLabel>
+              <Select
+                label="State"
+                value={selectedState}
+                name="state"
+                IconComponent={(props) => (
+                  <FilterAltOutlined
+                    {...props}
+                    style={{ transform: "none" }}
                   />
                 )}
-                format="dd/MM/yyyy"
-              />
-            </LocalizationProvider>
-          </Grid>
+                onChange={handleStateChange}
+                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
+                <MenuItem value="All">All</MenuItem>
+                <MenuItem value="Accepted">Accepted</MenuItem>
+                <MenuItem value="Waiting for acceptance">
+                  Waiting for acceptance
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <Grid
+              item
+              xs={9}
+              InputLabelProps={{
+                style: { color: "black" },
+              }}
+              sx={{
+                marginLeft: "16px",
+                marginRight: "16px",
+                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  borderColor: "black",
+                },
+              }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DateRangePicker
+                  startText="Start date"
+                  endText="End date"
+                  value={dateRange}
+                  sx={{
+                    "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                    {
+                      color: "black",
+                    },
+                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                    {
+                      borderColor: dateError ? "red" : "black",
+                    },
+                  }}
+                  onChange={(newValue) => {
+                    setDateRange(newValue);
+                    if (newValue[0] && newValue[1]) {
+                      if (
+                        !(newValue[0] instanceof Date) ||
+                        isNaN(newValue[0].getTime()) ||
+                        !(newValue[1] instanceof Date) ||
+                        isNaN(newValue[1].getTime())
+                      ) {
+                        setDateError(true);
+                      } else {
+                        setDateError(false);
+                        setFilterRequest((prev) => ({
+                          ...prev,
+                          fromDate: format(newValue[0], "dd/MM/yyyy"),
+                          toDate: format(newValue[1], "dd/MM/yyyy"),
+                        }));
+                      }
+                    }
+                  }}
+                  renderInput={(startProps, endProps) => (
+                    <TextField
+                      {...startProps}
+                      {...endProps}
+                      margin="dense"
+                      required
+                      InputLabelProps={{
+                        style: { color: "black" },
+                      }}
+                      sx={{
+                        marginLeft: "auto",
+                        "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                        {
+                          color: "black",
+                        },
+                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                        {
+                          borderColor: "black",
+                        },
+                      }}
+                    />
+                  )}
+                  format="dd/MM/yyyy"
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Box>
           <SearchBar
             searchTerm={searchTerm}
             handleSearchChange={handleSearchChange}
@@ -473,14 +475,15 @@ const ManageAssignmentPage = () => {
             sx={{
               backgroundColor: "#D6001C",
               height: "56px",
+              marginLeft: "16px",
               "&:hover": {
-                backgroundColor: "#d32f2f",
+                bgcolor: "rgba(214, 0, 28, 0.8)",
               },
             }}
             onClick={() => navigate(path.assignmentCreate)}>
             Create new assignment
           </Button>
-        </Box>{" "}
+        </Box>
         <TableContainer
           component={Paper}
           sx={{ height: "calc(100% - 180px)", position: "relative" }}>

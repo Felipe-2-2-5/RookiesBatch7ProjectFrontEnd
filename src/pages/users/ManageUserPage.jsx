@@ -347,7 +347,7 @@ const ManageUserPage = () => {
               ),
             }}
             sx={{
-              marginLeft: "auto", marginRight: "20px",
+              marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
               {
                 color: "black",
@@ -363,6 +363,7 @@ const ManageUserPage = () => {
             sx={{
               backgroundColor: "#D6001C",
               height: "56px",
+              marginLeft: "16px",
               "&:hover": {
                 backgroundColor: "#d32f2f",
               },
@@ -479,7 +480,13 @@ const ManageUserPage = () => {
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.staffCode}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{
+                            paddingLeft: "40px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: 150,
+                          }}>
                             {user.firstName + " " + user.lastName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>

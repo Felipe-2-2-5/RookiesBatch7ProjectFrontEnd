@@ -475,15 +475,16 @@ const ManageAssignmentPage = () => {
             sx={{
               backgroundColor: "#D6001C",
               height: "56px",
+              marginLeft: "16px",
               "&:hover": {
-                backgroundColor: "#d32f2f",
+                bgcolor: "rgba(214, 0, 28, 0.8)",
               },
             }}
             onClick={() => navigate(path.assignmentCreate)}
           >
             Create new assignment
           </Button>
-        </Box>{" "}
+        </Box>
         <TableContainer
           component={Paper}
           sx={{ height: "calc(100% - 180px)", position: "relative" }}

@@ -49,6 +49,8 @@ import {
 import { requestStateEnum } from "../../enum/requestStateEnum";
 
 const formatDate = (dateString) => {
+  if (!dateString) return ""; // Handle null or undefined dateString
+
   const date = new Date(dateString);
   return date.toLocaleDateString("en-GB");
 };
@@ -299,8 +301,8 @@ const RequestForReturningPage = () => {
                 style: { color: "black" },
               }}
               sx={{
-                marginLeft: "20px",
-                marginRight: "20px",
+                marginLeft: "16px",
+                marginRight: "16px",
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                   {
                     borderColor: "black",
@@ -353,6 +355,7 @@ const RequestForReturningPage = () => {
                         style: { color: "black" },
                       }}
                       sx={{
+                        marginLeft: "auto",
                         "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
                           {
                             color: "black",
@@ -588,34 +591,27 @@ const RequestForReturningPage = () => {
                         </TableCell>
                       </TableRow>
                     ) : (
-                      returnRequests.map((returnRequest) => (
+                      returnRequests.map((returnRequest, index) => (
                         <TableRow
                           key={returnRequest.id}
                           hover
                           onClick={() => handleDetailDialog(returnRequest)}
                           style={{ cursor: "pointer" }}
                         >
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {returnRequest.assignment.asset.assetCode}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {returnRequest.assignment.asset.assetName}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {returnRequest.requestor.UserName}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {returnRequest.assignment.asset.assignedDate}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {returnRequest.acceptor.UserName}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {returnRequest.returnedDate}
-                          </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
-                            {requestStateEnum[returnRequest.state]}
-                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{index + 1}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.assignment.asset.assetCode}</TableCell>
+                          <TableCell sx={{
+                            paddingLeft: "40px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: 150,
+                          }}>{returnRequest.assignment.asset.assetName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.requestor?.userName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{formatDate(returnRequest.assignment.assignedDate)}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.acceptor?.userName}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{formatDate(returnRequest.returnedDate)}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>{requestStateEnum[returnRequest.state]}</TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
                             "Completed" ? (
@@ -740,7 +736,7 @@ const RequestForReturningPage = () => {
           {selectedReturnRequest ? (
             <>
               <Typography variant="h6" sx={{ marginTop: 2 }} gutterBottom>
-                Request Details
+                {/* Request Details */}
               </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={5}>
@@ -772,7 +768,7 @@ const RequestForReturningPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedReturnRequest.requestor.UserName}
+                    {selectedReturnRequest.requestor?.userName}
                   </Typography>
                 </Grid>
 
@@ -783,9 +779,7 @@ const RequestForReturningPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {formatDate(
-                      selectedReturnRequest.assignment.asset.assignedDate
-                    )}
+                    {formatDate(selectedReturnRequest.assignment.assignedDate)}
                   </Typography>
                 </Grid>
 
@@ -796,7 +790,7 @@ const RequestForReturningPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedReturnRequest.acceptor.UserName}
+                    {selectedReturnRequest.acceptor?.userName}
                   </Typography>
                 </Grid>
 

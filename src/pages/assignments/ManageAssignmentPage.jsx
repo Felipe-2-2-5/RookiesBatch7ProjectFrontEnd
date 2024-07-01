@@ -247,7 +247,6 @@ const ManageAssignmentPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
-      searchTerm: "",
       sortColumn: "date",
       sortOrder: "descend",
       page: 1,
@@ -344,126 +343,127 @@ const ManageAssignmentPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}>
+        }}
+      >
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Assignment List
         </h2>
-        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-          <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
-            <FormControl
-              variant="outlined"
+        <Box
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+        >
+          <FormControl
+            variant="outlined"
+            sx={{
+              minWidth: 240,
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": { borderColor: "black" },
+                "&.Mui-focused fieldset": { borderColor: "black" },
+              },
+            }}
+          >
+            <InputLabel
               sx={{
-                minWidth: 240,
-                "& .MuiOutlinedInput-root": {
-                  "&:hover fieldset": { borderColor: "black" },
-                  "&.Mui-focused fieldset": { borderColor: "black" },
-                },
-              }}>
-              <InputLabel
-                sx={{
+                color: "black",
+                "&.Mui-focused": {
                   color: "black",
-                  "&.Mui-focused": {
-                    color: "black",
-                  },
-                }}>
-                {" "}
-                State
-              </InputLabel>
-              <Select
-                label="State"
-                value={selectedState}
-                name="state"
-                IconComponent={(props) => (
-                  <FilterAltOutlined
-                    {...props}
-                    style={{ transform: "none" }}
-                  />
-                )}
-                onChange={handleStateChange}
-                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
-                <MenuItem value="All">All</MenuItem>
-                <MenuItem value="Accepted">Accepted</MenuItem>
-                <MenuItem value="Waiting for acceptance">
-                  Waiting for acceptance
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <Grid
-              item
-              xs={9}
-              InputLabelProps={{
-                style: { color: "black" },
+                },
               }}
-              sx={{
-                marginLeft: "16px",
-                marginRight: "16px",
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+            >
+              {" "}
+              State
+            </InputLabel>
+            <Select
+              label="State"
+              value={selectedState}
+              name="state"
+              IconComponent={(props) => (
+                <FilterAltOutlined {...props} style={{ transform: "none" }} />
+              )}
+              onChange={handleStateChange}
+              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
+            >
+              <MenuItem value="All">All</MenuItem>
+              <MenuItem value="Accepted">Accepted</MenuItem>
+              <MenuItem value="Waiting for acceptance">
+                Waiting for acceptance
+              </MenuItem>
+            </Select>
+          </FormControl>
+          <Grid
+            item
+            xs={9}
+            InputLabelProps={{
+              style: { color: "black" },
+            }}
+            sx={{
+              marginLeft: "20px",
+              marginRight: "20px",
+              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                 {
                   borderColor: "black",
                 },
-              }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateRangePicker
-                  startText="Start date"
-                  endText="End date"
-                  value={dateRange}
-                  sx={{
-                    "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateRangePicker
+                startText="Start date"
+                endText="End date"
+                value={dateRange}
+                sx={{
+                  "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
                     {
                       color: "black",
                     },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                     {
                       borderColor: dateError ? "red" : "black",
                     },
-                  }}
-                  onChange={(newValue) => {
-                    setDateRange(newValue);
-                    if (newValue[0] && newValue[1]) {
-                      if (
-                        !(newValue[0] instanceof Date) ||
-                        isNaN(newValue[0].getTime()) ||
-                        !(newValue[1] instanceof Date) ||
-                        isNaN(newValue[1].getTime())
-                      ) {
-                        setDateError(true);
-                      } else {
-                        setDateError(false);
-                        setFilterRequest((prev) => ({
-                          ...prev,
-                          fromDate: format(newValue[0], "dd/MM/yyyy"),
-                          toDate: format(newValue[1], "dd/MM/yyyy"),
-                        }));
-                      }
+                }}
+                onChange={(newValue) => {
+                  setDateRange(newValue);
+                  if (newValue[0] && newValue[1]) {
+                    if (
+                      !(newValue[0] instanceof Date) ||
+                      isNaN(newValue[0].getTime()) ||
+                      !(newValue[1] instanceof Date) ||
+                      isNaN(newValue[1].getTime())
+                    ) {
+                      setDateError(true);
+                    } else {
+                      setDateError(false);
+                      setFilterRequest((prev) => ({
+                        ...prev,
+                        fromDate: format(newValue[0], "dd/MM/yyyy"),
+                        toDate: format(newValue[1], "dd/MM/yyyy"),
+                      }));
                     }
-                  }}
-                  renderInput={(startProps, endProps) => (
-                    <TextField
-                      {...startProps}
-                      {...endProps}
-                      margin="dense"
-                      required
-                      InputLabelProps={{
-                        style: { color: "black" },
-                      }}
-                      sx={{
-                        marginLeft: "auto",
-                        "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                  }
+                }}
+                renderInput={(startProps, endProps) => (
+                  <TextField
+                    {...startProps}
+                    {...endProps}
+                    margin="dense"
+                    required
+                    InputLabelProps={{
+                      style: { color: "black" },
+                    }}
+                    sx={{
+                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
                         {
                           color: "black",
                         },
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                         {
-                          borderColor: "black",
+                          borderColor: dateError ? "red" : "black",
                         },
-                      }}
-                    />
-                  )}
-                  format="dd/MM/yyyy"
-                />
-              </LocalizationProvider>
-            </Grid>
-          </Box>
+                    }}
+                  />
+                )}
+                format="dd/MM/yyyy"
+              />
+            </LocalizationProvider>
+          </Grid>
           <SearchBar
             searchTerm={searchTerm}
             handleSearchChange={handleSearchChange}
@@ -480,16 +480,16 @@ const ManageAssignmentPage = () => {
                 bgcolor: "rgba(214, 0, 28, 0.8)",
               },
             }}
-            onClick={() => navigate(path.assignmentCreate)}>
+            onClick={() => navigate(path.assignmentCreate)}
+          >
             Create new assignment
           </Button>
         </Box>
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
-          <Sheet
-            ref={scrollRef}
-            sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}
+        >
+          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -497,7 +497,8 @@ const ManageAssignmentPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}>
+                }}
+              >
                 <TableRow>
                   <TableCell sx={{ fontWeight: "bold", paddingLeft: "40px" }}>
                     No.
@@ -507,7 +508,8 @@ const ManageAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("code")}
-                      endIcon={getSortIcon("code")}>
+                      endIcon={getSortIcon("code")}
+                    >
                       Asset Code
                     </Button>
                   </TableCell>
@@ -516,7 +518,8 @@ const ManageAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("name")}
-                      endIcon={getSortIcon("name")}>
+                      endIcon={getSortIcon("name")}
+                    >
                       Asset Name
                     </Button>
                   </TableCell>
@@ -525,7 +528,8 @@ const ManageAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("receiver")}
-                      endIcon={getSortIcon("receiver")}>
+                      endIcon={getSortIcon("receiver")}
+                    >
                       Assigned To
                     </Button>
                   </TableCell>
@@ -534,7 +538,8 @@ const ManageAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("provider")}
-                      endIcon={getSortIcon("provider")}>
+                      endIcon={getSortIcon("provider")}
+                    >
                       Assigned By
                     </Button>
                   </TableCell>
@@ -543,7 +548,8 @@ const ManageAssignmentPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("date")}
                       endIcon={getSortIcon("date")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Assigned Date
                     </Button>
                   </TableCell>
@@ -552,7 +558,8 @@ const ManageAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
-                      endIcon={getSortIcon("state")}>
+                      endIcon={getSortIcon("state")}
+                    >
                       State
                     </Button>
                   </TableCell>
@@ -573,7 +580,8 @@ const ManageAssignmentPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={7}
-                      sx={{ textAlign: "center", padding: "28px" }}>
+                      sx={{ textAlign: "center", padding: "28px" }}
+                    >
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -588,7 +596,8 @@ const ManageAssignmentPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}>
+                          }}
+                        >
                           No assignment found
                         </TableCell>
                       </TableRow>
@@ -596,7 +605,8 @@ const ManageAssignmentPage = () => {
                       assignments.map((assignment, index) => (
                         <CustomTableRow
                           key={assignment.id}
-                          onClick={() => handleDetailDialog(assignment)}>
+                          onClick={() => handleDetailDialog(assignment)}
+                        >
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {index + 1}
                           </TableCell>
@@ -610,7 +620,8 @@ const ManageAssignmentPage = () => {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                               maxWidth: 150,
-                            }}>
+                            }}
+                          >
                             {assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
@@ -641,7 +652,8 @@ const ManageAssignmentPage = () => {
                                   )}`
                                 );
                                 e.stopPropagation();
-                              }}>
+                              }}
+                            >
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
@@ -654,11 +666,15 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                              }}>
+                              }}
+                            >
                               <DeleteIcon />
                             </IconButton>
                             <IconButton
-                              disabled={assignment.state === 1}
+                              disabled={
+                                assignment.state === 1 ||
+                                !assignment?.returnRequest
+                              }
                               sx={{
                                 color: "blue",
                                 "&:hover": {
@@ -667,7 +683,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                              }}>
+                              }}
+                            >
                               <RestartAltRounded />
                             </IconButton>
                           </TableCell>

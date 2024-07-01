@@ -2,7 +2,7 @@ export const path = {
   default: "/",
   home: "/home",
   login: "/login",
-  StaffAssignment: "staff-assignment",
+  staffAssignment: "staff-assignment",
 
   users: "/manage-user",
   userCreate: "/manage-user/create-new-user",

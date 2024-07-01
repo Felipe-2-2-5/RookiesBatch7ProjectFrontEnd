@@ -328,7 +328,7 @@ const ManageAssetPage = () => {
             <FormControl
               variant="outlined"
               sx={{
-                minWidth: 240,
+                minWidth: "240px",
                 "& .MuiOutlinedInput-root": {
                   "&:hover fieldset": { borderColor: "black" },
                   "&.Mui-focused fieldset": { borderColor: "black" },
@@ -426,11 +426,15 @@ const ManageAssetPage = () => {
                 <InputAdornment position="end">
                   <IconButton
                     sx={{
-                      "& label.Mui-focused": { color: "#000" },
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": { borderColor: "#000" },
+                      marginLeft: "auto",
+                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
+                      {
+                        color: "black",
                       },
-                      width: "120%",
+                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                      {
+                        borderColor: "black",
+                      },
                     }}
                     onClick={handleSearchClick}
                   >
@@ -440,7 +444,7 @@ const ManageAssetPage = () => {
               ),
             }}
             sx={{
-              marginLeft: "16px",
+              marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
               {
                 color: "black",
@@ -455,19 +459,17 @@ const ManageAssetPage = () => {
           {/* Create new Button*/}
           <Button
             variant="contained"
-            color="primary"
-            onClick={() => navigate(path.assetCreate)}
             sx={{
               backgroundColor: "#D6001C",
-              color: "white",
-              height: 56,
+              height: "56px",
               marginLeft: "16px",
               "&:hover": {
                 bgcolor: "rgba(214, 0, 28, 0.8)",
               },
             }}
+            onClick={() => navigate(path.assetCreate)}
           >
-            Create New Asset
+            Create new asset
           </Button>
         </Box>
 
@@ -581,7 +583,13 @@ const ManageAssetPage = () => {
                           style={{ cursor: "pointer" }}
                         >
                           <TableCell sx={{ paddingLeft: "40px" }}>{asset.assetCode}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{asset.assetName}</TableCell>
+                          <TableCell sx={{
+                            paddingLeft: "40px",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            maxWidth: 150,
+                          }}>{asset.assetName}</TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>{asset.category?.name}</TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>{assetStateEnum[asset.state]}</TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>

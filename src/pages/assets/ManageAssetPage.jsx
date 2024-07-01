@@ -136,7 +136,6 @@ const ManageAssetPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "All" : selectedState,
-      searchTerm: "",
       sortColumn: "assetName",
       sortOrder: "",
       page: 1,
@@ -426,15 +425,11 @@ const ManageAssetPage = () => {
                 <InputAdornment position="end">
                   <IconButton
                     sx={{
-                      marginLeft: "auto",
-                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
+                      "& label.Mui-focused": { color: "#000" },
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": { borderColor: "#000" },
                       },
-                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "black",
-                      },
+                      width: "120%",
                     }}
                     onClick={handleSearchClick}
                   >
@@ -464,7 +459,7 @@ const ManageAssetPage = () => {
               height: "56px",
               marginLeft: "16px",
               "&:hover": {
-                bgcolor: "rgba(214, 0, 28, 0.8)",
+                backgroundColor: "#d32f2f",
               },
             }}
             onClick={() => navigate(path.assetCreate)}

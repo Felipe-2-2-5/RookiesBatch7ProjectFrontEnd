@@ -119,7 +119,6 @@ const RequestForReturningPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
-      searchTerm: "",
       sortColumn: "assetname",
       sortOrder: "",
       page: 1,
@@ -304,9 +303,9 @@ const RequestForReturningPage = () => {
                 marginLeft: "16px",
                 marginRight: "16px",
                 "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: "black",
-                  },
+                {
+                  borderColor: "black",
+                },
               }}
             >
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -316,13 +315,13 @@ const RequestForReturningPage = () => {
                   value={dateRange}
                   sx={{
                     "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
-                      },
+                    {
+                      color: "black",
+                    },
                     "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: dateError ? "red" : "black",
-                      },
+                    {
+                      borderColor: dateError ? "red" : "black",
+                    },
                     width: "60%",
                   }}
                   onChange={(newValue) => {
@@ -339,8 +338,8 @@ const RequestForReturningPage = () => {
                         setDateError(false);
                         setFilterRequest((prev) => ({
                           ...prev,
-                          fromDate: format(newValue[0], "dd/MM/yyyy"),
-                          toDate: format(newValue[1], "dd/MM/yyyy"),
+                          returnedDateFrom: format(newValue[0], "dd/MM/yyyy"),
+                          returnedDateTo: format(newValue[1], "dd/MM/yyyy"),
                         }));
                       }
                     }
@@ -357,13 +356,13 @@ const RequestForReturningPage = () => {
                       sx={{
                         marginLeft: "auto",
                         "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                          {
-                            color: "black",
-                          },
+                        {
+                          color: "black",
+                        },
                         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: dateError ? "red" : "black",
-                          },
+                        {
+                          borderColor: dateError ? "red" : "black",
+                        },
                         width: "60%",
                       }}
                     />
@@ -402,15 +401,15 @@ const RequestForReturningPage = () => {
               ),
             }}
             sx={{
-              marginLeft: "16px",
+              marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
         </Box>
@@ -434,7 +433,6 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
                       paddingLeft: "40px",
                     }}
                   >
@@ -614,7 +612,7 @@ const RequestForReturningPage = () => {
                           <TableCell sx={{ paddingLeft: "40px" }}>{requestStateEnum[returnRequest.state]}</TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                            "Completed" ? (
+                              "Completed" ? (
                               <>
                                 <IconButton aria-label="complete" disabled>
                                   <CompleteIcon />

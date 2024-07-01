@@ -35,7 +35,7 @@ const SearchBar = ({
         ),
       }}
       sx={{
-        marginLeft: "16px",
+        marginLeft: "auto",
         "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
         {
           color: "black",

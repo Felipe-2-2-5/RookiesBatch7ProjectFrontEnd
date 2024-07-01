@@ -162,7 +162,6 @@ const ManageUserPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       type: selectedType === "All" ? "" : selectedType,
-      searchTerm: "",
       sortColumn: "name",
       sortOrder: "",
       page: 1,

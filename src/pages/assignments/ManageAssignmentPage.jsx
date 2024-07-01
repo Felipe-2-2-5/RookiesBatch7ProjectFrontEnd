@@ -247,7 +247,6 @@ const ManageAssignmentPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
-      searchTerm: "",
       sortColumn: "date",
       sortOrder: "descend",
       page: 1,

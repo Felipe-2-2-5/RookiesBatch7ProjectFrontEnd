@@ -571,8 +571,7 @@ const ManageAssignmentPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}
-                  ></TableCell>
+                    }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

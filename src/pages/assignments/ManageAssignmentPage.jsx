@@ -36,6 +36,8 @@ import { useNavigate } from "react-router";
 import {
   AssignmentDetailDialog,
   PaginationBar,
+  PopupNotification,
+  PopupNotificationExtra,
   SearchBar,
 } from "../../components";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
@@ -44,6 +46,7 @@ import {
   FilterAssignment,
   GetAssignment,
 } from "../../services/assignments.service";
+import { CreateReturnRequest } from "../../services/requestsForReturning.service";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -75,6 +78,12 @@ const ManageAssignmentPage = () => {
   const [totalCount, setTotalCount] = useState();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+  //  Popup state
+  const [openReturnPopup, setOpenReturnPopup] = useState(false);
+  const [openNoti, setNoti] = useState(false);
+  const [notiTitle, setNotiTitle] = useState("");
+  const [notiMessage, setNotiMessage] = useState("");
+
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
     sortColumn: "date",
@@ -290,6 +299,24 @@ const ManageAssignmentPage = () => {
       d: 'path("m7 0 5 5 5-5z")',
     },
   }));
+
+  const handleCreateRequest = async (assignmentId) => {
+    try {
+      await CreateReturnRequest(assignmentId);
+      getAssignments(filterRequest);
+      setOpenReturnPopup(false);
+      setNoti(true);
+      setNotiTitle("Notifications");
+      setNotiMessage("Return request has been created successfully!");
+    } catch (e) {
+      console.error("Failed to create return request", e);
+      alert(e);
+    }
+  };
+  const handlePopupClose = () => {
+    setOpenReturnPopup(false);
+    setNoti(false);
+  };
 
   const getSortIcon = (column) => {
     const iconStyle = {
@@ -534,7 +561,8 @@ const ManageAssignmentPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}></TableCell>
+                    }}
+                  ></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -668,6 +696,20 @@ const ManageAssignmentPage = () => {
           handleDialogClose={handleDialogClose}
         />
       )}
+      <PopupNotificationExtra
+        open={openReturnPopup}
+        title="Are you sure?"
+        content="Do you want to create a returning request for this asset?"
+        Okbutton="Yes"
+        handleClose={handlePopupClose}
+        handleConfirm={handleCreateRequest}
+      />
+      <PopupNotification
+        open={openNoti}
+        title={notiTitle}
+        content={notiMessage}
+        handleClose={handlePopupClose}
+      />
     </>
   );
 };

@@ -1,12 +1,11 @@
 import axios from "axios";
-
 import { EventEmitter } from "events";
 
 export const popupEventEmitter = new EventEmitter();
 
 const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
 
-// const baseURL = "https://localhost:7083/api";
+//const baseURL = "https://localhost:7083/api";
 
 const instance = axios.create({
   baseURL: baseURL,
@@ -29,35 +28,31 @@ instance.interceptors.request.use(
 );
 instance.interceptors.response.use(
   (res) => {
-    return { data: res?.data, status: res.status };
+    return { data: res?.data, status: res?.status };
   },
   async (err) => {
-    try {
-      if (err?.response?.status >= 400) {
-        let errorMessage = "";
-        if (err.response.status === 401) {
-          errorMessage = "You are not authorized to access this resource";
+    let errorMessage =
+      "An error occurred while processing your request. Please try again later.";
+    if (err?.response) {
+      switch (err.response.status) {
+        case 401:
+          errorMessage = "You are not authorized to access this resource.";
           localStorage.removeItem("token");
-        } else if (err.response.status === 403) {
-          errorMessage = "You don't have permission to access this resource";
-        } else if (err.response.status === 404) {
-          errorMessage = "Resource not found";
-        } else if (err.response.status === 500) {
+          break;
+        case 404:
+          errorMessage = "Resource not found.";
+          break;
+        case 500:
           errorMessage =
-            "An error occured while processing your request. Please try again later.";
-          popupEventEmitter.emit("showPopup", errorMessage);
-        } else {
+            "An error occurred while processing your request. Please try again later.";
+          break;
+        default:
           errorMessage = err.response.data;
-        }
-        return Promise.reject(errorMessage);
+          break;
       }
-    } catch (error) {
-      popupEventEmitter.emit(
-        "showPopup",
-        "An error occured while processing your request. Please try again later."
-      );
-      return Promise.reject(error.response.data.UserMessage);
     }
+    popupEventEmitter.emit("showPopup", errorMessage);
+    return Promise.reject(err);
   }
 );
 

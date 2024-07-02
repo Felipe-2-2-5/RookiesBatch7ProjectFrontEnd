@@ -15,7 +15,7 @@ const PopupNotificationExtra = ({
   content,
   closeContent,
   confirmContent,
-  Okbutton
+  Okbutton,
 }) => {
   const contentLines = content ? content.split("\n") : [];
 
@@ -43,9 +43,11 @@ const PopupNotificationExtra = ({
           <p key={index}>{line}</p>
         ))}
       </DialogContent>
-      <DialogActions sx={{
-        justifyContent: 'center',
-      }}>
+      <DialogActions
+        sx={{
+          justifyContent: "flex-end",
+        }}
+      >
         <Button
           onClick={handleConfirm}
           variant="contained"
@@ -60,11 +62,7 @@ const PopupNotificationExtra = ({
         >
           {confirmContent ? confirmContent : `${Okbutton}`}
         </Button>
-        <Button
-          onClick={handleClose}
-          variant="outlined"
-          color="secondary"
-        >
+        <Button onClick={handleClose} variant="outlined" color="secondary">
           {closeContent ? closeContent : "Cancel"}
         </Button>
       </DialogActions>

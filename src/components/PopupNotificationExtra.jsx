@@ -18,7 +18,6 @@ const PopupNotificationExtra = ({
   Okbutton,
 }) => {
   const contentLines = content ? content.split("\n") : [];
-  console.log(content);
   return (
     <Dialog
       open={open}

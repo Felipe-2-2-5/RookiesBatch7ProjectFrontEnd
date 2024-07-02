@@ -43,7 +43,6 @@ const Layout = () => {
   //     localStorage.removeItem("token");
 
   //   }
-  //   console.log(currentUser.expires);
   // }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
   const handelSubmit = async () => {
     try {

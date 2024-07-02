@@ -47,7 +47,6 @@ const LoginPage = () => {
         setAlertOpen(true);
       }
     } catch (err) {
-      console.log(err);
       setErrorMessage(err?.UserMessage);
       setAlertOpen(true);
     }

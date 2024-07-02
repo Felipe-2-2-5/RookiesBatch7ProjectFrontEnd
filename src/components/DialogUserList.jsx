@@ -74,7 +74,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
     const res = await FilterRequest(filterRequest);
     const fetchedUsers = res.data.data;
     setTotalCount(res.data.totalCount);
-    console.log(firstUser);
     if (firstUser) {
       if (fetchedUsers.some(user => user.id === firstUser.id)) {
         // Filter fetchedUsers to exclude selectedUser

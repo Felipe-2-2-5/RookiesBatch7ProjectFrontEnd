@@ -38,6 +38,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { PopupNotification } from "../../components";
+import { useAuthContext } from "../../context/AuthContext";
 import { GenderEnum } from "../../enum/genderEnum";
 import { path } from "../../routes/routeContants";
 import {
@@ -45,7 +46,6 @@ import {
   FilterRequest,
   GetUser,
 } from "../../services/users.service";
-import { useAuthContext } from "../../context/AuthContext";
 
 // custom style background when hover user
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -84,6 +84,7 @@ const ManageUserPage = () => {
   const [disableDialogOpen, setDisableDialogOpen] = useState(false);
   const [userToDisable, setUserToDisable] = useState(null);
   const [disableError, setDisableError] = useState(null);
+  const [successPopupOpen, setSuccessPopupOpen] = useState(false);
   const [disableErrorPopupOpen, setDisableErrorPopupOpen] = useState(false);
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -131,7 +132,7 @@ const ManageUserPage = () => {
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
-      page: 1
+      page: 1,
     }));
   };
   const handleKeyPress = (e) => {
@@ -162,7 +163,6 @@ const ManageUserPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       type: selectedType === "All" ? "" : selectedType,
-      searchTerm: "",
       sortColumn: "name",
       sortOrder: "",
       page: 1,
@@ -256,9 +256,9 @@ const ManageUserPage = () => {
         await DisableUser(userToDisable.id);
         setDisableDialogOpen(false);
         setUserToDisable(null);
-        // Refresh the user list after disabling a user
         getUsers(filterRequest);
         setDisableError(null); // clear any previous errors
+        setSuccessPopupOpen(true); // open the success popup
       } catch (err) {
         setDisableError(err?.UserMessage);
         setDisableDialogOpen(false);
@@ -279,42 +279,53 @@ const ManageUserPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}
-      >
+        }}>
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           User List
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
-        >
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+          <PopupNotification
+            open={successPopupOpen}
+            handleClose={() => setSuccessPopupOpen(false)}
+            title="Success"
+            content="User has been successfully disabled."
+          />
           <PopupNotification
             open={disableErrorPopupOpen}
             handleClose={() => setDisableErrorPopupOpen(false)}
             title="Can not disable user"
             content={disableError}
           />
-          <FormControl variant="outlined" sx={{
-            minWidth: 240,
-            "& .MuiOutlinedInput-root": {
-              "&:hover fieldset": { borderColor: "black" },
-              "&.Mui-focused fieldset": { borderColor: "black" },
-            },
-          }}>
-            <InputLabel sx={{
-              color: "black",
-              "&.Mui-focused": {
-                color: "black",
+          <FormControl
+            variant="outlined"
+            sx={{
+              minWidth: 240,
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": { borderColor: "black" },
+                "&.Mui-focused fieldset": { borderColor: "black" },
               },
-            }}>Type</InputLabel>
+            }}>
+            <InputLabel
+              sx={{
+                color: "black",
+                "&.Mui-focused": {
+                  color: "black",
+                },
+              }}>
+              Type
+            </InputLabel>
             <Select
               label="Type"
               value={filterRequest.type === "" ? "All" : filterRequest.type}
               name="type"
               IconComponent={(props) => (
-                <FilterAltOutlined {...props} style={{ transform: "none" }} />
+                <FilterAltOutlined
+                  {...props}
+                  style={{ transform: "none" }}
+                />
               )}
-              onChange={handleTypeChange}
-            >
+              onChange={handleTypeChange}>
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Admin">Admin</MenuItem>
               <MenuItem value="Staff">Staff</MenuItem>
@@ -339,23 +350,22 @@ const ManageUserPage = () => {
                       },
                       width: "120%",
                     }}
-                    onClick={handleSearchClick}
-                  >
+                    onClick={handleSearchClick}>
                     <Search />
                   </IconButton>
                 </InputAdornment>
               ),
             }}
             sx={{
-              marginLeft: "auto", marginRight: "20px",
+              marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
+                {
+                  color: "black",
+                },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
+                {
+                  borderColor: "black",
+                },
             }}
           />
           <Button
@@ -363,20 +373,21 @@ const ManageUserPage = () => {
             sx={{
               backgroundColor: "#D6001C",
               height: "56px",
+              marginLeft: "16px",
               "&:hover": {
                 backgroundColor: "#d32f2f",
               },
             }}
-            onClick={() => navigate(path.userCreate)}
-          >
+            onClick={() => navigate(path.userCreate)}>
             Create new user
           </Button>
         </Box>
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}
-        >
-          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
+          <Sheet
+            ref={scrollRef}
+            sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -384,16 +395,14 @@ const ManageUserPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}
-              >
+                }}>
                 <TableRow>
                   <TableCell sx={tableHead}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("code")}
                       endIcon={getSortIcon("code")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Staff Code
                     </Button>
                   </TableCell>
@@ -402,12 +411,13 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("name")}
                       endIcon={getSortIcon("name")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Full Name
                     </Button>
                   </TableCell>
-                  <TableCell sx={buttonTableHead} style={tableHead}>
+                  <TableCell
+                    sx={buttonTableHead}
+                    style={tableHead}>
                     Username
                   </TableCell>
                   <TableCell sx={tableHead}>
@@ -415,8 +425,7 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("date")}
                       endIcon={getSortIcon("date")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Joined Date
                     </Button>
                   </TableCell>
@@ -425,8 +434,7 @@ const ManageUserPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("type")}
                       endIcon={getSortIcon("type")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Type
                     </Button>
                   </TableCell>
@@ -438,8 +446,7 @@ const ManageUserPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}
-                  ></TableCell>
+                    }}></TableCell>
                 </TableRow>
               </TableHead>
 
@@ -448,8 +455,7 @@ const ManageUserPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={6}
-                      sx={{ textAlign: "center", padding: "28px" }}
-                    >
+                      sx={{ textAlign: "center", padding: "28px" }}>
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -464,8 +470,7 @@ const ManageUserPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}
-                        >
+                          }}>
                           No user found
                         </TableCell>
                       </TableRow>
@@ -474,12 +479,18 @@ const ManageUserPage = () => {
                         <CustomTableRow
                           key={index}
                           hover
-                          onClick={() => handleDetailDialog(user)}
-                        >
+                          onClick={() => handleDetailDialog(user)}>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {user.staffCode}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell
+                            sx={{
+                              paddingLeft: "40px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              maxWidth: 150,
+                            }}>
                             {user.firstName + " " + user.lastName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
@@ -503,8 +514,7 @@ const ManageUserPage = () => {
                                 navigate(`/manage-user/edit-user/${user.id}`);
                                 e.stopPropagation();
                               }}
-                              disabled={user.id === currentUser.id}
-                            >
+                              disabled={user.id === currentUser.id}>
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
@@ -515,8 +525,7 @@ const ManageUserPage = () => {
                                 "&:hover": {
                                   backgroundColor: "#bcbcbc",
                                 },
-                              }}
-                            >
+                              }}>
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>
@@ -534,8 +543,7 @@ const ManageUserPage = () => {
             display: "flex",
             justifyContent: "flex-end",
             paddingTop: "10px",
-          }}
-        >
+          }}>
           <Pagination
             count={pageCount}
             variant="outlined"
@@ -557,7 +565,9 @@ const ManageUserPage = () => {
 
       {/* Dialog show user detailed information */}
       {selectedUser && (
-        <Dialog open={dialogOpen} onClose={handleDialogClose}>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleDialogClose}>
           <DialogTitle
             sx={{
               bgcolor: "grey.300",
@@ -567,8 +577,7 @@ const ManageUserPage = () => {
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-            }}
-          >
+            }}>
             Detailed User Information
             <IconButton
               aria-label="close"
@@ -578,90 +587,121 @@ const ManageUserPage = () => {
                 right: 10,
                 top: 12,
                 color: "#D6001C",
-              }}
-            >
+              }}>
               <DisabledByDefault />
             </IconButton>
           </DialogTitle>
-          <DialogContent dividers sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-            // maxHeight: "300px",
-            overflowY: "auto",
-            wordWrap: "break-word",
-            wordBreak: "break-all"
-          }}>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
+          <DialogContent
+            dividers
+            sx={{
+              borderTop: "1px solid black",
+              display: "flex",
+              flexDirection: "column",
+              padding: "20px",
+              // maxHeight: "300px",
+              overflowY: "auto",
+              wordWrap: "break-word",
+              wordBreak: "break-all",
+            }}>
+            <Grid
+              container
+              spacing={2}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Staff Code:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.staffCode}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Full Name:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">{`${selectedUser.firstName} ${selectedUser.lastName}`}</Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Username:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">{selectedUser.userName}</Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Date of Birth:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.dateOfBirth}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Gender:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {GenderEnum[selectedUser.gender]}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Type:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.type === 0 ? "Staff" : "Admin"}
                 </Typography>
               </Grid>
 
-              <Grid item xs={4}>
+              <Grid
+                item
+                xs={4}>
                 <Typography variant="body1">
                   <strong>Location:</strong>
                 </Typography>
               </Grid>
-              <Grid item xs={8}>
+              <Grid
+                item
+                xs={8}>
                 <Typography variant="body1">
                   {selectedUser.location === 0 ? "Ho Chi Minh" : "Ha Noi"}
                 </Typography>
@@ -675,8 +715,7 @@ const ManageUserPage = () => {
         open={disableDialogOpen}
         onClose={() => setDisableDialogOpen(false)}
         maxWidth="xs"
-        fullWidth
-      >
+        fullWidth>
         <DialogTitle
           sx={{
             bgcolor: "grey.300",
@@ -686,20 +725,22 @@ const ManageUserPage = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
+          }}>
           Are you sure?
         </DialogTitle>
-        <DialogContent sx={{
-          borderTop: "1px solid black",
-          display: "flex",
-          flexDirection: "column",
-          padding: "20px",
-          // maxHeight: "300px",
-          overflowY: "auto",
-          wordWrap: "break-word",
-          wordBreak: "break-all"
-        }}>Do you want to disable this user?</DialogContent>
+        <DialogContent
+          sx={{
+            borderTop: "1px solid black",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+            // maxHeight: "300px",
+            overflowY: "auto",
+            wordWrap: "break-word",
+            wordBreak: "break-all",
+          }}>
+          Do you want to disable this user?
+        </DialogContent>
         <DialogActions>
           <Button
             onClick={handleDisableUser}
@@ -710,8 +751,7 @@ const ManageUserPage = () => {
               "&:hover": {
                 backgroundColor: "darkred",
               },
-            }}
-          >
+            }}>
             Disable
           </Button>
           <Button
@@ -722,8 +762,7 @@ const ManageUserPage = () => {
               "&:hover": {
                 backgroundColor: "lightgray",
               },
-            }}
-          >
+            }}>
             Cancel
           </Button>
         </DialogActions>

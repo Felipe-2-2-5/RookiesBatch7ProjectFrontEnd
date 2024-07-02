@@ -276,7 +276,7 @@ const EditUser = () => {
         }
       } catch (error) {
         setTitlePopup("Error");
-        setContentPopup(`error: ${error.userMessage}`);
+        setContentPopup(`error: No permission to update this user`);
         displayPopupNotification();
       }
     } else {

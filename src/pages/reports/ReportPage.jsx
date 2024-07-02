@@ -373,12 +373,12 @@ const ReportPage = () => {
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.category}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "50px" }}>
                             {report.total}
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "40px",
+                              paddingLeft: "60px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -387,16 +387,16 @@ const ReportPage = () => {
                           >
                             {report.assigned}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "60px" }}>
                             {report.available}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "70px" }}>
                             {report.notAvailable}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "80px" }}>
                             {report.waitingForRecycling}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "60px" }}>
                             {report.recycled}
                           </TableCell>
                         </CustomTableRow>

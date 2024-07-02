@@ -405,12 +405,12 @@ const ManageAssignmentPage = () => {
               style: { color: "black" },
             }}
             sx={{
-              marginLeft: "20px",
-              marginRight: "20px",
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              minWidth: 240,
+              marginLeft: "16px",
+              "& .MuiOutlinedInput-root": {
+                "&:hover fieldset": { borderColor: "black" },
+                "&.Mui-focused fieldset": { borderColor: "black" },
+              },
             }}
           >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -420,13 +420,14 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 sx={{
                   "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                    {
-                      color: "black",
-                    },
+                  {
+                    color: "black",
+                  },
                   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                    {
-                      borderColor: dateError ? "red" : "black",
-                    },
+                  {
+                    borderColor: dateError ? "red" : "black",
+                  },
+                  width: "60%",
                 }}
                 onChange={(newValue) => {
                   setDateRange(newValue);
@@ -459,13 +460,13 @@ const ManageAssignmentPage = () => {
                     }}
                     sx={{
                       "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                        {
-                          color: "black",
-                        },
+                      {
+                        color: "black",
+                      },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: dateError ? "red" : "black",
-                        },
+                      {
+                        borderColor: dateError ? "red" : "black",
+                      },
                     }}
                   />
                 )}
@@ -484,6 +485,7 @@ const ManageAssignmentPage = () => {
             sx={{
               backgroundColor: "#D6001C",
               height: "56px",
+              marginLeft: "16px",
               "&:hover": {
                 backgroundColor: "#d32f2f",
               },
@@ -492,7 +494,7 @@ const ManageAssignmentPage = () => {
           >
             Create new assignment
           </Button>
-        </Box>{" "}
+        </Box>
         <TableContainer
           component={Paper}
           sx={{ height: "calc(100% - 180px)", position: "relative" }}
@@ -579,8 +581,7 @@ const ManageAssignmentPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}
-                  ></TableCell>
+                    }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>

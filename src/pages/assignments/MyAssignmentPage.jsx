@@ -22,7 +22,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { AssignmentDetailDialog } from "../../components";
-import PopupNotificationExtra from "../../components/PopupNotificationExtra";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
 import {
   AcceptRespondAPI,

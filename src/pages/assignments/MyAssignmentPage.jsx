@@ -30,6 +30,7 @@ import {
   GetMyAssignments,
 } from "../../services/assignments.service";
 import PopupNotificationExtra from "../../components/PopupNotificationExtra";
+import PopupNotification from "../../components/PopupNotification";
 import { CreateReturnRequest } from "../../services/requestsForReturning.service";
 
 const formatDate = (dateString) => {
@@ -60,10 +61,15 @@ const MyAssignmentPage = () => {
   const scrollRef = useRef(null);
   const [openAcceptPopup, setOpenAcceptPopup] = useState(false);
   const [openDeclinePopup, setOpenDeclinePopup] = useState(false);
+  const [openReturnPopup, setOpenReturnPopup] = useState(false);
   const [assignmentId, setAssignmentId] = useState("");
   //const [totalCount, setTotalCount] = useState();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openNoti, setNoti] = useState(false);
+  const [notiTitle, setNotiTitle] = useState("");
+  const [notiMessage, setNotiMessage] = useState("");
+
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
     sortColumn: "date",
@@ -167,6 +173,8 @@ const MyAssignmentPage = () => {
   const handlePopupClose = () => {
     setOpenAcceptPopup(false);
     setOpenDeclinePopup(false);
+    setOpenReturnPopup(false);
+    setNoti(false);
   };
 
   const handleAcceptConfirm = () => {
@@ -180,7 +188,6 @@ const MyAssignmentPage = () => {
   };
 
   const handleDeclineConfirm = () => {
-    console.log("decline", assignmentId);
     const DeclineRespond = async (assignmentId) => {
       await DeclineRespondAPI(assignmentId);
       getAssignments(filterRequest);
@@ -195,10 +202,14 @@ const MyAssignmentPage = () => {
   //     page: value,
   //   }));
   // };
-  const handleCreateRequest = async (assignmentId) => {
+  const handleCreateRequest = async () => {
     try {
       await CreateReturnRequest(assignmentId);
       getAssignments(filterRequest);
+      setOpenReturnPopup(false);
+      setNotiTitle("Notifications");
+      setNotiMessage("Return request has been created successfully!");
+      setNoti(true);
     } catch (e) {
       console.error("Failed to create return request", e);
       alert(e);
@@ -452,7 +463,8 @@ const MyAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCreateRequest(assignment.id);
+                                setOpenReturnPopup(true);
+                                setAssignmentId(assignment.id);
                               }}
                             >
                               <RestartAltRounded />
@@ -497,6 +509,20 @@ const MyAssignmentPage = () => {
         Okbutton="Decline"
         handleClose={handlePopupClose}
         handleConfirm={handleDeclineConfirm}
+      />
+      <PopupNotificationExtra
+        open={openReturnPopup}
+        title="Are you sure?"
+        content="Do you want to create a returning request for this asset?"
+        Okbutton="Yes"
+        handleClose={handlePopupClose}
+        handleConfirm={handleCreateRequest}
+      />
+      <PopupNotification
+        open={openNoti}
+        title={notiTitle}
+        content={notiMessage}
+        handleClose={handlePopupClose}
       />
     </>
   );

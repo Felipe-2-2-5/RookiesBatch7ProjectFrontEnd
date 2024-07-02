@@ -1,3 +1,4 @@
+import { getAssignmentState } from "../enum/assignmentStateEnum";
 import { httpClient } from "../httpClient/httpClient";
 
 export const FilterAssignment = async (body) => {
@@ -26,7 +27,7 @@ export const GetMyAssignments = async (body) => {
 
 export const AcceptRespondAPI = async (id) => {
   console.log(id);
-  var acceptState = { state: 0 };
+  var acceptState = { state: getAssignmentState("Accepted") };
   try {
     await httpClient.put(`/assignments/${id}/respond`, acceptState);
   } catch (error) {
@@ -36,6 +37,6 @@ export const AcceptRespondAPI = async (id) => {
 }
 
 export const DeclineRespondAPI = async (id) => {
-  var declineState = { state: 2 };
+  var declineState = { state: getAssignmentState("Declined") };
   await httpClient.put(`/assignments/${id}/respond`, declineState)
 }

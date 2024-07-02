@@ -12,7 +12,6 @@ import {
   Button,
   CircularProgress,
   FormControl,
-  Grid,
   IconButton,
   InputLabel,
   MenuItem,
@@ -269,7 +268,7 @@ const ManageAssignmentPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "ascend") {
           newSortOrder = "descend";
-          newSortColumn = "date";
+          newSortColumn = column;
         } else {
           newSortOrder = "descend";
           newSortColumn = column;
@@ -407,63 +406,69 @@ const ManageAssignmentPage = () => {
               <MenuItem value="Declined">Declined</MenuItem>
             </Select>
           </FormControl>
-          <Grid
-            item
-            xs={9}
-            InputLabelProps={{
-              style: { color: "black" },
-            }}
-            sx={{
-              minWidth: 240,
-              marginLeft: "16px",
-              "& .MuiOutlinedInput-root": {
-                "&:hover fieldset": { borderColor: "black" },
-                "&.Mui-focused fieldset": { borderColor: "black" },
-              },
-            }}
-          >
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DatePicker
-                label="Assigned Date"
-                value={assignedDate}
-                onChange={(newValue) => {
-                  if (newValue instanceof Date && !isNaN(newValue.getTime())) {
-                    setAssignedDate(newValue);
-                    setDateError(false);
-                    setFilterRequest((prev) => ({
-                      ...prev,
-                      assignedDate: format(newValue, "dd/MM/yyyy"),
-                    }));
-                  } else {
-                    setDateError(true);
-                  }
-                }}
-                renderInput={(props) => (
-                  <TextField
-                    {...props}
-                    margin="dense"
-                    required
-                    error={dateError}
-                    helperText={dateError ? "Invalid date" : ""}
-                    InputLabelProps={{
-                      style: { color: "black" },
-                    }}
-                    sx={{
-                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                        {
-                          color: "black",
-                        },
-                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                        {
-                          borderColor: dateError ? "red" : "black",
-                        },
-                    }}
-                  />
-                )}
-                format="dd/MM/yyyy"
-              />
-            </LocalizationProvider>
-          </Grid>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DatePicker
+              label="Assigned Date"
+              value={assignedDate}
+              onChange={(newValue) => {
+                if (newValue instanceof Date && !isNaN(newValue.getTime())) {
+                  setAssignedDate(newValue);
+                  setDateError(false);
+                  setFilterRequest((prev) => ({
+                    ...prev,
+                    assignedDate: format(newValue, "dd/MM/yyyy"),
+                  }));
+                } else {
+                  setDateError(true);
+                }
+              }}
+              sx={{
+                marginLeft: "16px",
+                minWidth: 200,
+                "& .MuiInputLabel-root": {
+                  color: "black",
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "black",
+                },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "black",
+                  },
+                },
+              }}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  margin="dense"
+                  required
+                  error={dateError}
+                  helperText={dateError ? "Invalid date" : ""}
+                  InputLabelProps={{
+                    style: { color: "black" },
+                  }}
+                  sx={{
+                    marginLeft: "16px",
+                    minWidth: 200,
+                    "& .MuiInputLabel-root": {
+                      color: "black",
+                    },
+                    "& .MuiInputLabel-root.Mui-focused": {
+                      color: "black",
+                    },
+                    "& .MuiOutlinedInput-root": {
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "black",
+                      },
+                    },
+                  }}
+                />
+              )}
+              format="dd/MM/yyyy"
+            />
+          </LocalizationProvider>
+
           <SearchBar
             searchTerm={searchTerm}
             handleSearchChange={handleSearchChange}

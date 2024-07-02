@@ -31,6 +31,11 @@ import {
   GetMyAssignments,
 } from "../../services/assignments.service";
 
+import PopupNotificationExtra from "../../components/PopupNotificationExtra";
+import PopupNotification from "../../components/PopupNotification";
+import { CreateReturnRequest } from "../../services/requestsForReturning.service";
+
+
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-GB");
@@ -59,10 +64,15 @@ const MyAssignmentPage = () => {
   const scrollRef = useRef(null);
   const [openAcceptPopup, setOpenAcceptPopup] = useState(false);
   const [openDeclinePopup, setOpenDeclinePopup] = useState(false);
-  const [assignmentId, setAssignmentId] = useState("")
+  const [openReturnPopup, setOpenReturnPopup] = useState(false);
+  const [assignmentId, setAssignmentId] = useState("");
   //const [totalCount, setTotalCount] = useState();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openNoti, setNoti] = useState(false);
+  const [notiTitle, setNotiTitle] = useState("");
+  const [notiMessage, setNotiMessage] = useState("");
+
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
     sortColumn: "date",
@@ -166,7 +176,9 @@ const MyAssignmentPage = () => {
   const handlePopupClose = () => {
     setOpenAcceptPopup(false);
     setOpenDeclinePopup(false);
-  }
+    setOpenReturnPopup(false);
+    setNoti(false);
+  };
 
   const handleAcceptConfirm = () => {
     const AcceptRespond = async (assignmentId) => {
@@ -174,20 +186,18 @@ const MyAssignmentPage = () => {
       //Call api to refresh the data
       getAssignments(filterRequest);
       setOpenAcceptPopup(false);
-    }
+    };
     AcceptRespond(assignmentId);
-  }
+  };
 
   const handleDeclineConfirm = () => {
-    console.log("decline", assignmentId);
     const DeclineRespond = async (assignmentId) => {
       await DeclineRespondAPI(assignmentId);
-      //Call api to refresh the data
       getAssignments(filterRequest);
       setOpenDeclinePopup(false);
-    }
+    };
     DeclineRespond(assignmentId);
-  }
+  };
 
   // const handlePageChange = (e, value) => {
   //   setFilterRequest((prev) => ({
@@ -195,7 +205,19 @@ const MyAssignmentPage = () => {
   //     page: value,
   //   }));
   // };
-
+  const handleCreateRequest = async () => {
+    try {
+      await CreateReturnRequest(assignmentId);
+      getAssignments(filterRequest);
+      setOpenReturnPopup(false);
+      setNotiTitle("Notifications");
+      setNotiMessage("Return request has been created successfully!");
+      setNoti(true);
+    } catch (e) {
+      console.error("Failed to create return request", e);
+      alert(e);
+    }
+  };
   const handleHeaderClick = (column) => {
     setFilterRequest((prev) => {
       let newSortOrder;
@@ -280,18 +302,19 @@ const MyAssignmentPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}>
+        }}
+      >
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           My Assignments
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", padding: "40px" }}></Box>
+          sx={{ display: "flex", alignItems: "center", padding: "40px" }}
+        ></Box>
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
-          <Sheet
-            ref={scrollRef}
-            sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}
+        >
+          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -299,14 +322,16 @@ const MyAssignmentPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}>
+                }}
+              >
                 <TableRow>
                   <TableCell sx={tableHead}>
                     <Button
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("code")}
-                      endIcon={getSortIcon("code")}>
+                      endIcon={getSortIcon("code")}
+                    >
                       Asset Code
                     </Button>
                   </TableCell>
@@ -315,7 +340,8 @@ const MyAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("name")}
-                      endIcon={getSortIcon("name")}>
+                      endIcon={getSortIcon("name")}
+                    >
                       Asset Name
                     </Button>
                   </TableCell>
@@ -324,7 +350,8 @@ const MyAssignmentPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("date")}
                       endIcon={getSortIcon("date")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Assigned Date
                     </Button>
                   </TableCell>
@@ -333,7 +360,8 @@ const MyAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
-                      endIcon={getSortIcon("state")}>
+                      endIcon={getSortIcon("state")}
+                    >
                       State
                     </Button>
                   </TableCell>
@@ -345,7 +373,8 @@ const MyAssignmentPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={7}
-                      sx={{ textAlign: "center", padding: "28px" }}>
+                      sx={{ textAlign: "center", padding: "28px" }}
+                    >
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -360,7 +389,8 @@ const MyAssignmentPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}>
+                          }}
+                        >
                           No assignment found
                         </TableCell>
                       </TableRow>
@@ -368,7 +398,8 @@ const MyAssignmentPage = () => {
                       assignments.map((assignment) => (
                         <CustomTableRow
                           key={assignment.id}
-                          onClick={() => handleDetailDialog(assignment)}>
+                          onClick={() => handleDetailDialog(assignment)}
+                        >
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignment.asset.assetCode}
                           </TableCell>
@@ -379,7 +410,8 @@ const MyAssignmentPage = () => {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                               maxWidth: 150,
-                            }}>
+                            }}
+                          >
                             {assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
@@ -401,7 +433,8 @@ const MyAssignmentPage = () => {
                                 e.stopPropagation();
                                 setOpenAcceptPopup(true);
                                 setAssignmentId(assignment.id);
-                              }}>
+                              }}
+                            >
                               <DoneIcon />
                             </IconButton>
                             <IconButton
@@ -416,11 +449,15 @@ const MyAssignmentPage = () => {
                                 e.stopPropagation();
                                 setOpenDeclinePopup(true);
                                 setAssignmentId(assignment.id);
-                              }}>
+                              }}
+                            >
                               <CloseIcon />
                             </IconButton>
                             <IconButton
-                              disabled={assignment.state === 1}
+                              disabled={
+                                assignment.state === 1 ||
+                                assignment?.returnRequest != null
+                              }
                               sx={{
                                 color: "blue",
                                 "&:hover": {
@@ -429,7 +466,10 @@ const MyAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                              }}>
+                                setOpenReturnPopup(true);
+                                setAssignmentId(assignment.id);
+                              }}
+                            >
                               <RestartAltRounded />
                             </IconButton>
                           </TableCell>
@@ -472,6 +512,20 @@ const MyAssignmentPage = () => {
         Okbutton="Decline"
         handleClose={handlePopupClose}
         handleConfirm={handleDeclineConfirm}
+      />
+      <PopupNotificationExtra
+        open={openReturnPopup}
+        title="Are you sure?"
+        content="Do you want to create a returning request for this asset?"
+        Okbutton="Yes"
+        handleClose={handlePopupClose}
+        handleConfirm={handleCreateRequest}
+      />
+      <PopupNotification
+        open={openNoti}
+        title={notiTitle}
+        content={notiMessage}
+        handleClose={handlePopupClose}
       />
     </>
   );

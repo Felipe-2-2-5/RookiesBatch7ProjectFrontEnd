@@ -1018,7 +1018,7 @@ const ManageAssetPage = () => {
           }}
         >
           <Typography variant="body1">
-            Asset <span style={{ fontWeight: "bold", fontStyle: "italic" }}>{selectedAsset?.assetName}</span> has been deleted.
+            Asset <span style={{ fontWeight: "bold", fontStyle: "italic" }}>{selectedAsset?.assetName}</span> has been deleted successfully.
           </Typography>
         </DialogContent>
       </Dialog>

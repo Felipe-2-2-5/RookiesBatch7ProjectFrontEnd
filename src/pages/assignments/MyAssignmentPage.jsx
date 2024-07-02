@@ -180,6 +180,7 @@ const MyAssignmentPage = () => {
   const handleAcceptConfirm = () => {
     const AcceptRespond = async (assignmentId) => {
       await AcceptRespondAPI(assignmentId);
+      console.log(assignmentId);
       //Call api to refresh the data
       getAssignments(filterRequest);
       setOpenAcceptPopup(false);

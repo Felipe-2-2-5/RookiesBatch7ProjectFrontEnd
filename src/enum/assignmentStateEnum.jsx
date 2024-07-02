@@ -5,5 +5,5 @@ export const assignmentStateEnum = {
 };
 
 export const getAssignmentState = (stateName) => {
-  return Object.keys(assignmentStateEnum).find(key => assignmentStateEnum[key] === stateName);
+  return parseInt(Object.keys(assignmentStateEnum).find(key => assignmentStateEnum[key] === stateName), 10);
 };

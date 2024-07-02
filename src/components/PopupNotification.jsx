@@ -14,8 +14,7 @@ const PopupNotification = ({
   content,
   closeContent,
 }) => {
-  const contentLines = content ? content.split("\n") : [];
-
+  // const contentLines = content ? content.split("\n") : [];
   return (
     <Dialog
       open={open}
@@ -34,9 +33,9 @@ const PopupNotification = ({
         {title}
       </DialogTitle>
       <DialogContent>
-        {contentLines.map((line, index) => (
+        {/* {contentLines.map((line, index) => (
           <p key={index}>{line}</p>
-        ))}
+        ))} */}
       </DialogContent>
       <DialogActions>
         <Button

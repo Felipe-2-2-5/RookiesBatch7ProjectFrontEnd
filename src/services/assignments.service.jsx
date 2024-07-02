@@ -32,7 +32,7 @@ export const AcceptRespondAPI = async (id) => {
     await httpClient.put(`/assignments/${id}/respond`, acceptState);
   } catch (error) {
     console.error("Error in AcceptRespondAPI:", error);
-    throw error;  // Re-throw the error after logging it
+    // throw error;  // Re-throw the error after logging it
   }
 }
 

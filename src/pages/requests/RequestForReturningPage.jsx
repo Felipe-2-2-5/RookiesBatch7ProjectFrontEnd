@@ -471,8 +471,8 @@ const RequestForReturningPage = () => {
                     }}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("requestor")}
-                      endIcon={getSortIcon("requestor")}
+                      onClick={() => handleHeaderClick("requestedBy")}
+                      endIcon={getSortIcon("requestedBy")}
                       sx={buttonTableHead}>
                       Requested By
                     </Button>
@@ -499,8 +499,8 @@ const RequestForReturningPage = () => {
                     }}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("acceptor")}
-                      endIcon={getSortIcon("acceptor")}
+                      onClick={() => handleHeaderClick("acceptedBy")}
+                      endIcon={getSortIcon("acceptedBy")}
                       sx={buttonTableHead}>
                       Accepted By
                     </Button>

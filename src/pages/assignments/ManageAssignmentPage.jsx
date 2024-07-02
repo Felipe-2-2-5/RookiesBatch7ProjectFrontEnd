@@ -310,9 +310,9 @@ const ManageAssignmentPage = () => {
     },
   }));
 
-  const handleCreateRequest = async (assignmentId) => {
+  const handleCreateRequest = async () => {
     try {
-      await CreateReturnRequest(assignmentId);
+      await CreateReturnRequest(selectedAssignment.id);
       getAssignments(filterRequest);
       setOpenReturnPopup(false);
       setNoti(true);
@@ -711,7 +711,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCreateRequest(assignment.id);
+                                setOpenReturnPopup(true);
+                                setSelectedAssignment(assignment);
                               }}
                             >
                               <RestartAltRounded />

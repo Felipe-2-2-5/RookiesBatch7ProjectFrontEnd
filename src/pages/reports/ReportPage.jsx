@@ -57,69 +57,13 @@ const ReportPage = () => {
       ? 1
       : Math.ceil(totalCount / pageSize);
 
-
-  //get reports from api
-  // const getReports = async (filterRequest) => {
-  //   const res = await FilterReport(filterRequest);
-
-  //   if (res.status === 200) {
-  //     setReports(res.data.data);
-  //     setTotalCount(res.data.length);
-  //   } else {
-  //     setReports([]);
-  //     setTotalCount(0);
-  //   }
-    
-    // if (
-    //   filterRequest.sortOrder !== "" &&
-    //   filterRequest.sortOrder !== undefined
-    // ) {
-    //   const sortColumnMap = {
-    //     category: "Category",
-    //     total: "Total",
-    //     assigned: "Assigned",
-    //     available: "Available",
-    //     notAvailable: "NotAvailable",
-    //     state: "WaitingForRecycling",
-    //     recycled: "Recycled",
-    //   };
-
-    //   const sortColumn = sortColumnMap[filterRequest.sortColumn];
-
-    //   let fetchedAssignmentsArray = Array.isArray(res?.data?.data)
-    //     ? res?.data?.data
-    //     : [];
-
-    //   fetchedAssignmentsArray.sort((a, b) => {
-    //     if (a[sortColumn] < b[sortColumn]) {
-    //       return filterRequest.sortOrder.toLowerCase() === "desc" ? 1 : -1;
-    //     }
-    //     if (a[sortColumn] > b[sortColumn]) {
-    //       return filterRequest.sortOrder.toLowerCase() === "desc" ? -1 : 1;
-    //     }
-    //     return 0;
-    //   });
-
-    //   if (scrollRef.current) {
-    //     scrollRef.current.scrollTo({
-    //       top: 0,
-    //       behavior: "smooth",
-    //     });
-    //   }
-    //   setLoading(false);
-    // }
-    
-  //   setTotalCount(res.data.length);
-  //   setLoading(false);
-  // };
-
     // Get reports from API
     const getReports = async (filterRequest) => {
       try {
         const res = await FilterReport(filterRequest);
         if (res.status === 200) {
-          setReports(res.data);
-          // setTotalCount(res.data.data.length);
+          setReports(res.data.data);
+          setTotalCount(res.data.totalCount);
         } else {
           setReports([]);
           setTotalCount(0);

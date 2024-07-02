@@ -67,8 +67,8 @@ const MyAssignmentPage = () => {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openNoti, setNoti] = useState(false);
-  const [notiTitle, setNotiTitle] = useState("");
-  const [notiMessage, setNotiMessage] = useState("");
+  const [notiTitle, setNotiTitle] = useState(null);
+  const [notiMessage, setNotiMessage] = useState(null);
 
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
@@ -211,8 +211,9 @@ const MyAssignmentPage = () => {
       setNotiMessage("Return request has been created successfully!");
       setNoti(true);
     } catch (e) {
-      console.error("Failed to create return request", e);
-      alert(e);
+      setNotiTitle("Error");
+      setNotiMessage(e.UserMessage);
+      setNoti(true);
     }
   };
   const handleHeaderClick = (column) => {

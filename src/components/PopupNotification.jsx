@@ -14,7 +14,7 @@ const PopupNotification = ({
   content,
   closeContent,
 }) => {
-  const contentLines = content ? content.split("\n") : [];
+  const contentLines = typeof content === "string" ? content.split("\n") : [];
 
   return (
     <Dialog
@@ -22,7 +22,8 @@ const PopupNotification = ({
       onClose={handleClose}
       disableBackdropClick
       disableEscapeKeyDown
-      maxWidth="md">
+      maxWidth="md"
+    >
       <DialogTitle
         sx={{
           borderBottom: "3px solid grey",
@@ -30,7 +31,8 @@ const PopupNotification = ({
           fontWeight: "bold",
           minWidth: 400,
           bgcolor: "lightgrey",
-        }}>
+        }}
+      >
         {title}
       </DialogTitle>
       <DialogContent>
@@ -45,7 +47,8 @@ const PopupNotification = ({
             color: "white",
             bgcolor: "#D6001C",
             "&:hover": { bgcolor: "#D6001C" },
-          }}>
+          }}
+        >
           {closeContent ? closeContent : "Ok"}
         </Button>
       </DialogActions>

@@ -128,7 +128,7 @@ const ManageAssetPage = () => {
     fetchCategories();
   }, []);
 
-  const [selectedState, setSelectedState] = useState("All");
+  const [selectedState, setSelectedState] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const handleStateChange = (e) => {
     const selectedState = e.target.value;
@@ -136,7 +136,6 @@ const ManageAssetPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "All" : selectedState,
-      searchTerm: "",
       sortColumn: "assetName",
       sortOrder: "",
       page: 1,
@@ -232,7 +231,7 @@ const ManageAssetPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "assetName";
+          newSortColumn = column;
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -264,20 +263,22 @@ const ManageAssetPage = () => {
     setDialogOpen(false);
     setSelectedAsset(null);
     setShowDeleteConfirmation(false);
-    setShowNotification(false);
+    setShowDeleteWarning(false);
+    setShowDeleteNotification(false);
     setErrorDialog(false);
     setErrorMessage("");
   };
 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
+  const [showDeleteWarning, setShowDeleteWarning] = useState(false);
+  const [showDeleteNotification, setShowDeleteNotification] = useState(false);
   const [errorDialog, setErrorDialog] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const handleDeleteIconClick = (asset) => {
     setSelectedAsset(asset);
 
     if (asset.assignments && asset.assignments.length > 0) {
-      setShowNotification(true);
+      setShowDeleteWarning(true);
     } else {
       setShowDeleteConfirmation(true);
     }
@@ -293,7 +294,7 @@ const ManageAssetPage = () => {
             page: 1,
           }));
           setShowDeleteConfirmation(false);
-          console.log("Asset deleted successfully");
+          setShowDeleteNotification(true);
         } else {
           setErrorMessage(
             "Error deleting asset: " + res.status + " " + res.data
@@ -426,15 +427,11 @@ const ManageAssetPage = () => {
                 <InputAdornment position="end">
                   <IconButton
                     sx={{
-                      marginLeft: "auto",
-                      "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
+                      "& label.Mui-focused": { color: "#000" },
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused fieldset": { borderColor: "#000" },
                       },
-                      "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: "black",
-                      },
+                      width: "120%",
                     }}
                     onClick={handleSearchClick}
                   >
@@ -464,7 +461,7 @@ const ManageAssetPage = () => {
               height: "56px",
               marginLeft: "16px",
               "&:hover": {
-                bgcolor: "rgba(214, 0, 28, 0.8)",
+                backgroundColor: "#d32f2f",
               },
             }}
             onClick={() => navigate(path.assetCreate)}
@@ -927,8 +924,8 @@ const ManageAssetPage = () => {
 
       {/* Notification Dialog for Historical Assignments */}
       <Dialog
-        open={showNotification}
-        onClose={() => setShowNotification(false)}
+        open={showDeleteWarning}
+        onClose={() => setShowDeleteWarning(false)}
       >
         <DialogTitle
           sx={{
@@ -979,6 +976,49 @@ const ManageAssetPage = () => {
               </Link>
             ) : null
             }
+          </Typography>
+        </DialogContent>
+      </Dialog>
+
+      {/* Notification Dialog for Delete Successfully */}
+      <Dialog
+        open={showDeleteNotification}
+        onClose={() => setShowDeleteNotification(false)}
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            bgcolor: "grey.300",
+            color: "#D6001C",
+            fontWeight: "bold",
+            borderBottom: "1px solid black",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          Notification
+          <IconButton
+            aria-label="close"
+            onClick={handleDialogClose}
+            sx={{
+              bgcolor: "grey.300",
+              color: "#D6001C",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent
+          sx={{
+            borderTop: "1px solid black",
+            display: "flex",
+            flexDirection: "column",
+            padding: "20px",
+          }}
+        >
+          <Typography variant="body1">
+            Asset <span style={{ fontWeight: "bold", fontStyle: "italic" }}>{selectedAsset?.assetName}</span> has been deleted successfully.
           </Typography>
         </DialogContent>
       </Dialog>

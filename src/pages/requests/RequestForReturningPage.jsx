@@ -1,52 +1,49 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
-  Typography,
-  TextField,
-  Button,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-  IconButton,
-  MenuItem,
-  Grid,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  // DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  Box,
-  CircularProgress,
-  Pagination,
-  styled,
-} from "@mui/material";
-import {
-  Check as CompleteIcon,
-  Clear as Cancelcon,
   ArrowDropDown,
   ArrowDropUp,
+  Clear as Cancelcon,
+  DisabledByDefault as CloseIcon,
+  Check as CompleteIcon,
   FilterAltOutlined as FilterIcon,
   Search as SearchIcon,
-  DisabledByDefault as CloseIcon,
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
-import { format } from "date-fns";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  Grid,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Pagination,
+  Paper,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  styled,
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-// import { useNavigate } from "react-router";
-// import { path } from "../../routes/routeContants";
-import {
-  ReturnRequestFilterRequest,
-  GetReturnRequest,
-} from "../../services/requestsForReturning.service";
+import React, { useEffect, useRef, useState } from "react";
+import { PopupNotificationExtra } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
+import {
+  GetReturnRequest,
+  ReturnRequestFilterRequest,
+} from "../../services/requestsForReturning.service";
 
 const formatDate = (dateString) => {
   if (!dateString) return ""; // Handle null or undefined dateString
@@ -64,14 +61,12 @@ const buttonTableHead = {
 };
 
 const RequestForReturningPage = () => {
-  // const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
-    returnedDateFrom: "",
-    returnedDateTo: "",
+    returnedDate: "",
     searchTerm: "",
     sortColumn: "returnedDate",
     sortOrder: "descend",
@@ -93,6 +88,17 @@ const RequestForReturningPage = () => {
   };
 
   const [returnRequests, setReturnRequests] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = (e) => {
+    e.stopPropagation();
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   useEffect(() => {
     const getReturnRequests = async (filterRequest) => {
       const res = await ReturnRequestFilterRequest(filterRequest);
@@ -119,15 +125,20 @@ const RequestForReturningPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
-      searchTerm: "",
       sortColumn: "assetname",
       sortOrder: "",
       page: 1,
     }));
   };
 
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [dateError, setDateError] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+    setFilterRequest((prev) => ({
+      ...prev,
+      returnedDate: date ? date : null,
+    }));
+  };
 
   const [searchTerm, setSearchTerm] = useState("");
   const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
@@ -206,7 +217,7 @@ const RequestForReturningPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "assetname";
+          newSortColumn = column;
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -244,14 +255,21 @@ const RequestForReturningPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}
-      >
+        }}>
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Request List
         </h2>
+        <PopupNotificationExtra
+          open={openDialog}
+          handleClose={handleCloseDialog}
+          // handleConfirm={} // your confirm handler here
+          title="Cancel Confirmation"
+          content="Are you sure you want to cancel?"
+          closeContent="No"
+          confirmContent="Yes"
+        />
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
-        >
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
             {/* State Filter */}
             <FormControl
@@ -262,16 +280,14 @@ const RequestForReturningPage = () => {
                   "&:hover fieldset": { borderColor: "black" },
                   "&.Mui-focused fieldset": { borderColor: "black" },
                 },
-              }}
-            >
+              }}>
               <InputLabel
                 sx={{
                   color: "black",
                   "&.Mui-focused": {
                     color: "black",
                   },
-                }}
-              >
+                }}>
                 State
               </InputLabel>
               <Select
@@ -279,14 +295,18 @@ const RequestForReturningPage = () => {
                 value={selectedState}
                 name="state"
                 IconComponent={(props) => (
-                  <FilterIcon {...props} style={{ transform: "none" }} />
+                  <FilterIcon
+                    {...props}
+                    style={{ transform: "none" }}
+                  />
                 )}
                 onChange={handleStateChange}
-                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
-              >
+                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
                 <MenuItem value="All">All</MenuItem>
                 {Object.values(requestStateEnum).map((state) => (
-                  <MenuItem key={state} value={state}>
+                  <MenuItem
+                    key={state}
+                    value={state}>
                     {state}
                   </MenuItem>
                 ))}
@@ -294,84 +314,29 @@ const RequestForReturningPage = () => {
             </FormControl>
 
             {/* Returned date Filter */}
-            <Grid
-              item
-              xs={9}
-              InputLabelProps={{
-                style: { color: "black" },
-              }}
-              sx={{
-                marginLeft: "16px",
-                marginRight: "16px",
-                "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: "black",
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Returned Date"
+                format="dd/MM/yyyy"
+                value={selectedDate}
+                onChange={handleDateChange}
+                sx={{
+                  marginLeft: "16px",
+                  minWidth: 200,
+                  "& .MuiInputLabel-root": {
+                    color: "black",
                   },
-              }}
-            >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DateRangePicker
-                  startText="Start date"
-                  endText="End date"
-                  value={dateRange}
-                  sx={{
-                    "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
-                      },
-                    "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: dateError ? "red" : "black",
-                      },
-                    width: "60%",
-                  }}
-                  onChange={(newValue) => {
-                    setDateRange(newValue);
-                    if (newValue[0] && newValue[1]) {
-                      if (
-                        !(newValue[0] instanceof Date) ||
-                        isNaN(newValue[0].getTime()) ||
-                        !(newValue[1] instanceof Date) ||
-                        isNaN(newValue[1].getTime())
-                      ) {
-                        setDateError(true);
-                      } else {
-                        setDateError(false);
-                        setFilterRequest((prev) => ({
-                          ...prev,
-                          fromDate: format(newValue[0], "dd/MM/yyyy"),
-                          toDate: format(newValue[1], "dd/MM/yyyy"),
-                        }));
-                      }
-                    }
-                  }}
-                  renderInput={(startProps, endProps) => (
-                    <TextField
-                      {...startProps}
-                      {...endProps}
-                      margin="dense"
-                      required
-                      InputLabelProps={{
-                        style: { color: "black" },
-                      }}
-                      sx={{
-                        marginLeft: "auto",
-                        "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                          {
-                            color: "black",
-                          },
-                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                          {
-                            borderColor: dateError ? "red" : "black",
-                          },
-                        width: "60%",
-                      }}
-                    />
-                  )}
-                  format="dd/MM/yyyy"
-                />
-              </LocalizationProvider>
-            </Grid>
+                  "& .MuiInputLabel-root.Mui-focused": {
+                    color: "black",
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "black",
+                    },
+                  },
+                }}
+              />
+            </LocalizationProvider>
           </Box>
 
           {/* Search Box*/}
@@ -394,23 +359,22 @@ const RequestForReturningPage = () => {
                       },
                       width: "120%",
                     }}
-                    onClick={handleSearchClick}
-                  >
+                    onClick={handleSearchClick}>
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>
               ),
             }}
             sx={{
-              marginLeft: "16px",
+              marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
         </Box>
@@ -418,9 +382,10 @@ const RequestForReturningPage = () => {
         {/* Request Table */}
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}
-        >
-          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
+          <Sheet
+            ref={scrollRef}
+            sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -428,16 +393,13 @@ const RequestForReturningPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}
-              >
+                }}>
                 <TableRow>
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     No.
                   </TableCell>
                   <TableCell
@@ -445,14 +407,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetCode")}
                       endIcon={getSortIcon("assetCode")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Asset Code
                     </Button>
                   </TableCell>
@@ -461,14 +421,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetName")}
                       endIcon={getSortIcon("assetName")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Asset Name
                     </Button>
                   </TableCell>
@@ -477,14 +435,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("requestor")}
                       endIcon={getSortIcon("requestor")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Requested By
                     </Button>
                   </TableCell>
@@ -493,14 +449,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assignedDate")}
                       endIcon={getSortIcon("assignedDate")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Assigned Date
                     </Button>
                   </TableCell>
@@ -509,14 +463,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("acceptor")}
                       endIcon={getSortIcon("acceptor")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Accepted By
                     </Button>
                   </TableCell>
@@ -525,14 +477,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("returnedDate")}
                       endIcon={getSortIcon("returnedDate")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Returned Date
                     </Button>
                   </TableCell>
@@ -541,14 +491,12 @@ const RequestForReturningPage = () => {
                       fontWeight: "bold",
                       width: "15%",
                       paddingLeft: "40px",
-                    }}
-                  >
+                    }}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
                       endIcon={getSortIcon("state")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       State
                     </Button>
                   </TableCell>
@@ -560,8 +508,7 @@ const RequestForReturningPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}
-                  ></TableCell>
+                    }}></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -569,8 +516,7 @@ const RequestForReturningPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={6}
-                      sx={{ textAlign: "center", padding: "28px" }}
-                    >
+                      sx={{ textAlign: "center", padding: "28px" }}>
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -585,8 +531,7 @@ const RequestForReturningPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}
-                        >
+                          }}>
                           No Request for Returning found
                         </TableCell>
                       </TableRow>
@@ -596,30 +541,50 @@ const RequestForReturningPage = () => {
                           key={returnRequest.id}
                           hover
                           onClick={() => handleDetailDialog(returnRequest)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <TableCell sx={{ paddingLeft: "40px" }}>{index + 1}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.assignment.asset.assetCode}</TableCell>
-                          <TableCell sx={{
-                            paddingLeft: "40px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: 150,
-                          }}>{returnRequest.assignment.asset.assetName}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.requestor?.userName}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{formatDate(returnRequest.assignment.assignedDate)}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{returnRequest.acceptor?.userName}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{formatDate(returnRequest.returnedDate)}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{requestStateEnum[returnRequest.state]}</TableCell>
+                          style={{ cursor: "pointer" }}>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {index + 1}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {returnRequest.assignment.asset.assetCode}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              paddingLeft: "40px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              maxWidth: 150,
+                            }}>
+                            {returnRequest.assignment.asset.assetName}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {returnRequest.requestor?.userName}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {formatDate(returnRequest.assignment.assignedDate)}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {returnRequest.acceptor?.userName}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {formatDate(returnRequest.returnedDate)}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {requestStateEnum[returnRequest.state]}
+                          </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                            "Completed" ? (
+                              "Completed" ? (
                               <>
-                                <IconButton aria-label="complete" disabled>
+                                <IconButton
+                                  aria-label="complete"
+                                  disabled>
                                   <CompleteIcon />
                                 </IconButton>
-                                <IconButton aria-label="cancel" disabled>
+                                <IconButton
+                                  aria-label="cancel"
+                                  disabled>
                                   <Cancelcon />
                                 </IconButton>
                               </>
@@ -628,14 +593,14 @@ const RequestForReturningPage = () => {
                                 <IconButton
                                   aria-label="complete"
                                   sx={{
+                                    color: "#008000",
                                     "&:hover": {
                                       backgroundColor: "#bcbcbc",
                                     },
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                  }}
-                                >
+                                  }}>
                                   <CompleteIcon />
                                 </IconButton>
                                 <IconButton
@@ -646,10 +611,7 @@ const RequestForReturningPage = () => {
                                       backgroundColor: "#bcbcbc",
                                     },
                                   }}
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                >
+                                  onClick={handleOpenDialog}>
                                   <Cancelcon />
                                 </IconButton>
                               </>
@@ -669,8 +631,7 @@ const RequestForReturningPage = () => {
             display: "flex",
             justifyContent: "flex-end",
             paddingTop: "15px",
-          }}
-        >
+          }}>
           <Pagination
             count={pageCount}
             variant="outlined"
@@ -695,8 +656,7 @@ const RequestForReturningPage = () => {
         open={dialogOpen}
         onClose={handleDialogClose}
         fullWidth
-        maxWidth="md"
-      >
+        maxWidth="md">
         <DialogTitle
           sx={{
             bgcolor: "grey.300",
@@ -706,8 +666,7 @@ const RequestForReturningPage = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}
-        >
+          }}>
           Detailed Request Information
           <IconButton
             aria-label="close"
@@ -717,8 +676,7 @@ const RequestForReturningPage = () => {
               right: 10,
               top: 12,
               color: "#D6001C",
-            }}
-          >
+            }}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -731,86 +689,132 @@ const RequestForReturningPage = () => {
             overflowY: "auto",
             wordWrap: "break-word",
             wordBreak: "break-all",
-          }}
-        >
+          }}>
           {selectedReturnRequest ? (
             <>
-              <Typography variant="h6" sx={{ marginTop: 2 }} gutterBottom>
+              <Typography
+                variant="h6"
+                sx={{ marginTop: 2 }}
+                gutterBottom>
                 {/* Request Details */}
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+              <Grid
+                container
+                spacing={2}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     Asset Code:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.asset.assetCode}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     Asset Name:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.asset.assetName}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     Requested By:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.requestor?.userName}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     Assigned Date:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {formatDate(selectedReturnRequest.assignment.assignedDate)}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     Accepted By:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.acceptor?.userName}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     Returned Date:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {formatDate(selectedReturnRequest.returnedDate)}
                   </Typography>
                 </Grid>
 
-                <Grid item xs={5}>
-                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
                     State:
                   </Typography>
                 </Grid>
-                <Grid item xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {requestStateEnum[selectedReturnRequest.state]}
                   </Typography>
@@ -824,8 +828,7 @@ const RequestForReturningPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 height: "200px",
-              }}
-            >
+              }}>
               <CircularProgress />
             </Box>
           )}

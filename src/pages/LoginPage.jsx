@@ -3,22 +3,20 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   InputAdornment,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
+import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PopupNotification } from "../components";
 import { useAuthContext } from "../context/AuthContext";
 import { path } from "../routes/routeContants";
 import { LoginUser } from "../services/users.service";
-import { jwtDecode } from "jwt-decode";
+
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +24,7 @@ const LoginPage = () => {
   const [passwordError, setPasswordError] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuthContext();
 
@@ -38,16 +37,19 @@ const LoginPage = () => {
         setIsAuthenticated(true);
         localStorage.setItem("token", data.token);
         const decodedToken = jwtDecode(data.token);
-        const isFirst = (decodedToken.FirstLogin === "True");
+        const isFirst = decodedToken.FirstLogin === "True";
         if (isFirst) {
           localStorage.setItem("password", password);
         }
         navigate(path.home);
       } else {
+        setErrorMessage("Invalid username or password. Please try again.");
         setAlertOpen(true);
       }
-    } catch (error) {
-      console.error("Error logging in:", error);
+    } catch (err) {
+      console.log(err);
+      setErrorMessage(err?.UserMessage);
+      setAlertOpen(true);
     }
   };
 
@@ -70,7 +72,9 @@ const LoginPage = () => {
 
   return (
     <>
-      <Paper elevation={3} sx={{ p: 3, mt: 3, mb: 3 }}>
+      <Paper
+        elevation={3}
+        sx={{ p: 3, mt: 3, mb: 3 }}>
         <Box
           sx={{
             display: "flex",
@@ -87,16 +91,23 @@ const LoginPage = () => {
               width: "100%",
               maxWidth: "400px",
             },
-          }}
-        >
+          }}>
+          <PopupNotification
+            open={alertOpen}
+            handleClose={handleAlertClose}
+            title="Error"
+            content={errorMessage}
+            closeContent="OK"
+          />
           <Typography
             variant="h2"
             gutterBottom
-            sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}
-          >
+            sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}>
             Login to your account
           </Typography>
-          <Typography variant="h6" sx={{ mt: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{ mt: 2 }}>
             Access your asset management system securely and efficiently.
           </Typography>
           <form onSubmit={handleLogin}>
@@ -147,8 +158,7 @@ const LoginPage = () => {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={togglePasswordVisibility}
-                      edge="end"
-                    >
+                      edge="end">
                       {showPassword ? (
                         <VisibilityOffIcon />
                       ) : (
@@ -179,15 +189,14 @@ const LoginPage = () => {
                 "&:hover": {
                   bgcolor: "rgba(214, 0, 28, 0.8)",
                 },
-              }}
-            >
+              }}>
               Login
             </Button>
           </form>
         </Box>
       </Paper>
 
-      <Dialog open={alertOpen} onClose={handleAlertClose}>
+      {/* <Dialog open={alertOpen} onClose={handleAlertClose}>
         <DialogTitle
           sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
         >
@@ -203,7 +212,7 @@ const LoginPage = () => {
             OK
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

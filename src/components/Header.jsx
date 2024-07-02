@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { ChangePasswordDialog } from "./";
-import PopupNotificationExtra from "./PopupNotifycationExtra";
+import PopupNotificationExtra from "./PopupNotificationExtra";
 
 const Header = () => {
   const [openCancelPopup, setOpenCancelPopup] = useState(false);

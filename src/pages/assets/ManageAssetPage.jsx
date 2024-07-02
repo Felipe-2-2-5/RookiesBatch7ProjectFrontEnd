@@ -76,7 +76,10 @@ const ManageAssetPage = () => {
 
   const [totalCount, setTotalCount] = useState();
   const pageSize = filterRequest.pageSize || 1;
-  const pageCount = Number.isNaN(totalCount) || totalCount === 0 ? 1 : Math.ceil(totalCount / pageSize);
+  const pageCount =
+    Number.isNaN(totalCount) || totalCount === 0
+      ? 1
+      : Math.ceil(totalCount / pageSize);
   const handlePageChange = (e, value) => {
     setFilterRequest((prev) => ({
       ...prev,
@@ -85,32 +88,31 @@ const ManageAssetPage = () => {
   };
 
   const [assets, setAsset] = useState([]);
+  const getAssets = async (filterRequest) => {
+    const res = await FilterRequest(filterRequest);
+    const fetchedAssets = res.data.data;
+    setTotalCount(res.data.totalCount);
+
+    const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
+    if (assetCreated) {
+      const updatedAssets = fetchedAssets.filter(
+        (asset) => asset.id !== assetCreated.id
+      );
+      setAsset([assetCreated, ...updatedAssets]);
+      sessionStorage.removeItem("asset_created");
+    } else {
+      setAsset(fetchedAssets);
+    }
+
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+    setLoading(false);
+  };
   useEffect(() => {
-    const getAssets = async (filterRequest) => {
-      const res = await FilterRequest(filterRequest);
-      const fetchedAssets = res.data.data;
-      setTotalCount(res.data.totalCount);
-
-      const assetCreated = JSON.parse(sessionStorage.getItem("asset_created"));
-      if (assetCreated) {
-        const updatedAssets = fetchedAssets.filter(
-          (asset) => asset.id !== assetCreated.id
-        );
-        setAsset([assetCreated, ...updatedAssets]);
-        sessionStorage.removeItem("asset_created");
-      } else {
-        setAsset(fetchedAssets);
-      }
-
-      if (scrollRef.current) {
-        scrollRef.current.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
-      setLoading(false);
-    };
-
     getAssets(filterRequest);
   }, [filterRequest]);
 
@@ -289,10 +291,8 @@ const ManageAssetPage = () => {
         const res = await DeleteAsset(selectedAsset.id);
 
         if (res.status === 204) {
-          setFilterRequest((prev) => ({
-            ...prev,
-            page: 1,
-          }));
+          getAssets(filterRequest);
+
           setShowDeleteConfirmation(false);
           setShowDeleteNotification(true);
         } else {
@@ -323,7 +323,9 @@ const ManageAssetPage = () => {
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Asset List
         </h2>
-        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+        <Box
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
             {/* State Filter */}
             <FormControl
@@ -443,13 +445,13 @@ const ManageAssetPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
+                {
+                  color: "black",
+                },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
+                {
+                  borderColor: "black",
+                },
             }}
           />
 
@@ -483,10 +485,15 @@ const ManageAssetPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}>
+                }}
+              >
                 <TableRow>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
+                    style={{
+                      fontWeight: "bold",
+                      width: "15%",
+                      paddingLeft: "40px",
+                    }}
                   >
                     <Button
                       variant="text"
@@ -498,7 +505,11 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
+                    style={{
+                      fontWeight: "bold",
+                      width: "15%",
+                      paddingLeft: "40px",
+                    }}
                   >
                     <Button
                       variant="text"
@@ -510,7 +521,11 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
+                    style={{
+                      fontWeight: "bold",
+                      width: "15%",
+                      paddingLeft: "40px",
+                    }}
                   >
                     <Button
                       variant="text"
@@ -522,7 +537,11 @@ const ManageAssetPage = () => {
                     </Button>
                   </TableCell>
                   <TableCell
-                    style={{ fontWeight: "bold", width: "15%", paddingLeft: "40px" }}
+                    style={{
+                      fontWeight: "bold",
+                      width: "15%",
+                      paddingLeft: "40px",
+                    }}
                   >
                     <Button
                       variant="text"
@@ -579,16 +598,26 @@ const ManageAssetPage = () => {
                           onClick={() => handleDetailDialog(asset)}
                           style={{ cursor: "pointer" }}
                         >
-                          <TableCell sx={{ paddingLeft: "40px" }}>{asset.assetCode}</TableCell>
-                          <TableCell sx={{
-                            paddingLeft: "40px",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap",
-                            maxWidth: 150,
-                          }}>{asset.assetName}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{asset.category?.name}</TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>{assetStateEnum[asset.state]}</TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {asset.assetCode}
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              paddingLeft: "40px",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                              maxWidth: 150,
+                            }}
+                          >
+                            {asset.assetName}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {asset.category?.name}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "40px" }}>
+                            {assetStateEnum[asset.state]}
+                          </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {assetStateEnum[asset.state] === "Assigned" ? (
                               <>
@@ -711,7 +740,7 @@ const ManageAssetPage = () => {
             // maxHeight: "300px",
             overflowY: "auto",
             wordWrap: "break-word",
-            wordBreak: "break-all"
+            wordBreak: "break-all",
           }}
         >
           {selectedAsset ? (
@@ -791,27 +820,27 @@ const ManageAssetPage = () => {
               {selectedAsset.assignments &&
                 selectedAsset.assignments.length > 0 && (
                   <>
-                    <Typography variant="h6" sx={{ marginTop: 3, fontStyle: "italic" }} gutterBottom>
+                    <Typography
+                      variant="h6"
+                      sx={{ marginTop: 3, fontStyle: "italic" }}
+                      gutterBottom
+                    >
                       Assignment History
                     </Typography>
                     <TableContainer component={Paper}>
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell style={{ width: "15%" }}
-                            >
+                            <TableCell style={{ width: "15%" }}>
                               <strong>Assigned To</strong>
                             </TableCell>
-                            <TableCell style={{ width: "15%" }}
-                            >
+                            <TableCell style={{ width: "15%" }}>
                               <strong>Assigned By</strong>
                             </TableCell>
-                            <TableCell style={{ width: "16%" }}
-                            >
+                            <TableCell style={{ width: "16%" }}>
                               <strong>Assigned Date</strong>
                             </TableCell>
-                            <TableCell style={{ width: "54%" }}
-                            >
+                            <TableCell style={{ width: "54%" }}>
                               <strong>Note</strong>
                             </TableCell>
                           </TableRow>
@@ -974,8 +1003,7 @@ const ManageAssetPage = () => {
               >
                 Edit Asset page
               </Link>
-            ) : null
-            }
+            ) : null}
           </Typography>
         </DialogContent>
       </Dialog>
@@ -1018,7 +1046,11 @@ const ManageAssetPage = () => {
           }}
         >
           <Typography variant="body1">
-            Asset <span style={{ fontWeight: "bold", fontStyle: "italic" }}>{selectedAsset?.assetName}</span> has been deleted successfully.
+            Asset{" "}
+            <span style={{ fontWeight: "bold", fontStyle: "italic" }}>
+              {selectedAsset?.assetName}
+            </span>{" "}
+            has been deleted successfully.
           </Typography>
         </DialogContent>
       </Dialog>

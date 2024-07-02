@@ -27,7 +27,7 @@ import {
   TextField,
   styled,
 } from "@mui/material";
-import { DateRangePicker } from "@mui/x-date-pickers-pro";
+import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
@@ -91,10 +91,9 @@ const ManageAssignmentPage = () => {
     page: 1,
     pageSize: "20",
     state: "",
-    fromDate: "",
-    toDate: "",
+    assignedDate: "",
   });
-  const [dateRange, setDateRange] = useState([null, null]);
+  const [assignedDate, setAssignedDate] = useState(null);
   const [selectedState, setSelectedState] = useState("All");
   const [dateError, setDateError] = useState(false);
 
@@ -127,15 +126,13 @@ const ManageAssignmentPage = () => {
         );
       }
 
-      if (filterRequest.fromDate && filterRequest.toDate) {
-        const fromDate = new Date(filterRequest.fromDate);
-        fromDate.setHours(0, 0, 0, 0);
-        const toDate = new Date(filterRequest.toDate);
-        toDate.setHours(23, 59, 59, 999);
+      if (filterRequest.assignedDate) {
+        const assignedDate = new Date(filterRequest.assignedDate);
+        assignedDate.setHours(0, 0, 0, 0);
 
         fetchedAssignments = fetchedAssignments.filter((assignment) => {
           const assignmentDate = new Date(assignment.assignedDate);
-          return assignmentDate >= fromDate && assignmentDate <= toDate;
+          return assignmentDate.getTime() === assignedDate.getTime();
         });
       }
 
@@ -145,13 +142,6 @@ const ManageAssignmentPage = () => {
       setAssignments([]);
       setTotalCount(0);
     }
-
-    // if (filterRequest.state !== "" && filterRequest.state !== "All") {
-    //   fetchedAssignments = fetchedAssignments.filter(
-    //     (assignment) => assignment.state === filterRequest.state
-    //   );
-    //   setAssignments(fetchedAssignments);
-    // }
 
     if (
       filterRequest.sortOrder !== "" &&
@@ -310,9 +300,9 @@ const ManageAssignmentPage = () => {
     },
   }));
 
-  const handleCreateRequest = async (assignmentId) => {
+  const handleCreateRequest = async () => {
     try {
-      await CreateReturnRequest(assignmentId);
+      await CreateReturnRequest(selectedAssignment.id);
       getAssignments(filterRequest);
       setOpenReturnPopup(false);
       setNoti(true);
@@ -414,6 +404,7 @@ const ManageAssignmentPage = () => {
               <MenuItem value="Waiting for acceptance">
                 Waiting for acceptance
               </MenuItem>
+              <MenuItem value="Declined">Declined</MenuItem>
             </Select>
           </FormControl>
           <Grid
@@ -432,47 +423,28 @@ const ManageAssignmentPage = () => {
             }}
           >
             <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateRangePicker
-                startText="Start date"
-                endText="End date"
-                value={dateRange}
-                sx={{
-                  "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                    {
-                      color: "black",
-                    },
-                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                    {
-                      borderColor: dateError ? "red" : "black",
-                    },
-                  width: "60%",
-                }}
+              <DatePicker
+                label="Assigned Date"
+                value={assignedDate}
                 onChange={(newValue) => {
-                  setDateRange(newValue);
-                  if (newValue[0] && newValue[1]) {
-                    if (
-                      !(newValue[0] instanceof Date) ||
-                      isNaN(newValue[0].getTime()) ||
-                      !(newValue[1] instanceof Date) ||
-                      isNaN(newValue[1].getTime())
-                    ) {
-                      setDateError(true);
-                    } else {
-                      setDateError(false);
-                      setFilterRequest((prev) => ({
-                        ...prev,
-                        fromDate: format(newValue[0], "dd/MM/yyyy"),
-                        toDate: format(newValue[1], "dd/MM/yyyy"),
-                      }));
-                    }
+                  if (newValue instanceof Date && !isNaN(newValue.getTime())) {
+                    setAssignedDate(newValue);
+                    setDateError(false);
+                    setFilterRequest((prev) => ({
+                      ...prev,
+                      assignedDate: format(newValue, "dd/MM/yyyy"),
+                    }));
+                  } else {
+                    setDateError(true);
                   }
                 }}
-                renderInput={(startProps, endProps) => (
+                renderInput={(props) => (
                   <TextField
-                    {...startProps}
-                    {...endProps}
+                    {...props}
                     margin="dense"
                     required
+                    error={dateError}
+                    helperText={dateError ? "Invalid date" : ""}
                     InputLabelProps={{
                       style: { color: "black" },
                     }}
@@ -666,7 +638,9 @@ const ManageAssignmentPage = () => {
                           </TableCell>
                           <TableCell>
                             <IconButton
-                              disabled={assignment.state === 0}
+                              disabled={
+                                assignment.state === 0 || assignment.state === 2
+                              }
                               sx={{
                                 "&:hover": {
                                   backgroundColor: "#bcbcbc",
@@ -701,7 +675,8 @@ const ManageAssignmentPage = () => {
                             <IconButton
                               disabled={
                                 assignment.state === 1 ||
-                                assignment?.returnRequest != null
+                                assignment.state === 2 ||
+                                !assignment?.returnRequest
                               }
                               sx={{
                                 color: "blue",
@@ -711,7 +686,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleCreateRequest(assignment.id);
+                                setOpenReturnPopup(true);
+                                setSelectedAssignment(assignment);
                               }}
                             >
                               <RestartAltRounded />

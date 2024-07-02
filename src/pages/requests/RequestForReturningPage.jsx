@@ -66,8 +66,7 @@ const RequestForReturningPage = () => {
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
-    returnedDateFrom: "",
-    returnedDateTo: "",
+    returnedDate: "",
     searchTerm: "",
     sortColumn: "returnedDate",
     sortOrder: "descend",
@@ -218,7 +217,7 @@ const RequestForReturningPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "assetname";
+          newSortColumn = column;
         } else {
           newSortOrder = "";
           newSortColumn = column;

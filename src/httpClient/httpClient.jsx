@@ -38,21 +38,23 @@ instance.interceptors.response.use(
         case 401:
           errorMessage = "You are not authorized to access this resource.";
           localStorage.removeItem("token");
+          popupEventEmitter.emit("showPopup", errorMessage);
           break;
         case 404:
           errorMessage = "Resource not found.";
+          popupEventEmitter.emit("showPopup", errorMessage);
           break;
         case 500:
           errorMessage =
             "An error occurred while processing your request. Please try again later.";
+          popupEventEmitter.emit("showPopup", errorMessage);
           break;
         default:
           errorMessage = err.response.data;
           break;
       }
     }
-    popupEventEmitter.emit("showPopup", errorMessage);
-    return Promise.reject(err);
+    return Promise.reject(errorMessage);
   }
 );
 

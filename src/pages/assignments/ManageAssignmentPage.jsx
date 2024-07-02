@@ -681,7 +681,7 @@ const ManageAssignmentPage = () => {
                               disabled={
                                 assignment.state === 1 ||
                                 assignment.state === 2 ||
-                                !assignment?.returnRequest
+                                assignment?.returnRequest != null
                               }
                               sx={{
                                 color: "blue",

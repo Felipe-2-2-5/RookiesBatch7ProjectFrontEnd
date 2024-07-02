@@ -66,7 +66,7 @@ const RequestForReturningPage = () => {
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
-    returnedDate: "",
+    returnedDate: null,
     searchTerm: "",
     sortColumn: "returnedDate",
     sortOrder: "descend",

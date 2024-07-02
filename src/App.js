@@ -29,7 +29,7 @@ function App() {
       <PopupNotification
         open={showPopup}
         title="Error"
-        message={popupMessage}
+        content={popupMessage}
         handleClose={handleClose}
       />
     </div>

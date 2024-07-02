@@ -44,6 +44,7 @@ import {
   FilterAssignment,
   GetAssignment,
 } from "../../services/assignments.service";
+import { CreateReturnRequest } from "../../services/requestsForReturning.service";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -301,6 +302,14 @@ const ManageAssignmentPage = () => {
     },
   }));
 
+  const handleCreateRequest = async (assignmentId) => {
+    try {
+      await CreateReturnRequest(assignmentId);
+    } catch (e) {
+      console.error("Failed to create return request", e);
+      alert(e);
+    }
+  };
   const getSortIcon = (column) => {
     const iconStyle = {
       display: "flex",
@@ -682,6 +691,7 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
+                                handleCreateRequest(assignment.id);
                               }}
                             >
                               <RestartAltRounded />

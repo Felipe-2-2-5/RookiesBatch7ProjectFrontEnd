@@ -77,7 +77,6 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
         setCategory(res.data);
       }
     } catch (error) {
-      console.error(error); // Log the error to see its structure
       setTitlePopup("Error");
       setContentPopup(`${error.DevMessage}`);
       setOpenPopup(true);

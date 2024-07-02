@@ -305,6 +305,7 @@ const ManageAssignmentPage = () => {
   const handleCreateRequest = async (assignmentId) => {
     try {
       await CreateReturnRequest(assignmentId);
+      getAssignments(filterRequest);
     } catch (e) {
       console.error("Failed to create return request", e);
       alert(e);
@@ -420,13 +421,13 @@ const ManageAssignmentPage = () => {
                 value={dateRange}
                 sx={{
                   "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                  {
-                    color: "black",
-                  },
+                    {
+                      color: "black",
+                    },
                   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    borderColor: dateError ? "red" : "black",
-                  },
+                    {
+                      borderColor: dateError ? "red" : "black",
+                    },
                   width: "60%",
                 }}
                 onChange={(newValue) => {
@@ -460,13 +461,13 @@ const ManageAssignmentPage = () => {
                     }}
                     sx={{
                       "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                      {
-                        color: "black",
-                      },
+                        {
+                          color: "black",
+                        },
                       "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                      {
-                        borderColor: dateError ? "red" : "black",
-                      },
+                        {
+                          borderColor: dateError ? "red" : "black",
+                        },
                     }}
                   />
                 )}
@@ -581,7 +582,8 @@ const ManageAssignmentPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}></TableCell>
+                    }}
+                  ></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -682,7 +684,7 @@ const ManageAssignmentPage = () => {
                             <IconButton
                               disabled={
                                 assignment.state === 1 ||
-                                !assignment?.returnRequest
+                                assignment?.returnRequest != null
                               }
                               sx={{
                                 color: "blue",

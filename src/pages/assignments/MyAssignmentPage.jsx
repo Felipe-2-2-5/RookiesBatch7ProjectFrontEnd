@@ -420,7 +420,7 @@ const MyAssignmentPage = () => {
                           </TableCell>
                           <TableCell>
                             <IconButton
-                              disabled={assignment.state === 0}
+                              disabled={assignment.state !== 1}
                               sx={{
                                 color: "#D6001C",
                                 "&:hover": {
@@ -436,7 +436,7 @@ const MyAssignmentPage = () => {
                               <DoneIcon />
                             </IconButton>
                             <IconButton
-                              disabled={assignment.state === 0}
+                              disabled={assignment.state !== 1}
                               sx={{
                                 color: "black",
                                 "&:hover": {
@@ -453,8 +453,8 @@ const MyAssignmentPage = () => {
                             </IconButton>
                             <IconButton
                               disabled={
-                                assignment.state === 1 ||
-                                assignment?.returnRequest != null
+                                assignment.state !== 0 ||
+                                assignment?.returnRequest != null 
                               }
                               sx={{
                                 color: "blue",

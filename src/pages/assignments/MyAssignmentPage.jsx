@@ -227,7 +227,7 @@ const MyAssignmentPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "ascend") {
           newSortOrder = "descend";
-          newSortColumn = "date";
+          newSortColumn = column;
         } else {
           newSortOrder = "descend";
           newSortColumn = column;

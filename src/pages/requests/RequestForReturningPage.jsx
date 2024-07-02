@@ -37,6 +37,7 @@ import {
 import { DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
 import { PopupNotificationExtra } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
@@ -125,20 +126,14 @@ const RequestForReturningPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
-      sortColumn: "assetname",
+      sortColumn: "returnedDate",
       sortOrder: "",
       page: 1,
     }));
   };
 
   const [selectedDate, setSelectedDate] = useState(null);
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-    setFilterRequest((prev) => ({
-      ...prev,
-      returnedDate: date ? date : null,
-    }));
-  };
+  const [dateError, setDateError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const trimmedSearchTerm = searchTerm.trim().replace(/\s+/g, " ");
@@ -317,9 +312,19 @@ const RequestForReturningPage = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 label="Returned Date"
-                format="dd/MM/yyyy"
                 value={selectedDate}
-                onChange={handleDateChange}
+                onChange={(newValue) => {
+                  if (newValue instanceof Date && !isNaN(newValue.getTime())) {
+                    setSelectedDate(newValue);
+                    setDateError(false);
+                    setFilterRequest((prev) => ({
+                      ...prev,
+                      returnedDate: format(newValue, "dd/MM/yyyy"),
+                    }));
+                  } else {
+                    setDateError(true);
+                  }
+                }}
                 sx={{
                   marginLeft: "16px",
                   minWidth: 200,
@@ -335,6 +340,34 @@ const RequestForReturningPage = () => {
                     },
                   },
                 }}
+                renderInput={(props) => (
+                  <TextField
+                    {...props}
+                    margin="dense"
+                    required
+                    error={dateError}
+                    helperText={dateError ? "Invalid date" : ""}
+                    InputLabelProps={{
+                      style: { color: "black" },
+                    }}
+                    sx={{
+                      marginLeft: "16px",
+                      minWidth: 200,
+                      "& .MuiInputLabel-root": {
+                        color: "black",
+                      },
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        color: "black",
+                      },
+                      "& .MuiOutlinedInput-root": {
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "black",
+                        },
+                      },
+                    }}
+                  />
+                )}
+                format="dd/MM/yyyy"
               />
             </LocalizationProvider>
           </Box>

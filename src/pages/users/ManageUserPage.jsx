@@ -186,7 +186,7 @@ const ManageUserPage = () => {
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "name";
+          newSortColumn = column;
         } else {
           newSortOrder = "";
           newSortColumn = column;

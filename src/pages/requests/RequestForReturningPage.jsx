@@ -39,11 +39,12 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { PopupNotificationExtra } from "../../components";
+import { PopupNotification, PopupNotificationExtra } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
 import {
   GetReturnRequest,
   ReturnRequestFilterRequest,
+  CancelReturnRequest
 } from "../../services/requestsForReturning.service";
 
 const formatDate = (dateString) => {
@@ -89,16 +90,6 @@ const RequestForReturningPage = () => {
   };
 
   const [returnRequests, setReturnRequests] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-
-  const handleOpenDialog = (e) => {
-    e.stopPropagation();
-    setOpenDialog(true);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
 
   useEffect(() => {
     const getReturnRequests = async (filterRequest) => {
@@ -242,6 +233,31 @@ const RequestForReturningPage = () => {
     setSelectedReturnRequest(null);
   };
 
+  const [message, setMessage] = useState("");
+  const [success, setSuccess] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = (e, returnRequestId) => {
+    e.stopPropagation();
+    setOpenDialog(true);
+    setSelectedReturnRequest(returnRequestId);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+  const handleConfirm = async () => {
+    try {
+      await CancelReturnRequest(selectedReturnRequest);
+      setSuccess(true);
+      setMessage("The request has been successfully cancelled.");
+    } catch (error) {
+      setSuccess(false);
+      setMessage("An error occurred while cancelling the request.");
+    }
+    setOpenDialog(false);
+  };
+
   return (
     <>
       <Paper
@@ -257,11 +273,18 @@ const RequestForReturningPage = () => {
         <PopupNotificationExtra
           open={openDialog}
           handleClose={handleCloseDialog}
-          // handleConfirm={} // your confirm handler here
+          handleConfirm={handleConfirm}
           title="Are you sure?"
           content="Do you want to cancel this returning request?"
           closeContent="No"
           confirmContent="Yes"
+        />
+        <PopupNotification
+          open={!!message}
+          handleClose={() => setMessage("")}
+          title={success ? "Success" : "Error"}
+          content={message}
+          closeContent="Close"
         />
         <Box
           sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>

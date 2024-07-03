@@ -412,15 +412,17 @@ const MyAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
+                                    ? "#D6001C"
+                                    : assignment.state === 2
                                     ? "#FFC700"
-                                    : "#D6001C",
+                                    : "blue",
                               }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>
                           </TableCell>
                           <TableCell>
                             <IconButton
-                              disabled={assignment.state !== 1}
+                              disabled={assignment.state !== 2}
                               sx={{
                                 color: "#D6001C",
                                 "&:hover": {
@@ -435,7 +437,7 @@ const MyAssignmentPage = () => {
                               <DoneIcon />
                             </IconButton>
                             <IconButton
-                              disabled={assignment.state !== 1}
+                              disabled={assignment.state !== 2}
                               sx={{
                                 color: "black",
                                 "&:hover": {

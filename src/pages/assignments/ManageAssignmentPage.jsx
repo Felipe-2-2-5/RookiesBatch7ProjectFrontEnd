@@ -402,6 +402,9 @@ const ManageAssignmentPage = () => {
                 Waiting for acceptance
               </MenuItem>
               <MenuItem value="Declined">Declined</MenuItem>
+              <MenuItem value="Waiting for returning">
+                Waiting for returning
+              </MenuItem>
             </Select>
           </FormControl>
 
@@ -638,8 +641,10 @@ const ManageAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
+                                    ? "#D6001C"
+                                    : assignment.state === 2
                                     ? "#FFC700"
-                                    : "#D6001C",
+                                    : "blue",
                               }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>
@@ -647,7 +652,7 @@ const ManageAssignmentPage = () => {
                           <TableCell>
                             <IconButton
                               disabled={
-                                assignment.state === 0 || assignment.state === 2
+                                assignment.state === 0 || assignment.state === 1
                               }
                               sx={{
                                 "&:hover": {

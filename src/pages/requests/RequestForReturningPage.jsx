@@ -132,7 +132,8 @@ const RequestForReturningPage = () => {
     }));
   };
 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null); // eslint-disable-next-line
+  const [cleared, setCleared] = useState(false);
   const [dateError, setDateError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -311,6 +312,9 @@ const RequestForReturningPage = () => {
             {/* Returned date Filter */}
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
+                slotProps={{
+                  field: { clearable: true, onClear: () => setCleared(true) },
+                }}
                 label="Returned Date"
                 value={selectedDate}
                 onChange={(newValue) => {
@@ -322,12 +326,18 @@ const RequestForReturningPage = () => {
                       returnedDate: format(newValue, "dd/MM/yyyy"),
                     }));
                   } else {
+                    setSelectedDate(null);
                     setDateError(true);
+                    setFilterRequest((prev) => ({
+                      ...prev,
+                      returnedDate: "",
+                    }));
                   }
                 }}
+                clearable
                 sx={{
+                  width: 240,
                   marginLeft: "16px",
-                  minWidth: 200,
                   "& .MuiInputLabel-root": {
                     color: "black",
                   },
@@ -351,8 +361,8 @@ const RequestForReturningPage = () => {
                       style: { color: "black" },
                     }}
                     sx={{
+                      width: 240,
                       marginLeft: "16px",
-                      minWidth: 200,
                       "& .MuiInputLabel-root": {
                         color: "black",
                       },
@@ -401,13 +411,13 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
         </Box>
@@ -608,7 +618,7 @@ const RequestForReturningPage = () => {
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                            "Completed" ? (
+                              "Completed" ? (
                               <>
                                 <IconButton
                                   aria-label="complete"
@@ -626,7 +636,7 @@ const RequestForReturningPage = () => {
                                 <IconButton
                                   aria-label="complete"
                                   sx={{
-                                    color: "#008000",
+                                    color: "#D6001C",
                                     "&:hover": {
                                       backgroundColor: "#bcbcbc",
                                     },
@@ -639,7 +649,7 @@ const RequestForReturningPage = () => {
                                 <IconButton
                                   aria-label="cancel"
                                   sx={{
-                                    color: "#D6001C",
+                                    color: "#000000",
                                     "&:hover": {
                                       backgroundColor: "#bcbcbc",
                                     },

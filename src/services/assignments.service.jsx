@@ -10,6 +10,11 @@ export const GetAssignment = async (id) => {
   return response.data;
 };
 
+export const DeleteAssignment = async (id) => {
+  const response = await httpClient.delete(`/assignments/${id}`);
+  return response;
+};
+
 export const CreateAssignmentAPI = async (body) => {
   const response = await httpClient.post("/assignments", body);
   return response;

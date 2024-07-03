@@ -186,9 +186,9 @@ const MyAssignmentPage = () => {
         setNotiTitle("Notifications");
         setNotiMessage("Accept successfully!");
         setNoti(true);
-      } catch (error) {
+      } catch (err) {
         setNotiTitle("Error");
-        setNotiMessage(error.UserMessage);
+        setNotiMessage(err.UserMessage);
         setNoti(true);
       }
     };
@@ -439,10 +439,10 @@ const MyAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
-                                    ? "#D6001C"
-                                    : assignment.state === 2
-                                    ? "#FFC700"
-                                    : "blue",
+                                      ? "#D6001C"
+                                      : assignment.state === 2
+                                        ? "#FFC700"
+                                        : "blue",
                               }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>

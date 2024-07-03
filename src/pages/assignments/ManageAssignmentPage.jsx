@@ -320,7 +320,7 @@ const ManageAssignmentPage = () => {
     try {
       await DeleteAssignment(selectedAssignment.id);
       getAssignments(filterRequest);
-      setOpenReturnPopup(false);
+      setOpenDeleteConfirmationPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
       setNotiMessage("Assignment has been deleted successfully!");
@@ -673,10 +673,10 @@ const ManageAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
-                                    ? "#D6001C"
-                                    : assignment.state === 2
-                                    ? "#FFC700"
-                                    : "blue",
+                                      ? "#D6001C"
+                                      : assignment.state === 2
+                                        ? "#FFC700"
+                                        : "blue",
                               }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>

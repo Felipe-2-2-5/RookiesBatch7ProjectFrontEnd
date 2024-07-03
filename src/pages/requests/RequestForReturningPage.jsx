@@ -44,7 +44,8 @@ import { requestStateEnum } from "../../enum/requestStateEnum";
 import {
   GetReturnRequest,
   ReturnRequestFilterRequest,
-  CancelReturnRequest
+  CancelReturnRequest,
+  CompeleteReturnRequest
 } from "../../services/requestsForReturning.service";
 
 const formatDate = (dateString) => {
@@ -65,6 +66,7 @@ const buttonTableHead = {
 const RequestForReturningPage = () => {
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
+  const [openConfirmPopup, setOpenConfirmPopup] = useState(false); 
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
@@ -224,6 +226,7 @@ const RequestForReturningPage = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedReturnRequest, setSelectedReturnRequest] = useState(null);
+
   const handleDetailDialog = async (returnRequest) => {
     const res = await GetReturnRequest(returnRequest.id);
     setSelectedReturnRequest({ ...res.data });
@@ -244,9 +247,15 @@ const RequestForReturningPage = () => {
     setSelectedReturnRequest(returnRequestId);
   };
 
+  const handleOpenDialogConfirm = ( returnRequest) => {
+    setOpenConfirmPopup(true);
+    setSelectedReturnRequest(returnRequest);
+  };
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
   const handleConfirm = async () => {
     try {
       await CancelReturnRequest(selectedReturnRequest);
@@ -255,6 +264,24 @@ const RequestForReturningPage = () => {
     } catch (error) {
       setSuccess(false);
       setMessage("An error occurred while cancelling the request.");
+    }
+    setOpenDialog(false);
+  };
+
+  const handleConfirmPopupClose = () => {
+    setOpenConfirmPopup(false);
+    setSelectedReturnRequest(null);
+  }
+
+  const handleCompleteRequest = async () => {
+    try {
+      console.log(selectedReturnRequest);
+      await CompeleteReturnRequest(selectedReturnRequest.id);
+      setSuccess(true);
+      setMessage("The request has been successfully completed.");
+    } catch (error) {
+      setSuccess(false);
+      setMessage("An error occurred while completing the request.");
     }
     setOpenDialog(false);
   };
@@ -281,6 +308,14 @@ const RequestForReturningPage = () => {
           closeContent="No"
           confirmContent="Yes"
         />
+        <ComfirmationPopup
+        open={openConfirmPopup}
+        title="Are you sure?"
+        let content = 'Do you want to mark this returning request as "Completed"?'
+        Okbutton="Yes"
+        handleClose={handleConfirmPopupClose}
+        handleConfirm={handleCompleteRequest}
+      />
         <NotificationPopup
           open={!!message}
           handleClose={() => setMessage("")}
@@ -683,6 +718,7 @@ const RequestForReturningPage = () => {
                                   }}
                                   onClick={(e) => {
                                     e.stopPropagation();
+                                    handleOpenDialogConfirm(returnRequest);
                                   }}
                                 >
                                   <CompleteIcon />
@@ -793,7 +829,7 @@ const RequestForReturningPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedReturnRequest.assignment.asset.assetCode}
+                    {selectedReturnRequest.assignment.asset?.assetCode}
                   </Typography>
                 </Grid>
 
@@ -804,7 +840,7 @@ const RequestForReturningPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {selectedReturnRequest.assignment.asset.assetName}
+                    {selectedReturnRequest.assignment.asset?.assetName}
                   </Typography>
                 </Grid>
 
@@ -826,7 +862,7 @@ const RequestForReturningPage = () => {
                 </Grid>
                 <Grid item xs={7}>
                   <Typography variant="body1">
-                    {formatDate(selectedReturnRequest.assignment.assignedDate)}
+                    {formatDate(selectedReturnRequest.assignment?.assignedDate)}
                   </Typography>
                 </Grid>
 

@@ -17,3 +17,7 @@ export const CancelReturnRequest = async (id) => {
   const response = await httpClient.delete(`/return-requests/${id}`);
   return response;
 };
+export const CompeleteReturnRequest = async (id) => {
+  const response = await httpClient.put(`/return-requests/complete-requests/${id}`);
+  return response;
+};

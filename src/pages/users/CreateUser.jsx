@@ -23,7 +23,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { CreateUserAPI } from "../../services/users.service";
-import PopupNotification from "../../components/PopupNotification";
+import NotificationPopup from "../../components/NotificationPopup";
 
 const CreateUser = () => {
   const navigate = useNavigate();
@@ -234,21 +234,21 @@ const CreateUser = () => {
           setContentPopup(
             `User ${users.firstName} ${users.lastName} has been created.`
           );
-          displayPopupNotification();
+          displayNotificationPopup();
         }
       } catch (error) {
         setTitlePopup("Error");
         setContentPopup(`error: ${error.userMessage}`);
-        displayPopupNotification();
+        displayNotificationPopup();
       }
     } else {
       setTitlePopup("Error");
       setContentPopup("Form has errors. Please fill all required fields.");
-      displayPopupNotification();
+      displayNotificationPopup();
     }
   };
 
-  const displayPopupNotification = () => {
+  const displayNotificationPopup = () => {
     setOpenPopup(true);
   };
 
@@ -558,7 +558,7 @@ const CreateUser = () => {
           </form>
         </Box>
       </Container>
-      <PopupNotification
+      <NotificationPopup
         open={openPopup}
         handleClose={handleClosePopup}
         title={titlePopup}

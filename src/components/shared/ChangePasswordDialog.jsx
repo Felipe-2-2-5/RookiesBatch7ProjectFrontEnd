@@ -10,7 +10,7 @@ import {
   TextField,
 } from "@mui/material";
 import React, { useState } from "react";
-import { PopupNotification } from "../";
+import { NotificationPopup } from "../";
 import { useAuthContext } from "../../context/AuthContext";
 import { ChangePassword } from "../../services/users.service";
 
@@ -164,16 +164,15 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
 
   return (
     <>
-      <Dialog
-        open={open}
-        onClose={handleCloseDialog}>
+      <Dialog open={open} onClose={handleCloseDialog}>
         <DialogTitle
           sx={{
             color: "#D6001C",
             bgcolor: "grey.300",
             borderBottom: "3px solid grey",
             fontWeight: "bold",
-          }}>
+          }}
+        >
           Change Password
         </DialogTitle>
         <DialogContent>
@@ -292,7 +291,8 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
               !confirmPassword ||
               !!newPasswordError ||
               !!confirmPasswordError
-            }>
+            }
+          >
             save
           </Button>
           <Button
@@ -303,12 +303,13 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
               "&:hover": {
                 backgroundColor: "lightgray",
               },
-            }}>
+            }}
+          >
             Cancel
           </Button>
         </DialogActions>
       </Dialog>
-      <PopupNotification
+      <NotificationPopup
         open={errorPopupOpen}
         handleClose={handleCloseErrorPopup}
         title="Change Password"

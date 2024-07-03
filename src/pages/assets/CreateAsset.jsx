@@ -20,7 +20,7 @@ import { GetCategories } from "../../services/category.service"; // Corrected ty
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import CategoryForm from "./CategoryForm";
-import PopupNotification from "../../components/PopupNotification";
+import NotificationPopup from "../../components/NotificationPopup";
 
 const CreateAsset = () => {
   const [categories, setCategories] = useState([]);
@@ -460,7 +460,7 @@ const CreateAsset = () => {
             />
           )}
         </Box>
-        <PopupNotification
+        <NotificationPopup
           open={openPopup}
           handleClose={handleCancel}
           title={titlePopup}

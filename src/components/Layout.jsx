@@ -20,7 +20,7 @@ import { AdminRoutes, StaffRoutes, BaseRoutes } from "../routes";
 import { ChangePassword, LoginUser } from "../services/users.service";
 import Footer from "./Footer";
 import Header from "./Header";
-import PopupNotification from "./PopupNotification";
+import NotificationPopup from "./NotificationPopup";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
 
@@ -307,7 +307,7 @@ const Layout = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <PopupNotification
+      <NotificationPopup
         open={showErrorDialog}
         title="Error"
         message={errorMessage}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./components/Layout";
-import PopupNotification from "./components/PopupNotification";
+import NotificationPopup from "./components/NotificationPopup";
 import { popupEventEmitter } from "./httpClient/httpClient";
 
 function App() {
@@ -26,7 +26,7 @@ function App() {
   return (
     <div className="App">
       <Layout />
-      <PopupNotification
+      <NotificationPopup
         open={showPopup}
         title="Error"
         content={popupMessage}

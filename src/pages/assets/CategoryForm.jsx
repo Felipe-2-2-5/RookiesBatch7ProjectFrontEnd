@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 
 import { CreateCategoryAPI } from "../../services/category.service";
-import PopupNotification from "../../components/PopupNotification";
+import NotificationPopup from "../../components/NotificationPopup";
 const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   const [prefix, setPrefix] = useState("");
   const [name, setName] = useState("");
@@ -182,7 +182,7 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
           </Grid>
         </Grid>
       </form>
-      <PopupNotification
+      <NotificationPopup
         open={openPopup}
         handleClose={handleCancel}
         title={titlePopup}

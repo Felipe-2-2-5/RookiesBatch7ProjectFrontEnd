@@ -17,7 +17,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
   FormControl,
   InputLabel,
   Select,
@@ -46,6 +45,7 @@ import {
   DeleteAsset,
 } from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
+import { ComfirmationPopup, NotificationPopup } from "../../components";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -63,6 +63,15 @@ const ManageAssetPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
+  // popup state
+  const [openReturnPopup, setOpenReturnPopup] = useState(false);
+  const [openNoti, setNoti] = useState(false);
+  const [notiTitle, setNotiTitle] = useState(null);
+  const [notiMessage, setNotiMessage] = useState(null);
+  const handlePopupClose = () => {
+    setOpenReturnPopup(false);
+    setNoti(false);
+  };
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
@@ -264,48 +273,33 @@ const ManageAssetPage = () => {
   const handleDialogClose = () => {
     setDialogOpen(false);
     setSelectedAsset(null);
-    setShowDeleteConfirmation(false);
     setShowDeleteWarning(false);
-    setShowDeleteNotification(false);
-    setErrorDialog(false);
-    setErrorMessage("");
   };
 
-  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
-  const [showDeleteNotification, setShowDeleteNotification] = useState(false);
-  const [errorDialog, setErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const handleDeleteIconClick = (asset) => {
     setSelectedAsset(asset);
 
     if (asset.assignments && asset.assignments.length > 0) {
       setShowDeleteWarning(true);
     } else {
-      setShowDeleteConfirmation(true);
+      setOpenReturnPopup(true);
     }
   };
   const handleDeleteConfirmation = async () => {
     if (selectedAsset) {
       try {
-        const res = await DeleteAsset(selectedAsset.id);
-
-        if (res.status === 204) {
-          getAssets(filterRequest);
-
-          setShowDeleteConfirmation(false);
-          setShowDeleteNotification(true);
-        } else {
-          setErrorMessage(
-            "Error deleting asset: " + res.status + " " + res.data
-          );
-          setErrorDialog(true);
-        }
+        await DeleteAsset(selectedAsset.id);
+        getAssets(filterRequest);
+        setNotiTitle("Notifications");
+        setNotiMessage(`Delete asset name ${selectedAsset.name} successfully!`);
+        setNoti(true);
       } catch (error) {
-        setErrorMessage("Error deleting asset: " + error.message);
-        setErrorDialog(true);
+        setNotiTitle("Error");
+        setNotiMessage(error.UserMessage);
+        setNoti(true);
       } finally {
-        setShowDeleteConfirmation(false);
+        setOpenReturnPopup(false);
       }
     }
   };
@@ -883,74 +877,6 @@ const ManageAssetPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={showDeleteConfirmation}
-        onClose={() => setShowDeleteConfirmation(false)}
-      >
-        <DialogTitle
-          sx={{
-            bgcolor: "grey.300",
-            color: "#D6001C",
-            fontWeight: "bold",
-            borderBottom: "1px solid black",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Are you sure?
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-          }}
-        >
-          <Typography variant="body1">
-            Do you want to delete this asset?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleDeleteConfirmation}
-            autoFocus
-            sx={{
-              color: "white",
-              bgcolor: "#D6001C",
-              "&:hover": {
-                bgcolor: "rgba(214, 0, 28, 0.8)",
-              },
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            onClick={() => setShowDeleteConfirmation(false)}
-            sx={{
-              color: "black",
-            }}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Error Dialog */}
-      <Dialog open={errorDialog} onClose={() => setErrorDialog(false)}>
-        <DialogTitle>Error</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1">{errorMessage}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setErrorDialog(false)} color="primary">
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       {/* Notification Dialog for Historical Assignments */}
       <Dialog
         open={showDeleteWarning}
@@ -1008,52 +934,20 @@ const ManageAssetPage = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Notification Dialog for Delete Successfully */}
-      <Dialog
-        open={showDeleteNotification}
-        onClose={() => setShowDeleteNotification(false)}
-        fullWidth
-      >
-        <DialogTitle
-          sx={{
-            bgcolor: "grey.300",
-            color: "#D6001C",
-            fontWeight: "bold",
-            borderBottom: "1px solid black",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          Notification
-          <IconButton
-            aria-label="close"
-            onClick={handleDialogClose}
-            sx={{
-              bgcolor: "grey.300",
-              color: "#D6001C",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-          }}
-        >
-          <Typography variant="body1">
-            Asset{" "}
-            <span style={{ fontWeight: "bold", fontStyle: "italic" }}>
-              {selectedAsset?.assetName}
-            </span>{" "}
-            has been deleted successfully.
-          </Typography>
-        </DialogContent>
-      </Dialog>
+      <ComfirmationPopup
+        open={openReturnPopup}
+        title="Are you sure?"
+        content="Do you want to create a returning request for this asset?"
+        Okbutton="Yes"
+        handleClose={handlePopupClose}
+        handleConfirm={handleDeleteConfirmation}
+      />
+      <NotificationPopup
+        open={openNoti}
+        title={notiTitle}
+        content={notiMessage}
+        handleClose={handlePopupClose}
+      />
     </>
   );
 };

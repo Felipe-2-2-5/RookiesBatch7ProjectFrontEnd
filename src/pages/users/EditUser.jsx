@@ -23,7 +23,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useAuthContext } from "../../context/AuthContext";
 import { GetUser, UpdateUser } from "../../services/users.service";
-import PopupNotification from "../../components/PopupNotification";
+import NotificationPopup from "../../components/NotificationPopup";
 
 const EditUser = () => {
   const navigate = useNavigate();
@@ -67,8 +67,16 @@ const EditUser = () => {
       try {
         const response = await GetUser(id);
         if (response) {
-          const parsedDateOfBirth = parse(response.data.dateOfBirth, "dd/MM/yyyy", new Date());
-          const parsedJoinedDate = parse(response.data.joinedDate, "dd/MM/yyyy", new Date());
+          const parsedDateOfBirth = parse(
+            response.data.dateOfBirth,
+            "dd/MM/yyyy",
+            new Date()
+          );
+          const parsedJoinedDate = parse(
+            response.data.joinedDate,
+            "dd/MM/yyyy",
+            new Date()
+          );
           setUsers({
             ...response.data,
             dateOfBirth: parsedDateOfBirth,
@@ -85,12 +93,11 @@ const EditUser = () => {
       } catch (error) {
         setTitlePopup("Error");
         setContentPopup(`Failed to fetch user data: ${error.message}`);
-        displayPopupNotification();
+        displayNotificationPopup();
       }
     };
     fetchUser();
   }, [id]);
-
 
   const [touched, setTouched] = useState({
     dateOfBirth: false,
@@ -100,12 +107,24 @@ const EditUser = () => {
   const isSingleFieldChanged = () => {
     const assetChanged = initialUser.type !== users.type;
     const userChanged = initialUser.gender !== users.gender;
-    const dateOfBirthChange = new Date(initialUser.dateOfBirth).getTime() !== new Date(users.dateOfBirth).getTime();
-    const joinedDateChange = new Date(initialUser.joinedDate).getTime() !== new Date(users.joinedDate).getTime();
+    const dateOfBirthChange =
+      new Date(initialUser.dateOfBirth).getTime() !==
+      new Date(users.dateOfBirth).getTime();
+    const joinedDateChange =
+      new Date(initialUser.joinedDate).getTime() !==
+      new Date(users.joinedDate).getTime();
     const locationChange = initialUser.location !== users.location;
 
-    return [assetChanged, userChanged, joinedDateChange,dateOfBirthChange, locationChange].filter(Boolean).length !== 0;
-};
+    return (
+      [
+        assetChanged,
+        userChanged,
+        joinedDateChange,
+        dateOfBirthChange,
+        locationChange,
+      ].filter(Boolean).length !== 0
+    );
+  };
 
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
@@ -115,13 +134,15 @@ const EditUser = () => {
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
     } else if (!isValid) {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        }  must contain only alphabetical characters and spaces.`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }  must contain only alphabetical characters and spaces.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -132,8 +153,9 @@ const EditUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.trim();
     if (trimmedValue.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     }
     setUsers({ ...users, [name]: trimmedValue });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -165,8 +187,9 @@ const EditUser = () => {
 
     setUsers({ ...users, [name]: trimmedValue });
     if (value.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (value.length > 20 || value.length < 2) {
       errorMessage = "The length of Firstname should be 2-20 characters.";
     } else if (!isValid) {
@@ -260,33 +283,32 @@ const EditUser = () => {
         users.gender = +users.gender;
       }
       try {
-        const response = await UpdateUser(id,
-          {
-            ...users,
-            dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
-            joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
-          });
+        const response = await UpdateUser(id, {
+          ...users,
+          dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
+          joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+        });
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
             `User ${users.firstName} ${users.lastName} has been updated.`
           );
-          displayPopupNotification();
+          displayNotificationPopup();
         }
       } catch (error) {
         setTitlePopup("Error");
         setContentPopup(`error: No permission to update this user`);
-        displayPopupNotification();
+        displayNotificationPopup();
       }
     } else {
       setTitlePopup("Error");
       setContentPopup("Form has errors. Please fill all required fields.");
-      displayPopupNotification();
+      displayNotificationPopup();
     }
   };
 
-  const displayPopupNotification = () => {
+  const displayNotificationPopup = () => {
     setOpenPopup(true);
   };
 
@@ -294,7 +316,6 @@ const EditUser = () => {
     setOpenPopup(false);
     navigate("/manage-user");
   };
-
 
   return (
     <>
@@ -314,9 +335,7 @@ const EditUser = () => {
           <form onSubmit={handleSubmit}>
             <Grid container spacing={1}>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
-                <Typography>
-                  First Name
-                </Typography>
+                <Typography>First Name</Typography>
               </Grid>
               <Grid item xs={9}>
                 <TextField
@@ -341,9 +360,7 @@ const EditUser = () => {
                 )}
               </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
-                <Typography>
-                  Last Name
-                </Typography>
+                <Typography>Last Name</Typography>
               </Grid>
               <Grid item xs={9}>
                 <TextField
@@ -479,7 +496,7 @@ const EditUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                      // error={formErrors.joinedDate !== "" && touched.joinedDate}
+                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />
@@ -575,7 +592,8 @@ const EditUser = () => {
                       },
                     }}
                     disabled={
-                      Object.values(formErrors).some((error) => error) || !isSingleFieldChanged()
+                      Object.values(formErrors).some((error) => error) ||
+                      !isSingleFieldChanged()
                     }
                     onClick={handleSubmit}
                   >
@@ -584,7 +602,9 @@ const EditUser = () => {
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => {    navigate("/manage-user");}}
+                    onClick={() => {
+                      navigate("/manage-user");
+                    }}
                   >
                     Cancel
                   </Button>
@@ -594,7 +614,7 @@ const EditUser = () => {
           </form>
         </Box>
       </Container>
-      <PopupNotification
+      <NotificationPopup
         open={openPopup}
         handleClose={handleClosePopup}
         title={titlePopup}

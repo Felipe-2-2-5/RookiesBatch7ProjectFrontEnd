@@ -15,15 +15,15 @@ import {
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import { vi } from 'date-fns/locale';
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DialogUserList from '../../components/DialogUserList';
-import DialogAssetList from '../../components/DialogAssetList';
-import { CreateAssignmentAPI } from '../../services/assignments.service';
-import { format } from 'date-fns';
+import { vi } from "date-fns/locale";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import DialogUserList from "../../components/DialogUserList";
+import DialogAssetList from "../../components/DialogAssetList";
+import { CreateAssignmentAPI } from "../../services/assignments.service";
+import { format } from "date-fns";
 
-const PopupNotification = ({
+const NotificationPopup = ({
   open,
   handleClose,
   title,
@@ -84,7 +84,7 @@ const CreateAssignment = () => {
   const [touched, setTouched] = useState({
     assignedDate: false,
     user: false,
-    asset: false
+    asset: false,
   });
 
   const handleChange = (event) => {
@@ -99,13 +99,12 @@ const CreateAssignment = () => {
   };
 
   const formatDateOnly = (date) => {
-    if (!date) return '';
+    if (!date) return "";
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-
 
   useEffect(() => {
     let errorMessage = "";
@@ -117,8 +116,12 @@ const CreateAssignment = () => {
         const todayDateOnly = formatDateOnly(new Date());
 
         if (assignedDateOnly < todayDateOnly) {
-          errorMessage = "Cannot select Assigned Date in the past. Please select another date.";
-        } else if (!(assignments.assignedDate instanceof Date) || isNaN(assignments.assignedDate.getTime())) {
+          errorMessage =
+            "Cannot select Assigned Date in the past. Please select another date.";
+        } else if (
+          !(assignments.assignedDate instanceof Date) ||
+          isNaN(assignments.assignedDate.getTime())
+        ) {
           errorMessage = "Invalid date";
         }
       }
@@ -129,8 +132,6 @@ const CreateAssignment = () => {
       assignedDate: errorMessage,
     }));
   }, [assignments.assignedDate, touched.assignedDate]);
-
-
 
   useEffect(() => {
     let errorMessage = "";
@@ -173,7 +174,6 @@ const CreateAssignment = () => {
     setVisibleDialog(true);
   };
 
-
   const handleUserDialogClose = () => {
     setVisibleDialog(false);
   };
@@ -208,28 +208,33 @@ const CreateAssignment = () => {
     event.preventDefault();
     try {
       const response = await CreateAssignmentAPI({
-        //custom input to match backend 
+        //custom input to match backend
         assignedToId: assignments.user.id,
         assetId: assignments.asset.id,
-        assignedDate: assignments.assignedDate ? formatDate(assignments.assignedDate) : null,
-        note: assignments.note
+        assignedDate: assignments.assignedDate
+          ? formatDate(assignments.assignedDate)
+          : null,
+        note: assignments.note,
       });
       if (response) {
-        sessionStorage.setItem("assignment_created", JSON.stringify(response.data));
+        sessionStorage.setItem(
+          "assignment_created",
+          JSON.stringify(response.data)
+        );
         setTitlePopup("Notifications");
         setContentPopup(
           `Asset ${assignments.asset.assetName} has been assigned to ${assignments.user.firstName} ${assignments.user.lastName}.`
         );
-        displayPopupNotification()
+        displayNotificationPopup();
       }
     } catch (error) {
       setTitlePopup("Error");
       setContentPopup(`error: ${error.DevMessage}`);
-      displayPopupNotification()
+      displayNotificationPopup();
     }
-  }
+  };
 
-  const displayPopupNotification = () => {
+  const displayNotificationPopup = () => {
     setOpenPopup(true);
   };
 
@@ -301,7 +306,15 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.user}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  cursor: "pointer",
+                }}
+              >
                 <Typography handleAssetDialogOpen>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
@@ -319,7 +332,9 @@ const CreateAssignment = () => {
                   placeholder="Asset"
                   fullWidth
                   name="asset"
-                  value={assignments.asset ? `${assignments.asset.assetName}` : ''}
+                  value={
+                    assignments.asset ? `${assignments.asset.assetName}` : ""
+                  }
                   onClick={handleAssetDialogOpen}
                   margin="dense"
                   error={formErrors.asset}
@@ -378,9 +393,7 @@ const CreateAssignment = () => {
                 )}
               </Grid>
               <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
-                <Typography>
-                  Note
-                </Typography>
+                <Typography>Note</Typography>
               </Grid>
               <Grid item xs={9}>
                 <TextField
@@ -462,7 +475,7 @@ const CreateAssignment = () => {
           )}
         </Box>
       </Container>
-      <PopupNotification
+      <NotificationPopup
         open={openPopup}
         handleClose={handleClosePopup}
         title={titlePopup}

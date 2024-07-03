@@ -47,6 +47,7 @@ import {
   DeleteAssignment,
 } from "../../services/assignments.service";
 import { CreateReturnRequest } from "../../services/requestsForReturning.service";
+import ConfirmationPopup from "../../components/ComfirmationPopup";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -771,7 +772,7 @@ const ManageAssignmentPage = () => {
         content={notiMessage}
         handleClose={handlePopupClose}
       />
-      <PopupNotificationExtra
+      <ConfirmationPopup
         open={openDeleteConfirmationPopup}
         title="Are you sure?"
         content="Do you want to delete this assignment?"

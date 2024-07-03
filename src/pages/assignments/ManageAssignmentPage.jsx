@@ -44,6 +44,7 @@ import { path } from "../../routes/routeContants";
 import {
   FilterAssignment,
   GetAssignment,
+  DeleteAssignment,
 } from "../../services/assignments.service";
 import { CreateReturnRequest } from "../../services/requestsForReturning.service";
 
@@ -82,6 +83,7 @@ const ManageAssignmentPage = () => {
   const [openNoti, setNoti] = useState(false);
   const [notiTitle, setNotiTitle] = useState("");
   const [notiMessage, setNotiMessage] = useState("");
+  const [openDeleteConfirmationPopup, setOpenDeleteConfirmationPopup] = useState(false);
 
   const [filterRequest, setFilterRequest] = useState({
     searchTerm: "",
@@ -312,8 +314,22 @@ const ManageAssignmentPage = () => {
       alert(e);
     }
   };
+  const handleDeleteRequest = async () => {
+    try {
+      await DeleteAssignment(selectedAssignment.id);
+      getAssignments(filterRequest);
+      setOpenReturnPopup(false);
+      setNoti(true);
+      setNotiTitle("Notifications");
+      setNotiMessage("Assignment has been deleted successfully!");
+    } catch (e) {
+      console.error("Failed to delete assignment", e);
+      alert(e);
+    }
+  };
   const handlePopupClose = () => {
     setOpenReturnPopup(false);
+    setOpenDeleteConfirmationPopup(false);
     setNoti(false);
   };
 
@@ -638,8 +654,8 @@ const ManageAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
-                                    ? "#FFC700"
-                                    : "#D6001C",
+                                      ? "#FFC700"
+                                      : "#D6001C",
                               }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>
@@ -675,6 +691,8 @@ const ManageAssignmentPage = () => {
                               }}
                               onClick={(e) => {
                                 e.stopPropagation();
+                                setOpenDeleteConfirmationPopup(true);
+                                setSelectedAssignment(assignment);
                               }}>
                               <DeleteIcon />
                             </IconButton>
@@ -732,6 +750,15 @@ const ManageAssignmentPage = () => {
         open={openNoti}
         title={notiTitle}
         content={notiMessage}
+        handleClose={handlePopupClose}
+      />
+      <PopupNotificationExtra
+        open={openDeleteConfirmationPopup}
+        title="Are you sure?"
+        content="Do you want to delete this assignment?"
+        confirmContent="Delete"
+        closeContent="Cancel"
+        handleConfirm={handleDeleteRequest}
         handleClose={handlePopupClose}
       />
     </>

@@ -352,6 +352,7 @@ const ManageAssetPage = () => {
                 onChange={handleStateChange}
                 sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
               >
+                <MenuItem value="Default">Default</MenuItem>
                 <MenuItem value="All">All</MenuItem>
                 {Object.values(assetStateEnum).map((state) => (
                   <MenuItem key={state} value={state}>
@@ -439,13 +440,13 @@ const ManageAssetPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
 

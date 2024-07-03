@@ -13,7 +13,6 @@ import {
   Button,
   CircularProgress,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
@@ -37,7 +36,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { PopupNotification } from "../../components";
+import { PopupNotification, PopupNotificationExtra } from "../../components";
 import { useAuthContext } from "../../context/AuthContext";
 import { GenderEnum } from "../../enum/genderEnum";
 import { path } from "../../routes/routeContants";
@@ -86,6 +85,7 @@ const ManageUserPage = () => {
   const [disableError, setDisableError] = useState(null);
   const [successPopupOpen, setSuccessPopupOpen] = useState(false);
   const [disableErrorPopupOpen, setDisableErrorPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
     Number.isNaN(totalCount) || Number.isNaN(pageSize) || totalCount === 0
@@ -259,6 +259,9 @@ const ManageUserPage = () => {
         getUsers(filterRequest);
         setDisableError(null); // clear any previous errors
         setSuccessPopupOpen(true); // open the success popup
+        setPopupMessage(
+          `User <b>${userToDisable.userName}</b> has been <b>disabled</b> successfully.`
+        );
       } catch (err) {
         setDisableError(err?.UserMessage);
         setDisableDialogOpen(false);
@@ -289,7 +292,7 @@ const ManageUserPage = () => {
             open={successPopupOpen}
             handleClose={() => setSuccessPopupOpen(false)}
             title="Success"
-            content="User has been successfully disabled."
+            content={popupMessage}
           />
           <PopupNotification
             open={disableErrorPopupOpen}
@@ -711,62 +714,16 @@ const ManageUserPage = () => {
         </Dialog>
       )}
       {/* Dialog to confirm disable user */}
-      <Dialog
+      <PopupNotificationExtra
         open={disableDialogOpen}
-        onClose={() => setDisableDialogOpen(false)}
-        maxWidth="xs"
-        fullWidth>
-        <DialogTitle
-          sx={{
-            bgcolor: "grey.300",
-            color: "#D6001C",
-            fontWeight: "bold",
-            borderBottom: "1px solid black",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}>
-          Are you sure?
-        </DialogTitle>
-        <DialogContent
-          sx={{
-            borderTop: "1px solid black",
-            display: "flex",
-            flexDirection: "column",
-            padding: "20px",
-            // maxHeight: "300px",
-            overflowY: "auto",
-            wordWrap: "break-word",
-            wordBreak: "break-all",
-          }}>
-          Do you want to disable this user?
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleDisableUser}
-            sx={{
-              bgcolor: "#D6001C",
-              color: "white",
-              borderColor: "black",
-              "&:hover": {
-                backgroundColor: "darkred",
-              },
-            }}>
-            Disable
-          </Button>
-          <Button
-            onClick={() => setDisableDialogOpen(false)}
-            sx={{
-              color: "grey",
-              border: "2px solid grey",
-              "&:hover": {
-                backgroundColor: "lightgray",
-              },
-            }}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+        handleClose={() => setDisableDialogOpen(false)}
+        handleConfirm={handleDisableUser}
+        title="Are you sure?"
+        content={`Do you want to disable this user ${userToDisable?.userName}?`}
+        closeContent="Cancel"
+        confirmContent="Disable"
+        Okbutton="Disable"
+      />
     </>
   );
 };

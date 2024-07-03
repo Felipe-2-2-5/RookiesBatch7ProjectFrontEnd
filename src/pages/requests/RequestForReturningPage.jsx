@@ -39,7 +39,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { PopupNotification, PopupNotificationExtra } from "../../components";
+import { NotificationPopup, ComfirmationPopup } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
 import {
   GetReturnRequest,
@@ -281,7 +281,7 @@ const RequestForReturningPage = () => {
           closeContent="No"
           confirmContent="Yes"
         />
-        <PopupNotification
+        <NotificationPopup
           open={!!message}
           handleClose={() => setMessage("")}
           title={success ? "Success" : "Error"}

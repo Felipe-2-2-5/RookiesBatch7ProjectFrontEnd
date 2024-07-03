@@ -17,7 +17,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { EditAssetAPI, GetAsset } from "../../services/asset.service";
 import { useNavigate, useParams } from "react-router-dom";
 import { format } from "date-fns";
-import PopupNotification from "../../components/PopupNotification";
+import NotificationPopup from "../../components/NotificationPopup";
 
 const EditAsset = () => {
   const [openPopup, setOpenPopup] = useState(false);
@@ -85,15 +85,24 @@ const EditAsset = () => {
 
   const isSingleFieldChanged = () => {
     const assetChanged = initialAsset.assetName !== asset.assetName;
-    const userChanged = initialAsset.category !== asset.category ;
-    const dateOfBirthChange = new Date(initialAsset.installedDate).getTime() !== new Date(asset.installedDate).getTime();
-    const specificationChange = initialAsset.specification !== asset.specification;
+    const userChanged = initialAsset.category !== asset.category;
+    const dateOfBirthChange =
+      new Date(initialAsset.installedDate).getTime() !==
+      new Date(asset.installedDate).getTime();
+    const specificationChange =
+      initialAsset.specification !== asset.specification;
     const stateChange = initialAsset.state !== asset.state;
 
-
-    return [assetChanged, userChanged,dateOfBirthChange,specificationChange, stateChange].filter(Boolean).length !== 0;
-};
-
+    return (
+      [
+        assetChanged,
+        userChanged,
+        dateOfBirthChange,
+        specificationChange,
+        stateChange,
+      ].filter(Boolean).length !== 0
+    );
+  };
 
   const handleNameBlur = (event) => {
     const { name, value } = event.target;
@@ -404,7 +413,8 @@ const EditAsset = () => {
                       },
                     }}
                     disabled={
-                      Object.values(formErrors).some((error) => error) || !isSingleFieldChanged()
+                      Object.values(formErrors).some((error) => error) ||
+                      !isSingleFieldChanged()
                     }
                     onClick={handleSubmit}
                   >
@@ -422,7 +432,7 @@ const EditAsset = () => {
             </Grid>
           </form>
         </Box>
-        <PopupNotification
+        <NotificationPopup
           open={openPopup}
           handleClose={handleCancel}
           title={titlePopup}

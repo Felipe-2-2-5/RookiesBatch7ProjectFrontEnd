@@ -43,6 +43,7 @@ import { ComfirmationPopup, NotificationPopup } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
 import {
   CancelReturnRequest,
+  CompeleteReturnRequest,
   GetReturnRequest,
   ReturnRequestFilterRequest,
 } from "../../services/requestsForReturning.service";
@@ -65,7 +66,7 @@ const buttonTableHead = {
 const RequestForReturningPage = () => {
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
-  const [openConfirmPopup, setOpenConfirmPopup] = useState(false); 
+  const [openConfirmPopup, setOpenConfirmPopup] = useState(false);
 
   const [filterRequest, setFilterRequest] = useState({
     state: "",
@@ -238,39 +239,34 @@ const RequestForReturningPage = () => {
 
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [requestToCancel, setRequestToCancel] = useState(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
-  const handleOpenDialog = (returnRequestId) => {
-    // e.stopPropagation();
-    setOpenDialog(true);
-    setSelectedReturnRequest(returnRequestId);
-  };
-
-  const handleOpenDialogConfirm = ( returnRequest) => {
-    setOpenConfirmPopup(true);
-    setSelectedReturnRequest(returnRequest);
-  };
-
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  const handleConfirm = async () => {
+  const handleCancelRequest = async () => {
     try {
-      await CancelReturnRequest(selectedReturnRequest.id);
+      await CancelReturnRequest(requestToCancel);
+      setCancelDialogOpen(false);
+      setSelectedReturnRequest(null);
+      const res = await ReturnRequestFilterRequest(filterRequest);
+      const fetchedReturnRequests = res?.data?.data;
+      setReturnRequests(fetchedReturnRequests);
       setSuccess(true);
       setMessage("The request has been successfully cancelled.");
-    } catch (error) {
+    } catch (err) {
       setSuccess(false);
       setMessage("An error occurred while cancelling the request.");
     }
-    setOpenDialog(false);
+  };
+  const handleCancelRequestClick = (id, e) => {
+    e.stopPropagation();
+    setRequestToCancel(id);
+    setCancelDialogOpen(true);
   };
 
   const handleConfirmPopupClose = () => {
     setOpenConfirmPopup(false);
     setSelectedReturnRequest(null);
-  }
+  };
 
   const handleCompleteRequest = async () => {
     try {
@@ -282,7 +278,7 @@ const RequestForReturningPage = () => {
       setSuccess(false);
       setMessage("An error occurred while completing the request.");
     }
-    setOpenDialog(false);
+    //setOpenDialog(false);
   };
 
   return (
@@ -299,22 +295,23 @@ const RequestForReturningPage = () => {
         </h2>
 
         <ComfirmationPopup
-          open={openDialog}
-          handleClose={handleCloseDialog}
-          handleConfirm={handleConfirm}
+          open={cancelDialogOpen}
+          handleClose={() => setCancelDialogOpen(false)}
+          handleConfirm={handleCancelRequest}
           title="Are you sure?"
           content="Do you want to cancel this returning request?"
           closeContent="No"
           confirmContent="Yes"
         />
         <ComfirmationPopup
-        open={openConfirmPopup}
-        title="Are you sure?"
-        let content = 'Do you want to mark this returning request as "Completed"?'
-        Okbutton="Yes"
-        handleClose={handleConfirmPopupClose}
-        handleConfirm={handleCompleteRequest}
-      />
+          open={openConfirmPopup}
+          title="Are you sure?"
+          let
+          content='Do you want to mark this returning request as "Completed"?'
+          Okbutton="Yes"
+          handleClose={handleConfirmPopupClose}
+          handleConfirm={handleCompleteRequest}
+        />
         <NotificationPopup
           open={!!message}
           handleClose={() => setMessage("")}
@@ -712,7 +709,12 @@ const RequestForReturningPage = () => {
                                       backgroundColor: "#bcbcbc",
                                     },
                                   }}
-                                  onClick= {handleOpenDialog}>
+                                  onClick={(e) =>
+                                    handleCancelRequestClick(
+                                      returnRequest?.id,
+                                      e
+                                    )
+                                  }>
                                   <Cancelcon />
                                 </IconButton>
                               </>

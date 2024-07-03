@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationBar } from "../../components";
-import { FilterReport } from "../../services/asset.service";
+import { ExportReport, FilterReport } from "../../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -57,25 +57,25 @@ const ReportPage = () => {
       ? 1
       : Math.ceil(totalCount / pageSize);
 
-    // Get reports from API
-    const getReports = async (filterRequest) => {
-      try {
-        const res = await FilterReport(filterRequest);
-        if (res.status === 200) {
-          setReports(res.data.data);
-          setTotalCount(res.data.totalCount);
-        } else {
-          setReports([]);
-          setTotalCount(0);
-        }
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
+  // Get reports from API
+  const getReports = async (filterRequest) => {
+    try {
+      const res = await FilterReport(filterRequest);
+      if (res.status === 200) {
+        setReports(res.data.data);
+        setTotalCount(res.data.totalCount);
+      } else {
         setReports([]);
         setTotalCount(0);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch reports:", error);
+      setReports([]);
+      setTotalCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     getReports(filterRequest);
@@ -88,7 +88,12 @@ const ReportPage = () => {
     }));
   };
 
-  const handleExport = () =>{
+  const handleExport = () => {
+    const exportReport = async () => {
+      await ExportReport();
+    }
+
+    exportReport();
   }
 
   const handleHeaderClick = (column) => {
@@ -180,7 +185,7 @@ const ReportPage = () => {
           Report
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px", marginRight: "20px", justifyContent: "flex-end"}}
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px", marginRight: "20px", justifyContent: "flex-end" }}
         >
           <Button
             variant="contained"
@@ -238,7 +243,7 @@ const ReportPage = () => {
                       onClick={() => handleHeaderClick("Assigned")}
                       endIcon={getSortIcon("provider")}
                     >
-                      Assigned 
+                      Assigned
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
@@ -261,7 +266,7 @@ const ReportPage = () => {
                       Not available
                     </Button>
                   </TableCell>
-                  <TableCell sx={tableHead }>
+                  <TableCell sx={tableHead}>
                     <Button
                       sx={buttonTableHead}
                       variant="text"

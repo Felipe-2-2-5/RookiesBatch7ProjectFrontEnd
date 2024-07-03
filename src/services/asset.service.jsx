@@ -43,3 +43,32 @@ export const FilterReport = async (body) => {
   const response = await httpClient.post("/assets/report", body);
   return response;
 };
+
+export const ExportReport = async () => {
+  try {
+    const response = await httpClient.post("/assets/report/export", {}, {
+      responseType: 'blob', // Important for binary data
+    });
+    console.log(response);
+    // Create a URL for the blob data
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+
+    // Get the filename from the response headers if available
+    const contentDisposition = response.headers['content-disposition'];
+    let fileName = 'AssetReport.xlsx';
+    if (contentDisposition && contentDisposition.includes('filename=')) {
+      fileName = contentDisposition.split('filename=')[1].split(';')[0].replace(/"/g, '');
+    }
+
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link); // Remove the link after downloading
+    window.URL.revokeObjectURL(url); // Free up memory
+  } catch (error) {
+    console.error('Error downloading report:', error);
+    // popupEventEmitter.emit("showPopup", error);
+  }
+};

@@ -49,7 +49,7 @@ export const ExportReport = async () => {
     const response = await httpClient.post("/assets/report/export", {}, {
       responseType: 'blob', // Important for binary data
     });
-    console.log(response);
+
     // Create a URL for the blob data
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
@@ -65,10 +65,10 @@ export const ExportReport = async () => {
     link.setAttribute('download', fileName);
     document.body.appendChild(link);
     link.click();
+
     document.body.removeChild(link); // Remove the link after downloading
     window.URL.revokeObjectURL(url); // Free up memory
   } catch (error) {
     console.error('Error downloading report:', error);
-    // popupEventEmitter.emit("showPopup", error);
   }
 };

@@ -90,9 +90,12 @@ const ReportPage = () => {
 
   const handleExport = () => {
     const exportReport = async () => {
-      await ExportReport();
+      try {
+        await ExportReport();
+      } catch (error) {
+        console.error('Error downloading report:', error);
+      }
     }
-
     exportReport();
   }
 

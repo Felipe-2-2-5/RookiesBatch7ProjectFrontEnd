@@ -12,7 +12,7 @@ import {
 import { jwtDecode } from "jwt-decode";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PopupNotification } from "../components";
+import { NotificationPopup } from "../components";
 import { useAuthContext } from "../context/AuthContext";
 import { path } from "../routes/routeContants";
 import { LoginUser } from "../services/users.service";
@@ -71,9 +71,7 @@ const LoginPage = () => {
 
   return (
     <>
-      <Paper
-        elevation={3}
-        sx={{ p: 3, mt: 3, mb: 3 }}>
+      <Paper elevation={3} sx={{ p: 3, mt: 3, mb: 3 }}>
         <Box
           sx={{
             display: "flex",
@@ -90,8 +88,9 @@ const LoginPage = () => {
               width: "100%",
               maxWidth: "400px",
             },
-          }}>
-          <PopupNotification
+          }}
+        >
+          <NotificationPopup
             open={alertOpen}
             handleClose={handleAlertClose}
             title="Error"
@@ -101,12 +100,11 @@ const LoginPage = () => {
           <Typography
             variant="h2"
             gutterBottom
-            sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}>
+            sx={{ color: "#D6001C", fontWeight: "bold", mt: 3 }}
+          >
             Login to your account
           </Typography>
-          <Typography
-            variant="h6"
-            sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ mt: 2 }}>
             Access your asset management system securely and efficiently.
           </Typography>
           <form onSubmit={handleLogin}>
@@ -155,7 +153,8 @@ const LoginPage = () => {
                     <IconButton
                       aria-label="toggle password visibility"
                       onClick={togglePasswordVisibility}
-                      edge="end">
+                      edge="end"
+                    >
                       {showPassword ? (
                         <VisibilityOffIcon />
                       ) : (
@@ -186,7 +185,8 @@ const LoginPage = () => {
                 "&:hover": {
                   bgcolor: "rgba(214, 0, 28, 0.8)",
                 },
-              }}>
+              }}
+            >
               Login
             </Button>
           </form>

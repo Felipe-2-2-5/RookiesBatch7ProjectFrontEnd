@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 
-const PopupNotificationExtra = ({
+const ConfirmationPopup = ({
   open,
   handleClose,
   handleConfirm,
@@ -69,4 +69,4 @@ const PopupNotificationExtra = ({
   );
 };
 
-export default PopupNotificationExtra;
+export default ConfirmationPopup;

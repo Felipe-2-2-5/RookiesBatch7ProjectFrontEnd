@@ -258,8 +258,8 @@ const RequestForReturningPage = () => {
           open={openDialog}
           handleClose={handleCloseDialog}
           // handleConfirm={} // your confirm handler here
-          title="Cancel Confirmation"
-          content="Are you sure you want to cancel?"
+          title="Are you sure?"
+          content="Do you want to cancel this returning request?"
           closeContent="No"
           confirmContent="Yes"
         />
@@ -401,13 +401,13 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
+                {
+                  color: "black",
+                },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
+                {
+                  borderColor: "black",
+                },
             }}
           />
         </Box>
@@ -471,8 +471,8 @@ const RequestForReturningPage = () => {
                     }}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("requestor")}
-                      endIcon={getSortIcon("requestor")}
+                      onClick={() => handleHeaderClick("requestedBy")}
+                      endIcon={getSortIcon("requestedBy")}
                       sx={buttonTableHead}>
                       Requested By
                     </Button>
@@ -499,8 +499,8 @@ const RequestForReturningPage = () => {
                     }}>
                     <Button
                       variant="text"
-                      onClick={() => handleHeaderClick("acceptor")}
-                      endIcon={getSortIcon("acceptor")}
+                      onClick={() => handleHeaderClick("acceptedBy")}
+                      endIcon={getSortIcon("acceptedBy")}
                       sx={buttonTableHead}>
                       Accepted By
                     </Button>
@@ -608,7 +608,7 @@ const RequestForReturningPage = () => {
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                              "Completed" ? (
+                            "Completed" ? (
                               <>
                                 <IconButton
                                   aria-label="complete"

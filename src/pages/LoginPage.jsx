@@ -111,7 +111,6 @@ const LoginPage = () => {
           </Typography>
           <form onSubmit={handleLogin}>
             <TextField
-              // label="Username"
               placeholder="Username"
               variant="outlined"
               value={username}
@@ -136,7 +135,6 @@ const LoginPage = () => {
               autoComplete="off"
             />
             <TextField
-              // label="Password"
               placeholder="Password"
               variant="outlined"
               type={showPassword ? "text" : "password"}
@@ -194,24 +192,6 @@ const LoginPage = () => {
           </form>
         </Box>
       </Paper>
-
-      {/* <Dialog open={alertOpen} onClose={handleAlertClose}>
-        <DialogTitle
-          sx={{ bgcolor: "grey.300", color: "#D6001C", fontWeight: "bold" }}
-        >
-          Error
-        </DialogTitle>
-        <DialogContent>
-          <Typography>
-            Invalid username or password. Please try again.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleAlertClose} sx={{ color: "#D6001C" }}>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog> */}
     </>
   );
 };

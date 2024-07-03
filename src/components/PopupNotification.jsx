@@ -4,6 +4,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Typography,
 } from "@mui/material";
 import React from "react";
 
@@ -22,8 +23,7 @@ const PopupNotification = ({
       onClose={handleClose}
       disableBackdropClick
       disableEscapeKeyDown
-      maxWidth="md"
-    >
+      maxWidth="md">
       <DialogTitle
         sx={{
           borderBottom: "3px solid grey",
@@ -31,13 +31,15 @@ const PopupNotification = ({
           fontWeight: "bold",
           minWidth: 400,
           bgcolor: "lightgrey",
-        }}
-      >
+        }}>
         {title}
       </DialogTitle>
       <DialogContent>
         {contentLines.map((line, index) => (
-          <p key={index}>{line}</p>
+          <Typography
+            key={index}
+            dangerouslySetInnerHTML={{ __html: line }}
+          />
         ))}
       </DialogContent>
       <DialogActions>
@@ -47,8 +49,7 @@ const PopupNotification = ({
             color: "white",
             bgcolor: "#D6001C",
             "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
+          }}>
           {closeContent ? closeContent : "Ok"}
         </Button>
       </DialogActions>

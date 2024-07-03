@@ -13,3 +13,7 @@ export const CreateReturnRequest = async (assignmentId) => {
   const response = await httpClient.post(`/return-requests/${assignmentId}`);
   return response;
 };
+export const CancelReturnRequest = async (id) => {
+  const response = await httpClient.delete(`/return-requests/${id}`);
+  return response;
+};

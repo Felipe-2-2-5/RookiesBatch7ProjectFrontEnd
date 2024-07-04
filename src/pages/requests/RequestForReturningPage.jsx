@@ -93,24 +93,24 @@ const RequestForReturningPage = () => {
 
   const [returnRequests, setReturnRequests] = useState([]);
 
+  const getReturnRequests = async (filterRequest) => {
+    const res = await ReturnRequestFilterRequest(filterRequest);
+    const fetchedReturnRequests = res.data.data;
+    setTotalCount(res.data.totalCount);
+    setReturnRequests(fetchedReturnRequests);
+
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    const getReturnRequests = async (filterRequest) => {
-      const res = await ReturnRequestFilterRequest(filterRequest);
-      const fetchedReturnRequests = res.data.data;
-      setTotalCount(res.data.totalCount);
-      setReturnRequests(fetchedReturnRequests);
-
-      if (scrollRef.current) {
-        scrollRef.current.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
-      setLoading(false);
-    };
-
     getReturnRequests(filterRequest);
-  }, [filterRequest,returnRequests]);
+  }, [filterRequest]);
 
   const [selectedState, setSelectedState] = useState("All");
   const handleStateChange = (e) => {
@@ -278,12 +278,14 @@ const RequestForReturningPage = () => {
     try {
       console.log(selectedReturnRequest);
       await CompeleteReturnRequest(selectedReturnRequest.id);
+      getReturnRequests(filterRequest);
       setSuccess(true);
       setMessage("The request has been successfully completed.");
       setOpenConfirmPopup(false);
     } catch (error) {
       setSuccess(false);
       setMessage("An error occurred while completing the request.");
+      setOpenConfirmPopup(false);
     }
     //setOpenDialog(false);
   };

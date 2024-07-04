@@ -45,6 +45,7 @@ import {
   FilterRequest,
   GetUser,
 } from "../../services/users.service";
+import { hubService } from "../../services/hub.service";
 
 // custom style background when hover user
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -261,6 +262,11 @@ const ManageUserPage = () => {
         setSuccessPopupOpen(true); // open the success popup
         setPopupMessage(
           `User <b>${userToDisable.userName}</b> has been <b>disabled</b> successfully.`
+        );
+        // Send message to notify user disabled
+        await hubService.send(
+          "NotifyUserDisabled",
+          userToDisable.id.tostring()
         );
       } catch (err) {
         setDisableError(err?.UserMessage);

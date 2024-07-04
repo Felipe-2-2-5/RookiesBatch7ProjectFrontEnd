@@ -132,8 +132,7 @@ const RequestForReturningPage = () => {
     }));
   };
 
-  const [selectedDate, setSelectedDate] = useState(null); // eslint-disable-next-line
-  const [cleared, setCleared] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
   const [dateError, setDateError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -313,7 +312,7 @@ const RequestForReturningPage = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 slotProps={{
-                  field: { clearable: true, onClear: () => setCleared(true) },
+                  field: { clearable: true },
                 }}
                 label="Returned Date"
                 value={selectedDate}
@@ -412,13 +411,13 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
+                {
+                  color: "black",
+                },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
+                {
+                  borderColor: "black",
+                },
             }}
           />
         </Box>
@@ -639,7 +638,7 @@ const RequestForReturningPage = () => {
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                              "Completed" ? (
+                            "Completed" ? (
                               <>
                                 <IconButton aria-label="complete" disabled>
                                   <CompleteIcon />

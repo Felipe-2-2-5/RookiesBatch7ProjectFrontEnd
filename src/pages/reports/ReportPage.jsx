@@ -46,7 +46,7 @@ const ReportPage = () => {
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
     sortColumn: "Category",
-    sortOrder: "ASC",
+    sortOrder: "desc",
     page: 1,
     pageSize: "20",
   });
@@ -57,25 +57,25 @@ const ReportPage = () => {
       ? 1
       : Math.ceil(totalCount / pageSize);
 
-    // Get reports from API
-    const getReports = async (filterRequest) => {
-      try {
-        const res = await FilterReport(filterRequest);
-        if (res.status === 200) {
-          setReports(res.data.data);
-          setTotalCount(res.data.totalCount);
-        } else {
-          setReports([]);
-          setTotalCount(0);
-        }
-      } catch (error) {
-        console.error("Failed to fetch reports:", error);
+  // Get reports from API
+  const getReports = async (filterRequest) => {
+    try {
+      const res = await FilterReport(filterRequest);
+      if (res.status === 200) {
+        setReports(res.data.data);
+        setTotalCount(res.data.totalCount);
+      } else {
         setReports([]);
         setTotalCount(0);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch reports:", error);
+      setReports([]);
+      setTotalCount(0);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     getReports(filterRequest);
@@ -88,7 +88,7 @@ const ReportPage = () => {
     }));
   };
 
-  const handleExport = () =>{
+  const handleExport = () => {
   }
 
   const handleHeaderClick = (column) => {
@@ -98,19 +98,21 @@ const ReportPage = () => {
 
       if (column === prev.sortColumn) {
         if (prev.sortOrder === "desc") {
-          newSortOrder = "asc";
+          newSortOrder = "";
           newSortColumn = column;
-        } else if (prev.sortOrder === "asc") {
-          newSortOrder = "desc";
         } else {
           newSortOrder = "desc";
           newSortColumn = column;
+
         }
       } else {
         newSortOrder = "desc";
         newSortColumn = column;
       }
-
+      console.log("1", column);
+      console.log("2", prev.sortColumn);
+      console.log("11", newSortOrder);
+      console.log("22", prev.sortOrder);
       return {
         ...prev,
         sortColumn: newSortColumn,
@@ -139,7 +141,6 @@ const ReportPage = () => {
       alignItems: "center",
       justifyContent: "center",
     };
-
     if (filterRequest.sortColumn === column) {
       if (filterRequest.sortOrder === "desc") {
         return (
@@ -149,7 +150,7 @@ const ReportPage = () => {
           </div>
         );
       }
-      if (filterRequest.sortOrder === "asc") {
+      if (filterRequest.sortOrder === "") {
         return (
           <div style={iconStyle}>
             <CustomArrowDropUp />
@@ -180,7 +181,7 @@ const ReportPage = () => {
           Report
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px", marginRight: "20px", justifyContent: "flex-end"}}
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px", marginRight: "20px", justifyContent: "flex-end" }}
         >
           <Button
             variant="contained"
@@ -216,7 +217,7 @@ const ReportPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("Category")}
-                      endIcon={getSortIcon("code")}
+                      endIcon={getSortIcon("Category")}
                     >
                       Category
                     </Button>
@@ -226,7 +227,7 @@ const ReportPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("Total")}
-                      endIcon={getSortIcon("name")}
+                      endIcon={getSortIcon("Total")}
                     >
                       Total
                     </Button>
@@ -236,16 +237,16 @@ const ReportPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("Assigned")}
-                      endIcon={getSortIcon("provider")}
+                      endIcon={getSortIcon("Assigned")}
                     >
-                      Assigned 
+                      Assigned
                     </Button>
                   </TableCell>
                   <TableCell sx={tableHead}>
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("Available")}
-                      endIcon={getSortIcon("date")}
+                      endIcon={getSortIcon("Available")}
                       sx={buttonTableHead}
                     >
                       Available
@@ -256,17 +257,17 @@ const ReportPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("NotAvailable")}
-                      endIcon={getSortIcon("state")}
+                      endIcon={getSortIcon("NotAvailable")}
                     >
                       Not available
                     </Button>
                   </TableCell>
-                  <TableCell sx={tableHead }>
+                  <TableCell sx={tableHead}>
                     <Button
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("WaitingForRecycling")}
-                      endIcon={getSortIcon("state")}
+                      endIcon={getSortIcon("WaitingForRecycling")}
                     >
                       Waiting for recycling
                     </Button>
@@ -276,7 +277,7 @@ const ReportPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("Recycled")}
-                      endIcon={getSortIcon("state")}
+                      endIcon={getSortIcon("Recycled")}
                     >
                       Recycled
                     </Button>

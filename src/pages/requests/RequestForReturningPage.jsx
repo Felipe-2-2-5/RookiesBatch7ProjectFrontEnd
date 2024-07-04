@@ -110,7 +110,7 @@ const RequestForReturningPage = () => {
     };
 
     getReturnRequests(filterRequest);
-  }, [filterRequest]);
+  }, [filterRequest,returnRequests]);
 
   const [selectedState, setSelectedState] = useState("All");
   const handleStateChange = (e) => {
@@ -263,6 +263,12 @@ const RequestForReturningPage = () => {
     setCancelDialogOpen(true);
   };
 
+  const handleConfirmRequestClick = (e,request) => {
+    e.stopPropagation();
+    setSelectedReturnRequest(request);
+    setOpenConfirmPopup(true);
+  };
+
   const handleConfirmPopupClose = () => {
     setOpenConfirmPopup(false);
     setSelectedReturnRequest(null);
@@ -274,6 +280,7 @@ const RequestForReturningPage = () => {
       await CompeleteReturnRequest(selectedReturnRequest.id);
       setSuccess(true);
       setMessage("The request has been successfully completed.");
+      setOpenConfirmPopup(false);
     } catch (error) {
       setSuccess(false);
       setMessage("An error occurred while completing the request.");
@@ -697,7 +704,7 @@ const RequestForReturningPage = () => {
                                     },
                                   }}
                                   onClick={(e) => {
-                                    e.stopPropagation();
+                                    handleConfirmRequestClick(e,returnRequest)
                                   }}>
                                   <CompleteIcon />
                                 </IconButton>

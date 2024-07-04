@@ -27,7 +27,7 @@ instance.interceptors.request.use(
 );
 instance.interceptors.response.use(
   (res) => {
-    return { data: res?.data, status: res?.status };
+    return { data: res?.data, status: res?.status, headers: res?.headers };
   },
   async (err) => {
     let errorMessage =

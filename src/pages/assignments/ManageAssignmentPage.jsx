@@ -311,9 +311,9 @@ const ManageAssignmentPage = () => {
       setNoti(true);
       setNotiTitle("Notifications");
       setNotiMessage("Return request has been created successfully!");
-    } catch (e) {
-      console.error("Failed to create return request", e);
-      alert(e);
+    } catch (error) {
+      console.error("Failed to create return request", error);
+      alert(error);
     }
   };
   const handleDeleteRequest = async () => {
@@ -323,10 +323,10 @@ const ManageAssignmentPage = () => {
       setOpenDeleteConfirmationPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage("Assignment has been deleted successfully!");
-    } catch (e) {
-      console.error("Failed to delete assignment", e);
-      alert(e);
+      setNotiMessage(`Assignment ${selectedAssignment.name} has been deleted successfully!`);
+    } catch (error) {
+      console.error("Failed to delete assignment", error);
+      alert(error);
     }
   };
   const handlePopupClose = () => {
@@ -704,7 +704,9 @@ const ManageAssignmentPage = () => {
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
-                              disabled={assignment.state === 0}
+                              disabled={
+                                assignment.state !== 1 && assignment.state !== 2
+                              }
                               sx={{
                                 color: "#D6001C",
                                 "&:hover": {

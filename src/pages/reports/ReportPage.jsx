@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationBar } from "../../components";
-import { FilterReport } from "../../services/asset.service";
+import { ExportReport, FilterReport } from "../../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -89,6 +89,17 @@ const ReportPage = () => {
   };
 
   const handleExport = () => {
+<<<<<<< HEAD
+=======
+    const exportReport = async () => {
+      try {
+        await ExportReport();
+      } catch (error) {
+        console.error('Error downloading report:', error);
+      }
+    }
+    exportReport();
+>>>>>>> 6c4303ae436378ed830aa26a4db1c6e7f16f0cdb
   }
 
   const handleHeaderClick = (column) => {

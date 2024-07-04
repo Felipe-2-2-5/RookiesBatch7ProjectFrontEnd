@@ -69,7 +69,7 @@ const MyAssignmentPage = () => {
   const [openNoti, setNoti] = useState(false);
   const [notiTitle, setNotiTitle] = useState(null);
   const [notiMessage, setNotiMessage] = useState(null);
-  const [pageCount, setTotalCount] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [filterRequest, setFilterRequest] = useState({
     sortColumn: "date",
@@ -77,7 +77,11 @@ const MyAssignmentPage = () => {
     page: 1,
     pageSize: "20",
   });
-
+  const pageSize = filterRequest.pageSize || 1;
+  const pageCount =
+  Number.isNaN(totalCount) || totalCount === 0
+    ? 1
+    : Math.ceil(totalCount / pageSize);
   const getAssignments = async (filterRequest) => {
     const res = await GetMyAssignments(filterRequest);
     setLoading(true);
@@ -502,7 +506,7 @@ const MyAssignmentPage = () => {
         </TableContainer>
         <PaginationBar
           filterRequest={filterRequest}
-          pageCount={pageCount}
+          pageCount={pageCount}                            
           handlePageChange={handlePageChange}
         />
       </Paper>

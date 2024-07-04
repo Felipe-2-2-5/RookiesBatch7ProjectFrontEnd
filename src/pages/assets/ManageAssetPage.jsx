@@ -292,7 +292,7 @@ const ManageAssetPage = () => {
         await DeleteAsset(selectedAsset.id);
         getAssets(filterRequest);
         setNotiTitle("Notifications");
-        setNotiMessage(`Delete asset name ${selectedAsset.name} successfully!`);
+        setNotiMessage(`Asset ${selectedAsset.assetName} has been deleted successfully!`);
         setNoti(true);
       } catch (error) {
         setNotiTitle("Error");
@@ -938,8 +938,9 @@ const ManageAssetPage = () => {
       <ComfirmationPopup
         open={openReturnPopup}
         title="Are you sure?"
-        content="Do you want to create a returning request for this asset?"
-        Okbutton="Yes"
+        content="Do you want to delete this asset?"
+        confirmContent={"Delete"}
+        closeContent={"Cancel"}
         handleClose={handlePopupClose}
         handleConfirm={handleDeleteConfirmation}
       />

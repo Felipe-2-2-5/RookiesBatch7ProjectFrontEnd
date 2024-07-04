@@ -126,7 +126,7 @@ const RequestForReturningPage = () => {
   };
 
   const [selectedDate, setSelectedDate] = useState(null); // eslint-disable-next-line
-  const [cleared, setCleared] = useState(false);
+  const [, setCleared] = useState(false);
   const [dateError, setDateError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -675,7 +675,7 @@ const RequestForReturningPage = () => {
                             {returnRequest.acceptor?.userName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
-                            {formatDate(returnRequest.returnedDate)}
+                            {returnRequest.returnedDate}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {requestStateEnum[returnRequest.state]}
@@ -911,7 +911,7 @@ const RequestForReturningPage = () => {
                   item
                   xs={7}>
                   <Typography variant="body1">
-                    {formatDate(selectedReturnRequest.returnedDate)}
+                    {selectedReturnRequest.returnedDate}
                   </Typography>
                 </Grid>
 

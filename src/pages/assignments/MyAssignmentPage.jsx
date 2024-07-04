@@ -121,19 +121,6 @@ const MyAssignmentPage = () => {
         }
         return 0;
       });
-      //assignment Created
-      const assignmentCreated = JSON.parse(
-        sessionStorage.getItem("assignment_created")
-      );
-      if (assignmentCreated) {
-        const updatedAssignments = fetchedMyAssignments.filter(
-          (asset) => asset.id !== assignmentCreated.id
-        );
-        setAssignments([assignmentCreated, ...updatedAssignments]);
-        sessionStorage.removeItem("assignment_created");
-      } else {
-        setAssignments(fetchedMyAssignments);
-      }
 
       if (scrollRef.current) {
         scrollRef.current.scrollTo({
@@ -143,8 +130,7 @@ const MyAssignmentPage = () => {
       }
       setLoading(false);
     }
-
-    //setTotalCount(res?.data?.totalCount);
+    setTotalCount(res?.data?.totalCount);
   };
 
   useEffect(() => {

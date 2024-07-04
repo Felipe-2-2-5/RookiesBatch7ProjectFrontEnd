@@ -323,7 +323,7 @@ const ManageAssignmentPage = () => {
       setOpenDeleteConfirmationPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage(`Assignment ${selectedAssignment.name} has been deleted successfully!`);
+      setNotiMessage(`Assignment has been deleted successfully!`);
     } catch (error) {
       console.error("Failed to delete assignment", error);
       alert(error);

@@ -14,7 +14,7 @@ export const CreateReturnRequest = async (assignmentId) => {
   return response;
 };
 export const CancelReturnRequest = async (id) => {
-  const response = await httpClient.delete(`/return-requests/${id}`);
+  const response = await httpClient.delete(`/return-requests/cancel-request/${id}`);
   return response;
 };
 export const CompeleteReturnRequest = async (id) => {

@@ -23,7 +23,7 @@ import {
 import React, { useEffect, useRef, useState } from "react";
 import {
   AssignmentDetailDialog,
-  ComfirmationPopup,
+  ConfirmationPopup,
   NotificationPopup,
   PaginationBar,
 } from "../../components";
@@ -128,14 +128,7 @@ const MyAssignmentPage = () => {
     }
   };
 
-  const firstUpdate = useRef(true);
-
   useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-
     getAssignments(filterRequest);
   }, [filterRequest]);
 
@@ -493,7 +486,7 @@ const MyAssignmentPage = () => {
         />
       )}
 
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openAcceptPopup}
         title="Are you sure?"
         content="Do you want to accept this assignment?"
@@ -502,7 +495,7 @@ const MyAssignmentPage = () => {
         handleConfirm={handleAcceptConfirm}
       />
 
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openDeclinePopup}
         title="Are you sure?"
         content="Do you want to decline this assignment?"
@@ -510,7 +503,7 @@ const MyAssignmentPage = () => {
         handleClose={handlePopupClose}
         handleConfirm={handleDeclineConfirm}
       />
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openReturnPopup}
         title="Are you sure?"
         content="Do you want to create a returning request for this asset?"

@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { ChangePasswordDialog } from "./";
-import ComfirmationPopup from "./ComfirmationPopup";
+import ConfirmationPopup from "./ConfirmationPopup";
 import { hubService } from "../services/hub.service"; // Import the hub service
 
 const Header = () => {
@@ -71,14 +71,15 @@ const Header = () => {
 
   return (
     <>
-      <AppBar position="sticky" sx={{ bgcolor: "#D6001C", zIndex: 1100 }}>
+      <AppBar
+        position="sticky"
+        sx={{ bgcolor: "#D6001C", zIndex: 1100 }}>
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box>
             <Breadcrumbs separator=" > ">
               <Typography
                 color="textPrimary"
-                sx={{ fontSize: "1.2em", fontWeight: "bold", color: "#fff" }}
-              >
+                sx={{ fontSize: "1.2em", fontWeight: "bold", color: "#fff" }}>
                 {formattedPathname}
               </Typography>
             </Breadcrumbs>
@@ -86,7 +87,9 @@ const Header = () => {
           <Box sx={{ display: "flex", alignItems: "center" }}>
             {isAuthenticated ? (
               <div>
-                <Button color="inherit" onClick={handleClick}>
+                <Button
+                  color="inherit"
+                  onClick={handleClick}>
                   {currentUser.name}
                   <ArrowDropDown />
                 </Button>
@@ -95,8 +98,7 @@ const Header = () => {
                   anchorEl={anchorEl}
                   keepMounted
                   open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                >
+                  onClose={handleClose}>
                   <MenuItem onClick={handleOpenChangePassword}>
                     Change Password
                   </MenuItem>
@@ -108,14 +110,16 @@ const Header = () => {
                 />
               </div>
             ) : (
-              <Button color="inherit" href="/login">
+              <Button
+                color="inherit"
+                href="/login">
                 Login
               </Button>
             )}
           </Box>
         </Toolbar>
       </AppBar>
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openCancelPopup}
         title="Are you sure?"
         content="Do you want to log out?"

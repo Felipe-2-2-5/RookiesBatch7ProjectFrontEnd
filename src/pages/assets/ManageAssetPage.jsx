@@ -139,7 +139,7 @@ const ManageAssetPage = () => {
     fetchCategories();
   }, []);
 
-  const [selectedState, setSelectedState] = useState("");
+  const [selectedState, setSelectedState] = useState("Default");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const handleStateChange = (e) => {
     const selectedState = e.target.value;

@@ -53,14 +53,8 @@ const AuthProvider = ({ children }) => {
             handleTokenExpiry();
           } else {
             setCurrentUser({
-              name: decodedToken[
-                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
-              ],
-              id: parseInt(
-                decodedToken[
-                  "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
-                ]
-              ),
+              id: parseInt(decodedToken.UserId),
+              name: decodedToken.UserName,
               role: decodedToken[
                 "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
               ],

@@ -16,6 +16,7 @@ import { NotificationPopup } from "../components";
 import { useAuthContext } from "../context/AuthContext";
 import { path } from "../routes/routeContants";
 import { LoginUser } from "../services/users.service";
+import { hubService } from "../services/hub.service";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -41,6 +42,7 @@ const LoginPage = () => {
         if (isFirst) {
           localStorage.setItem("password", password);
         }
+        await hubService.start();
         navigate(path.home);
       } else {
         setErrorMessage("Invalid username or password. Please try again.");

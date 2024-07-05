@@ -32,7 +32,7 @@ import {
   GetMyAssignments,
 } from "../../services/assignments.service";
 import { CreateReturnRequest } from "../../services/requestsForReturning.service";
- 
+
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -79,9 +79,9 @@ const MyAssignmentPage = () => {
   });
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
-  Number.isNaN(totalCount) || totalCount === 0
-    ? 1
-    : Math.ceil(totalCount / pageSize);
+    Number.isNaN(totalCount) || totalCount === 0
+      ? 1
+      : Math.ceil(totalCount / pageSize);
   const getAssignments = async (filterRequest) => {
     const res = await GetMyAssignments(filterRequest);
     setLoading(true);
@@ -492,7 +492,7 @@ const MyAssignmentPage = () => {
         </TableContainer>
         <PaginationBar
           filterRequest={filterRequest}
-          pageCount={pageCount}                            
+          pageCount={pageCount}
           handlePageChange={handlePageChange}
         />
       </Paper>

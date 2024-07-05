@@ -20,7 +20,7 @@ import { AdminRoutes, StaffRoutes, BaseRoutes } from "../routes";
 import { ChangePassword, LoginUser } from "../services/users.service";
 import Footer from "./Footer";
 import Header from "./Header";
-import NotificationPopup from "./NotificationPopup";
+import {NotificationPopup} from "./";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
 

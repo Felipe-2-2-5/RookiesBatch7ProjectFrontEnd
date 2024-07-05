@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { NotificationPopup } from "./components";
 import Layout from "./components/Layout";
-import NotificationPopup from "./components/NotificationPopup";
 import { popupEventEmitter } from "./httpClient/httpClient";
 
 function App() {

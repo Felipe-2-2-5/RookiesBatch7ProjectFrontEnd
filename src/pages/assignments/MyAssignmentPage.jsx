@@ -128,7 +128,14 @@ const MyAssignmentPage = () => {
     }
   };
 
+  const firstUpdate = useRef(true);
+
   useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+
     getAssignments(filterRequest);
   }, [filterRequest]);
 

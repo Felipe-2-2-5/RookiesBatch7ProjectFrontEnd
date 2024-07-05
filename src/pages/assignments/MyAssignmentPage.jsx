@@ -21,7 +21,7 @@ import {
   styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { AssignmentDetailDialog } from "../../components";
+import { AssignmentDetailDialog, PaginationBar } from "../../components";
 import NotificationPopup from "../../components/NotificationPopup";
 import ComfirmationPopup from "../../components/ComfirmationPopup";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
@@ -32,6 +32,7 @@ import {
   GetMyAssignments,
 } from "../../services/assignments.service";
 import { CreateReturnRequest } from "../../services/requestsForReturning.service";
+ 
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -63,41 +64,35 @@ const MyAssignmentPage = () => {
   const [openDeclinePopup, setOpenDeclinePopup] = useState(false);
   const [openReturnPopup, setOpenReturnPopup] = useState(false);
   const [assignmentId, setAssignmentId] = useState("");
-  //const [totalCount, setTotalCount] = useState();
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [openNoti, setNoti] = useState(false);
   const [notiTitle, setNotiTitle] = useState(null);
   const [notiMessage, setNotiMessage] = useState(null);
+  const [totalCount, setTotalCount] = useState(0);
 
   const [filterRequest, setFilterRequest] = useState({
-    searchTerm: "",
     sortColumn: "date",
     sortOrder: "descend",
     page: 1,
     pageSize: "20",
-    state: "",
-    fromDate: "",
-    toDate: "",
   });
-
-  //const pageSize = filterRequest.pageSize || 1;
-  // const pageCount =
-  //   Number.isNaN(totalCount) || totalCount === 0
-  //     ? 1
-  //     : Math.ceil(totalCount / pageSize);
-
+  const pageSize = filterRequest.pageSize || 1;
+  const pageCount =
+  Number.isNaN(totalCount) || totalCount === 0
+    ? 1
+    : Math.ceil(totalCount / pageSize);
   const getAssignments = async (filterRequest) => {
     const res = await GetMyAssignments(filterRequest);
-    // setLoading(true);
+    setLoading(true);
     let fetchedMyAssignments = res?.data;
 
     if (res.status === 200) {
       setAssignments(fetchedMyAssignments?.data);
-      //setTotalCount(fetchedMyAssignments?.totalCount);
+      setTotalCount(fetchedMyAssignments?.totalCount);
     } else {
       setAssignments([]);
-      //setTotalCount(0);
+      setTotalCount(0);
     }
 
     if (
@@ -126,19 +121,6 @@ const MyAssignmentPage = () => {
         }
         return 0;
       });
-      //assignment Created
-      const assignmentCreated = JSON.parse(
-        sessionStorage.getItem("assignment_created")
-      );
-      if (assignmentCreated) {
-        const updatedAssignments = fetchedMyAssignments.filter(
-          (asset) => asset.id !== assignmentCreated.id
-        );
-        setAssignments([assignmentCreated, ...updatedAssignments]);
-        sessionStorage.removeItem("assignment_created");
-      } else {
-        setAssignments(fetchedMyAssignments);
-      }
 
       if (scrollRef.current) {
         scrollRef.current.scrollTo({
@@ -148,8 +130,7 @@ const MyAssignmentPage = () => {
       }
       setLoading(false);
     }
-
-    //setTotalCount(res?.data?.totalCount);
+    setTotalCount(res?.data?.totalCount);
   };
 
   useEffect(() => {
@@ -186,9 +167,9 @@ const MyAssignmentPage = () => {
         setNotiTitle("Notifications");
         setNotiMessage("Accept successfully!");
         setNoti(true);
-      } catch (error) {
+      } catch (err) {
         setNotiTitle("Error");
-        setNotiMessage(error.UserMessage);
+        setNotiMessage(err.UserMessage);
         setNoti(true);
       }
     };
@@ -213,12 +194,12 @@ const MyAssignmentPage = () => {
     DeclineRespond(assignmentId);
   };
 
-  // const handlePageChange = (e, value) => {
-  //   setFilterRequest((prev) => ({
-  //     ...prev,
-  //     page: value,
-  //   }));
-  // };
+  const handlePageChange = (e, value) => {
+    setFilterRequest((prev) => ({
+      ...prev,
+      page: value,
+    }));
+  };
   const handleCreateRequest = async () => {
     try {
       await CreateReturnRequest(assignmentId);
@@ -439,16 +420,17 @@ const MyAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
-                                    ? "#FFC700"
-                                    : "#D6001C",
-                              }}
-                            >
+                                      ? "#D6001C"
+                                      : assignment.state === 2
+                                        ? "#FFC700"
+                                        : "blue",
+                              }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>
                           </TableCell>
                           <TableCell>
                             <IconButton
-                              disabled={assignment.state !== 1}
+                              disabled={assignment.state !== 2}
                               sx={{
                                 color: "#D6001C",
                                 "&:hover": {
@@ -464,7 +446,7 @@ const MyAssignmentPage = () => {
                               <DoneIcon />
                             </IconButton>
                             <IconButton
-                              disabled={assignment.state !== 1}
+                              disabled={assignment.state !== 2}
                               sx={{
                                 color: "black",
                                 "&:hover": {
@@ -508,11 +490,11 @@ const MyAssignmentPage = () => {
             </Table>
           </Sheet>
         </TableContainer>
-        {/* <PaginationBar
+        <PaginationBar
           filterRequest={filterRequest}
-          pageCount={pageCount}
+          pageCount={pageCount}                            
           handlePageChange={handlePageChange}
-        /> */}
+        />
       </Paper>
       {selectedAssignment && (
         <AssignmentDetailDialog

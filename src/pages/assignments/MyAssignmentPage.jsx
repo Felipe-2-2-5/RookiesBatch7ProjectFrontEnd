@@ -426,7 +426,8 @@ const MyAssignmentPage = () => {
                                 e.stopPropagation();
                                 setOpenAcceptPopup(true);
                                 setAssignmentId(assignment.id);
-                              }}>
+                              }}
+                              title="Accepted">
                               <DoneIcon />
                             </IconButton>
                             <IconButton
@@ -441,7 +442,8 @@ const MyAssignmentPage = () => {
                                 e.stopPropagation();
                                 setOpenDeclinePopup(true);
                                 setAssignmentId(assignment.id);
-                              }}>
+                              }}
+                              title="Declined">
                               <CloseIcon />
                             </IconButton>
                             <IconButton

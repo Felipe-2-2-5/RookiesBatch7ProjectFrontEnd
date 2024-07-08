@@ -24,6 +24,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
 const tableHead = {
   width: "auto",
   paddingLeft: "40px",
@@ -73,7 +74,7 @@ const ReportPage = () => {
       setLoading(false);
     }
   };
-
+  console.log(filterRequest);
   useEffect(() => {
     getReports(filterRequest);
   }, [filterRequest]);
@@ -113,10 +114,6 @@ const ReportPage = () => {
         newSortOrder = "desc";
         newSortColumn = column;
       }
-      console.log("1", column);
-      console.log("2", prev.sortColumn);
-      console.log("11", newSortOrder);
-      console.log("22", prev.sortOrder);
       return {
         ...prev,
         sortColumn: newSortColumn,

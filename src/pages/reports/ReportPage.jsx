@@ -24,6 +24,7 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+
 const tableHead = {
   width: "auto",
   paddingLeft: "40px",
@@ -43,7 +44,7 @@ const ReportPage = () => {
   const [loading, setLoading] = useState(true);
   const [filterRequest, setFilterRequest] = useState({
     sortColumn: "Category",
-    sortOrder: "desc",
+    sortOrder: "",
     page: 1,
     pageSize: "20",
   });
@@ -73,7 +74,7 @@ const ReportPage = () => {
       setLoading(false);
     }
   };
-
+  console.log(filterRequest);
   useEffect(() => {
     getReports(filterRequest);
   }, [filterRequest]);
@@ -86,14 +87,14 @@ const ReportPage = () => {
   };
 
   const handleExport = () => {
-    const exportReport = async () => {
+    const exportReport = async (filterRequest) => {
       try {
-        await ExportReport();
+        await ExportReport(filterRequest);
       } catch (error) {
         console.error("Error downloading report:", error);
       }
     };
-    exportReport();
+    exportReport(filterRequest);
   };
 
   const handleHeaderClick = (column) => {
@@ -113,10 +114,6 @@ const ReportPage = () => {
         newSortOrder = "desc";
         newSortColumn = column;
       }
-      console.log("1", column);
-      console.log("2", prev.sortColumn);
-      console.log("11", newSortOrder);
-      console.log("22", prev.sortOrder);
       return {
         ...prev,
         sortColumn: newSortColumn,

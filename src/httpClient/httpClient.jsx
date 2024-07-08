@@ -3,7 +3,7 @@ import { EventEmitter } from "events";
 
 export const popupEventEmitter = new EventEmitter();
 
- export const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
+export const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
 //export const baseURL = "http://localhost:7083/api";
 
 const instance = axios.create({
@@ -39,6 +39,14 @@ instance.interceptors.response.use(
           localStorage.removeItem("token");
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
+        case 403: {
+          errorMessage =
+            "You are not authorized to perform this action or your infomation has been modified.";
+          localStorage.removeItem("token");
+          window.location.href = "/login";
+          popupEventEmitter.emit("showPopup", errorMessage);
+          break;
+        }
         case 404:
           errorMessage = "Resource not found.";
           popupEventEmitter.emit("showPopup", errorMessage);

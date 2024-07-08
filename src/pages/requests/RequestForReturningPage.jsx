@@ -491,13 +491,13 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
         </Box>
@@ -725,7 +725,7 @@ const RequestForReturningPage = () => {
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                            "Completed" ? (
+                              "Completed" ? (
                               <>
                                 <IconButton
                                   aria-label="complete"
@@ -884,9 +884,6 @@ const RequestForReturningPage = () => {
                     Asset Name:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
                 <Grid
                   item
                   xs={7}>

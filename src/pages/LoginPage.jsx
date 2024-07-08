@@ -3,6 +3,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   InputAdornment,
   Paper,
@@ -26,11 +27,13 @@ const LoginPage = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuthContext();
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    setLoading(true);
     try {
       const response = await LoginUser({ username, password });
       const data = response.data;
@@ -51,6 +54,8 @@ const LoginPage = () => {
     } catch (err) {
       setErrorMessage(err?.UserMessage);
       setAlertOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,7 +65,7 @@ const LoginPage = () => {
 
   const validateInput = (input, setInput, setError, errorMessage) => {
     setInput(input);
-    if (!input.trim()) {
+    if (!input) {
       setError(errorMessage);
     } else {
       setError("");
@@ -122,6 +127,14 @@ const LoginPage = () => {
                   "Username must not be empty."
                 )
               }
+              onBlur={() =>
+                validateInput(
+                  username,
+                  setUsername,
+                  setUsernameError,
+                  "Username must not be empty."
+                )
+              }
               error={!!usernameError}
               helperText={usernameError}
               sx={{
@@ -140,6 +153,14 @@ const LoginPage = () => {
               type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) =>
+                validateInput(
+                  e.target.value.trim(),
+                  setPassword,
+                  setPasswordError,
+                  "Password must not be empty."
+                )
+              }
+              onBlur={(e) =>
                 validateInput(
                   e.target.value.trim(),
                   setPassword,
@@ -189,7 +210,11 @@ const LoginPage = () => {
                 },
               }}
             >
-              Login
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                "Login"
+              )}
             </Button>
           </form>
         </Box>

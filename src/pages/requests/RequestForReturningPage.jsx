@@ -337,8 +337,7 @@ const RequestForReturningPage = () => {
           content={message}
           closeContent="Close"
         />
-        <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
             {/* State Filter */}
             <FormControl
@@ -514,16 +513,18 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "30px",
+                    }}
+                  >
                     No.
                   </TableCell>
                   <TableCell
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetCode")}
@@ -536,8 +537,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetName")}
@@ -550,8 +552,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("requestedBy")}
@@ -564,8 +567,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assignedDate")}
@@ -578,8 +582,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("acceptedBy")}
@@ -592,8 +597,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("returnedDate")}
@@ -606,8 +612,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
@@ -657,16 +664,17 @@ const RequestForReturningPage = () => {
                           key={returnRequest.id}
                           hover
                           onClick={() => handleDetailDialog(returnRequest)}
-                          style={{ cursor: "pointer" }}>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          style={{ cursor: "pointer" }}
+                        >
+                          <TableCell sx={{ paddingLeft: "30px" }}>
                             {index + 1}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.assignment.asset.assetCode}
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "40px",
+                              paddingLeft: "10px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -674,22 +682,22 @@ const RequestForReturningPage = () => {
                             }}>
                             {returnRequest.assignment.asset.assetName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.requestor?.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {formatDate(returnRequest.assignment.assignedDate)}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.acceptor?.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.returnedDate}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state]}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state] ===
                             "Completed" ? (
                               <>

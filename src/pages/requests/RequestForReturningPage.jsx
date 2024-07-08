@@ -72,7 +72,7 @@ const RequestForReturningPage = () => {
     state: "",
     returnedDate: null,
     searchTerm: "",
-    sortColumn: "returnedDate",
+    sortColumn: "state",
     sortOrder: "descend",
     page: 1,
     pageSize: "20",
@@ -119,10 +119,18 @@ const RequestForReturningPage = () => {
     setFilterRequest((prevState) => ({
       ...prevState,
       state: selectedState === "All" ? "" : selectedState,
-      sortColumn: "returnedDate",
+      sortColumn: "state",
       sortOrder: "",
       page: 1,
     }));
+  };
+  const stateStyles = {
+    0: {  // Completed
+      color: "#757575", // Grey
+    },
+    1: {  // Waiting for Returning
+      color: "#1976D2", // Blue
+    },
   };
 
   const [selectedDate, setSelectedDate] = useState(null); // eslint-disable-next-line
@@ -684,7 +692,7 @@ const RequestForReturningPage = () => {
                           <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.returnedDate}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "10px" }}>
+                          <TableCell sx={{ color: stateStyles[returnRequest.state], paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state]}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>

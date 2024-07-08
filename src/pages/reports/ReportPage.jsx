@@ -86,14 +86,14 @@ const ReportPage = () => {
   };
 
   const handleExport = () => {
-    const exportReport = async () => {
+    const exportReport = async (filterRequest) => {
       try {
-        await ExportReport();
+        await ExportReport(filterRequest);
       } catch (error) {
         console.error("Error downloading report:", error);
       }
     };
-    exportReport();
+    exportReport(filterRequest);
   };
 
   const handleHeaderClick = (column) => {

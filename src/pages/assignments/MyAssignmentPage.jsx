@@ -461,7 +461,8 @@ const MyAssignmentPage = () => {
                                 e.stopPropagation();
                                 setOpenReturnPopup(true);
                                 setAssignmentId(assignment.id);
-                              }}>
+                              }}
+                              title="Return assignment">
                               <RestartAltRounded />
                             </IconButton>
                           </TableCell>

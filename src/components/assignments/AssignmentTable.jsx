@@ -230,7 +230,7 @@ const AssignmentTable = ({
                             );
                             e.stopPropagation();
                           }}
-                          title="Edit Assignment">
+                          title="Edit assignment">
                           <CreateTwoTone />
                         </IconButton>
                         <IconButton
@@ -267,7 +267,7 @@ const AssignmentTable = ({
                             setOpenReturnPopup(true);
                             setSelectedAssignment(assignment);
                           }}
-                          title="Request return assignment">
+                          title="Create return request">
                           <RestartAltRounded />
                         </IconButton>
                       </TableCell>

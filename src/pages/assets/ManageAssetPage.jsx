@@ -649,7 +649,8 @@ const ManageAssetPage = () => {
                                     navigate(
                                       path.assetEdit.replace(":id", asset.id)
                                     );
-                                  }}>
+                                  }}
+                                  title="Edit asset">
                                   <CreateTwoTone />
                                 </IconButton>
                                 <IconButton
@@ -663,7 +664,8 @@ const ManageAssetPage = () => {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteIconClick(asset);
-                                  }}>
+                                  }}
+                                  title="Delete asset">
                                   <DeleteIcon />
                                 </IconButton>
                               </>

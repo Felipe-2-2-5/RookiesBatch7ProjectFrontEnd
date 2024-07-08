@@ -491,13 +491,13 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
         </Box>
@@ -554,6 +554,21 @@ const RequestForReturningPage = () => {
                       endIcon={getSortIcon("assetName")}
                       sx={buttonTableHead}>
                       Asset Name
+                    </Button>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      fontWeight: "bold",
+                      width: "15%",
+                      paddingLeft: "10px",
+                    }}
+                  >
+                    <Button
+                      variant="text"
+                      onClick={() => handleHeaderClick("assignedTo")}
+                      endIcon={getSortIcon("assignedTo")}
+                      sx={buttonTableHead}>
+                      Assigned To
                     </Button>
                   </TableCell>
                   <TableCell
@@ -691,6 +706,9 @@ const RequestForReturningPage = () => {
                             {returnRequest.assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>
+                            {returnRequest.assignment.assignedTo?.userName}
+                          </TableCell>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.requestor?.userName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>
@@ -707,7 +725,7 @@ const RequestForReturningPage = () => {
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                            "Completed" ? (
+                              "Completed" ? (
                               <>
                                 <IconButton
                                   aria-label="complete"
@@ -732,7 +750,8 @@ const RequestForReturningPage = () => {
                                   }}
                                   onClick={(e) => {
                                     handleConfirmRequestClick(e, returnRequest);
-                                  }}>
+                                  }}
+                                  title="Accept request">
                                   <CompleteIcon />
                                 </IconButton>
                                 <IconButton
@@ -748,7 +767,8 @@ const RequestForReturningPage = () => {
                                       returnRequest?.id,
                                       e
                                     )
-                                  }>
+                                  }
+                                  title="Cancel request">
                                   <Cancelcon />
                                 </IconButton>
                               </>
@@ -869,6 +889,23 @@ const RequestForReturningPage = () => {
                   xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.asset?.assetName}
+                  </Typography>
+                </Grid>
+
+                <Grid
+                  item
+                  xs={5}>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: "bold" }}>
+                    Assigned To:
+                  </Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={7}>
+                  <Typography variant="body1">
+                    {selectedReturnRequest.assignment.assignedTo?.userName}
                   </Typography>
                 </Grid>
 

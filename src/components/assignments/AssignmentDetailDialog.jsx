@@ -120,7 +120,7 @@ const AssignmentDetailDialog = ({
             item
             xs={4}>
             <Typography variant="body1">
-              <strong>Assigned to:</strong>
+              <strong>Assigned To:</strong>
             </Typography>
           </Grid>
           <Grid
@@ -134,7 +134,7 @@ const AssignmentDetailDialog = ({
             item
             xs={4}>
             <Typography variant="body1">
-              <strong>Assigned by:</strong>
+              <strong>Assigned By:</strong>
             </Typography>
           </Grid>
           <Grid

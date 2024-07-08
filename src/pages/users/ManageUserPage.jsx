@@ -518,7 +518,8 @@ const ManageUserPage = () => {
                                 navigate(`/manage-user/edit-user/${user.id}`);
                                 e.stopPropagation();
                               }}
-                              disabled={user.id === currentUser.id}>
+                              disabled={user.id === currentUser.id}
+                              title="Edit user">
                               <CreateTwoTone />
                             </IconButton>
                             <IconButton
@@ -529,7 +530,8 @@ const ManageUserPage = () => {
                                 "&:hover": {
                                   backgroundColor: "#bcbcbc",
                                 },
-                              }}>
+                              }}
+                              title="Disable user">
                               <DeleteIcon />
                             </IconButton>
                           </TableCell>

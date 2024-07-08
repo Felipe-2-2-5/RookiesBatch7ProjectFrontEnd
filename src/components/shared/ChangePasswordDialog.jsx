@@ -76,7 +76,7 @@ const ChangePasswordDialog = ({ open, handleClose }) => {
 
     if (!newPasswordRegex.test(newPasswordValue)) {
       setNewPasswordError(
-        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character ( only include !, @, #, $, %, &, *, ?)."
+        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character (only include !, @, #, $, %, &, *, ?)."
       );
       return;
     }

@@ -25,18 +25,18 @@ import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
 
 const Layout = () => {
+  const navigate = useNavigate();
+  const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
+  const oldPassword = localStorage.getItem("password");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [newPasswordError, setNewPasswordError] = useState("");
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
-  const navigate = useNavigate();
-  const oldPassword = localStorage.getItem("password");
-  const [showErrorDialog, setShowErrorDialog] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   //   if (new Date(currentUser.expires * 1000) < new Date()) {
   //     setIsAuthenticated(false);
@@ -44,6 +44,7 @@ const Layout = () => {
 
   //   }
   // }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
+
   const handelSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -111,9 +112,16 @@ const Layout = () => {
 
     if (!newPasswordRegex.test(newPasswordValue)) {
       setNewPasswordError(
-        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character ( only include !, @, #, $, %, &, *, ?)."
+        "New password must be 8-16 characters long and include at least one lowercase letter, one uppercase letter, one number, and one special character (only include !, @, #, $, %, &, *, ?)."
       );
       return;
+    }
+
+    // Check if newPassword and confirmPassword match
+    if (confirmPassword && newPasswordValue !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match. Please re-enter.");
+    } else {
+      setConfirmPasswordError("");
     }
 
     // Clear the error if all conditions are satisfied
@@ -195,7 +203,7 @@ const Layout = () => {
               fullWidth
               value={newPassword}
               onChange={handleNewPasswordChange}
-              onBlur={handleNewPasswordChange}
+              // onBlur={handleNewPasswordChange}
               error={newPasswordError}
               required
               InputProps={{
@@ -234,7 +242,7 @@ const Layout = () => {
               required
               value={confirmPassword}
               onChange={handleConfirmPasswordChange}
-              onBlur={handleConfirmPasswordChange}
+              // onBlur={handleConfirmPasswordChange}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

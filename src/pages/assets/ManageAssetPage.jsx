@@ -26,13 +26,13 @@ import {
   styled,
 } from "@mui/material";
 import {
-  Edit as EditIcon,
   HighlightOff as DeleteIcon,
   ArrowDropDown,
   ArrowDropUp,
   FilterAltOutlined as FilterIcon,
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
+  CreateTwoTone,
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import { useNavigate } from "react-router";
@@ -163,6 +163,23 @@ const ManageAssetPage = () => {
       sortOrder: "",
       page: 1,
     }));
+  };
+  const stateStyles = {
+    0: {  // Available
+      color: "#4CAF50", // Green
+    },
+    1: {  // Not available
+      color: "#D6001C", // Red
+    },
+    2: {  // Waiting for Recycling
+      color: "#FFC107", // Yellow
+    },
+    3: {  // Recycled
+      color: "#757575", // Grey
+    },
+    4: {  // Assigned
+      color: "#1976D2", // Blue
+    },
   };
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -601,7 +618,7 @@ const ManageAssetPage = () => {
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {asset.category?.name}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ color: stateStyles[asset.state], paddingLeft: "40px" }}>
                             {assetStateEnum[asset.state]}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
@@ -610,7 +627,7 @@ const ManageAssetPage = () => {
                                 <IconButton
                                   aria-label="edit"
                                   disabled>
-                                  <EditIcon />
+                                  <CreateTwoTone />
                                 </IconButton>
                                 <IconButton
                                   aria-label="delete"
@@ -632,8 +649,9 @@ const ManageAssetPage = () => {
                                     navigate(
                                       path.assetEdit.replace(":id", asset.id)
                                     );
-                                  }}>
-                                  <EditIcon />
+                                  }}
+                                  title="Edit asset">
+                                  <CreateTwoTone />
                                 </IconButton>
                                 <IconButton
                                   aria-label="delete"
@@ -646,7 +664,8 @@ const ManageAssetPage = () => {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteIconClick(asset);
-                                  }}>
+                                  }}
+                                  title="Delete asset">
                                   <DeleteIcon />
                                 </IconButton>
                               </>

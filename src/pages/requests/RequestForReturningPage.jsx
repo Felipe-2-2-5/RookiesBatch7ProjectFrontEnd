@@ -39,7 +39,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { format } from "date-fns";
 import React, { useEffect, useRef, useState } from "react";
-import { ComfirmationPopup, NotificationPopup } from "../../components";
+import { ConfirmationPopup, NotificationPopup } from "../../components";
 import { requestStateEnum } from "../../enum/requestStateEnum";
 import {
   CancelReturnRequest,
@@ -126,7 +126,6 @@ const RequestForReturningPage = () => {
   };
 
   const [selectedDate, setSelectedDate] = useState(null); // eslint-disable-next-line
-  const [, setCleared] = useState(false);
   const [dateError, setDateError] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -253,8 +252,14 @@ const RequestForReturningPage = () => {
       setSuccess(true);
       setMessage("The request has been successfully cancelled.");
     } catch (err) {
-      setSuccess(false);
-      setMessage("An error occurred while cancelling the request.");
+      if (err?.ErrorCode === 404) {
+        setSuccess(false);
+        setCancelDialogOpen(false);
+      } else {
+        setSuccess(false);
+        setCancelDialogOpen(false);
+        setMessage(err?.UserMessage);
+      }
     }
   };
   const handleCancelRequestClick = (id, e) => {
@@ -263,7 +268,7 @@ const RequestForReturningPage = () => {
     setCancelDialogOpen(true);
   };
 
-  const handleConfirmRequestClick = (e,request) => {
+  const handleConfirmRequestClick = (e, request) => {
     e.stopPropagation();
     setSelectedReturnRequest(request);
     setOpenConfirmPopup(true);
@@ -282,12 +287,16 @@ const RequestForReturningPage = () => {
       setSuccess(true);
       setMessage("The request has been successfully completed.");
       setOpenConfirmPopup(false);
-    } catch (error) {
-      setSuccess(false);
-      setMessage("An error occurred while completing the request.");
-      setOpenConfirmPopup(false);
+    } catch (err) {
+      if (err?.ErrorCode === 404) {
+        setSuccess(false);
+        setOpenConfirmPopup(false);
+      } else {
+        setSuccess(false);
+        setOpenConfirmPopup(false);
+        setMessage(err?.UserMessage);
+      }
     }
-    //setOpenDialog(false);
   };
 
   return (
@@ -303,7 +312,7 @@ const RequestForReturningPage = () => {
           Request List
         </h2>
 
-        <ComfirmationPopup
+        <ConfirmationPopup
           open={cancelDialogOpen}
           handleClose={() => setCancelDialogOpen(false)}
           handleConfirm={handleCancelRequest}
@@ -312,7 +321,7 @@ const RequestForReturningPage = () => {
           closeContent="No"
           confirmContent="Yes"
         />
-        <ComfirmationPopup
+        <ConfirmationPopup
           open={openConfirmPopup}
           title="Are you sure?"
           let
@@ -328,8 +337,7 @@ const RequestForReturningPage = () => {
           content={message}
           closeContent="Close"
         />
-        <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
             {/* State Filter */}
             <FormControl
@@ -377,7 +385,7 @@ const RequestForReturningPage = () => {
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DatePicker
                 slotProps={{
-                  field: { clearable: true, onClear: () => setCleared(true) },
+                  field: { clearable: true },
                 }}
                 label="Returned Date"
                 value={selectedDate}
@@ -505,16 +513,18 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "30px",
+                    }}
+                  >
                     No.
                   </TableCell>
                   <TableCell
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetCode")}
@@ -527,8 +537,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assetName")}
@@ -541,8 +552,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("requestedBy")}
@@ -555,8 +567,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("assignedDate")}
@@ -569,8 +582,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("acceptedBy")}
@@ -583,8 +597,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("returnedDate")}
@@ -597,8 +612,9 @@ const RequestForReturningPage = () => {
                     sx={{
                       fontWeight: "bold",
                       width: "15%",
-                      paddingLeft: "40px",
-                    }}>
+                      paddingLeft: "10px",
+                    }}
+                  >
                     <Button
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
@@ -648,16 +664,17 @@ const RequestForReturningPage = () => {
                           key={returnRequest.id}
                           hover
                           onClick={() => handleDetailDialog(returnRequest)}
-                          style={{ cursor: "pointer" }}>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          style={{ cursor: "pointer" }}
+                        >
+                          <TableCell sx={{ paddingLeft: "30px" }}>
                             {index + 1}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.assignment.asset.assetCode}
                           </TableCell>
                           <TableCell
                             sx={{
-                              paddingLeft: "40px",
+                              paddingLeft: "10px",
                               overflow: "hidden",
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
@@ -665,22 +682,22 @@ const RequestForReturningPage = () => {
                             }}>
                             {returnRequest.assignment.asset.assetName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.requestor?.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {formatDate(returnRequest.assignment.assignedDate)}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.acceptor?.userName}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.returnedDate}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state]}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state] ===
                             "Completed" ? (
                               <>
@@ -706,7 +723,7 @@ const RequestForReturningPage = () => {
                                     },
                                   }}
                                   onClick={(e) => {
-                                    handleConfirmRequestClick(e,returnRequest)
+                                    handleConfirmRequestClick(e, returnRequest);
                                   }}>
                                   <CompleteIcon />
                                 </IconButton>

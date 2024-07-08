@@ -1,7 +1,4 @@
-import {
-  ArrowDropDown,
-  ArrowDropUp
-} from "@mui/icons-material";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
   Box,
@@ -14,11 +11,11 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  styled
+  styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationBar } from "../../components";
-import { FilterReport } from "../../services/asset.service";
+import { ExportReport, FilterReport } from "../../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -38,7 +35,7 @@ const buttonTableHead = {
   padding: 0,
   minWidth: "auto",
   color: "black",
-}
+};
 const ReportPage = () => {
   const scrollRef = useRef(null);
   const [totalCount, setTotalCount] = useState();
@@ -89,7 +86,15 @@ const ReportPage = () => {
   };
 
   const handleExport = () => {
-  }
+    const exportReport = async () => {
+      try {
+        await ExportReport();
+      } catch (error) {
+        console.error("Error downloading report:", error);
+      }
+    };
+    exportReport();
+  };
 
   const handleHeaderClick = (column) => {
     setFilterRequest((prev) => {
@@ -103,7 +108,6 @@ const ReportPage = () => {
         } else {
           newSortOrder = "desc";
           newSortColumn = column;
-
         }
       } else {
         newSortOrder = "desc";
@@ -181,7 +185,13 @@ const ReportPage = () => {
           Report
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px", marginRight: "20px", justifyContent: "flex-end" }}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "20px",
+            marginRight: "20px",
+            justifyContent: "flex-end",
+          }}
         >
           <Button
             variant="contained"
@@ -312,9 +322,7 @@ const ReportPage = () => {
                       </TableRow>
                     ) : (
                       reports.map((report, index) => (
-                        <CustomTableRow
-                          key={report.category}
-                        >
+                        <CustomTableRow key={report.category}>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {report.category}
                           </TableCell>

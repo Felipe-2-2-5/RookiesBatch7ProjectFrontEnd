@@ -1,26 +1,26 @@
-import React, { useEffect, useState } from "react";
 import {
-  TextField,
+  Autocomplete,
+  Box,
   Button,
+  Container,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
   Radio,
   RadioGroup,
-  FormControlLabel,
-  Grid,
+  TextField,
   Typography,
-  Box,
-  Container,
-  FormHelperText,
-  Autocomplete,
 } from "@mui/material";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { format } from "date-fns";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { NotificationPopup } from "../../components";
 import { CreateAssetAPI } from "../../services/asset.service";
 import { GetCategories } from "../../services/category.service"; // Corrected typo in import
-import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import CategoryForm from "./CategoryForm";
-import NotificationPopup from "../../components/NotificationPopup";
 
 const CreateAsset = () => {
   const [categories, setCategories] = useState([]);
@@ -189,8 +189,7 @@ const CreateAsset = () => {
               color: "#d32f2f",
               fontWeight: "bold",
               fontSize: "20px",
-            }}
-          >
+            }}>
             Create New Asset
           </Typography>
           <form
@@ -200,16 +199,22 @@ const CreateAsset = () => {
               flexDirection: "column",
               gap: "16px",
               width: "500px",
-            }}
-          >
-            <Grid container spacing={1}>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+            }}>
+            <Grid
+              container
+              spacing={1}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Name
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   label="Name"
                   value={asset.name}
@@ -229,13 +234,18 @@ const CreateAsset = () => {
                   <FormHelperText error>{formErrors.name}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Category
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <Autocomplete
                   onChangeCapture={handleCategoryBlur}
                   options={categoriesWithButton}
@@ -260,8 +270,7 @@ const CreateAsset = () => {
                           e.stopPropagation();
                           handleIsVisible();
                         }}
-                        style={{ display: "flex", justifyContent: "center" }}
-                      >
+                        style={{ display: "flex", justifyContent: "center" }}>
                         <Button
                           title="Add Category"
                           onClick={(e) => {
@@ -275,8 +284,7 @@ const CreateAsset = () => {
                             padding: "0",
                             marginLeft: "5px",
                             width: "100%",
-                          }}
-                        >
+                          }}>
                           + Add Category
                         </Button>
                       </li>
@@ -304,13 +312,18 @@ const CreateAsset = () => {
                   <FormHelperText error>{formErrors.category}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Specification
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -334,13 +347,18 @@ const CreateAsset = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Installed Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     sx={{
@@ -375,21 +393,25 @@ const CreateAsset = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   State
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <RadioGroup
                   name="state"
                   value={asset.state}
                   row
                   onChange={(e) =>
                     setAsset({ ...asset, state: e.target.value })
-                  }
-                >
+                  }>
                   <FormControlLabel
                     value={0}
                     control={
@@ -416,10 +438,11 @@ const CreateAsset = () => {
                   />
                 </RadioGroup>
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}>
                 <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
-                >
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
                   <Button
                     variant="contained"
                     type="submit"
@@ -437,15 +460,13 @@ const CreateAsset = () => {
                       !asset.specification ||
                       !asset.installedDate
                     }
-                    onClick={handleSubmit}
-                  >
+                    onClick={handleSubmit}>
                     Save
                   </Button>
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={handleCancel}
-                  >
+                    onClick={handleCancel}>
                     Cancel
                   </Button>
                 </Box>

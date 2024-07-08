@@ -260,8 +260,14 @@ const RequestForReturningPage = () => {
       setSuccess(true);
       setMessage("The request has been successfully cancelled.");
     } catch (err) {
-      setSuccess(false);
-      setMessage("An error occurred while cancelling the request.");
+      if (err?.ErrorCode === 404) {
+        setSuccess(false);
+        setCancelDialogOpen(false);
+      } else {
+        setSuccess(false);
+        setCancelDialogOpen(false);
+        setMessage(err?.UserMessage);
+      }
     }
   };
   const handleCancelRequestClick = (id, e) => {
@@ -289,12 +295,16 @@ const RequestForReturningPage = () => {
       setSuccess(true);
       setMessage("The request has been successfully completed.");
       setOpenConfirmPopup(false);
-    } catch (error) {
-      setSuccess(false);
-      setMessage("An error occurred while completing the request.");
-      setOpenConfirmPopup(false);
+    } catch (err) {
+      if (err?.ErrorCode === 404) {
+        setSuccess(false);
+        setOpenConfirmPopup(false);
+      } else {
+        setSuccess(false);
+        setOpenConfirmPopup(false);
+        setMessage(err?.UserMessage);
+      }
     }
-    //setOpenDialog(false);
   };
 
   return (

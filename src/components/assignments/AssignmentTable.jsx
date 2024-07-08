@@ -41,6 +41,21 @@ const buttonTableHead = {
   color: "black",
 };
 
+const stateStyles = {
+  0: {  // Accepted
+    color: "#4CAF50", // Green
+  },
+  1: {  // Declined
+    color: "#D6001C", // Red
+  },
+  2: {  // Waiting for acceptance
+    color: "#FFC107", // Yellow
+  },
+  3: {  // Waiting for returning
+    color: "#1976D2", // Blue
+  },
+};
+
 const AssignmentTable = ({
   assignments,
   loading,
@@ -193,25 +208,13 @@ const AssignmentTable = ({
                       <TableCell sx={{ paddingLeft: "40px" }}>
                         {formatDate(assignment.assignedDate)}
                       </TableCell>
-                      <TableCell sx={{ paddingLeft: "40px" }}>
-                        <span
-                          style={{
-                            color:
-                              assignment.state === 0
-                                ? "green"
-                                : assignment.state === 1
-                                ? "#D6001C"
-                                : assignment.state === 2
-                                ? "#FFC700"
-                                : "blue",
-                          }}>
+                      <TableCell sx={{ color: stateStyles[assignment.state], paddingLeft: "40px" }}>
                           {assignmentStateEnum[assignment.state]}
-                        </span>
                       </TableCell>
                       <TableCell>
                         <IconButton
                           disabled={
-                            assignment.state === 0 || assignment.state === 1
+                            assignment.state !== 2
                           }
                           sx={{
                             "&:hover": {
@@ -250,8 +253,7 @@ const AssignmentTable = ({
                         </IconButton>
                         <IconButton
                           disabled={
-                            assignment.state === 1 ||
-                            assignment.state === 2 ||
+                            assignment.state !== 0 ||
                             assignment?.returnRequest != null
                           }
                           sx={{

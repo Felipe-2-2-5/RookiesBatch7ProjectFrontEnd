@@ -5,9 +5,12 @@
 // export { default as RequiredAuth } from "./RequiredAuth";
 // export { default as VerticalNavbarAdmin } from "./VerticalNavbarAdmin";
 // export { default as VerticalNavbarStaff } from "./VerticalNavbarStaff";
+export { default as ConfirmationPopup } from "./ConfirmationPopup";
+export { default as NotificationPopup } from "./shared/NotificationPopup";
 export { default as PaginationBar } from "./PaginationBar";
 export { default as NotificationPopup } from "./NotificationPopup";
 export { default as ConfirmationPopup } from "./ConfirmationPopup";
 export { default as SearchBar } from "./SearchBar";
 export { default as AssignmentDetailDialog } from "./assignments/AssignmentDetailDialog";
+export { default as AssignmentTable } from "./assignments/AssignmentTable";
 export { default as ChangePasswordDialog } from "./shared/ChangePasswordDialog";

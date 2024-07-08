@@ -887,6 +887,9 @@ const RequestForReturningPage = () => {
                 <Grid
                   item
                   xs={7}>
+                <Grid
+                  item
+                  xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.asset?.assetName}
                   </Typography>

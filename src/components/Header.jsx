@@ -47,8 +47,6 @@ const Header = () => {
     localStorage.removeItem("password");
     localStorage.removeItem("location");
     setIsAuthenticated(false);
-    await hubService.connection.stop(); // Stop the hub connection
-
     navigate("/login");
     window.location.reload();
   };

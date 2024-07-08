@@ -21,9 +21,12 @@ import {
   styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { AssignmentDetailDialog, PaginationBar } from "../../components";
-import NotificationPopup from "../../components/NotificationPopup";
-import ComfirmationPopup from "../../components/ComfirmationPopup";
+import {
+  AssignmentDetailDialog,
+  ConfirmationPopup,
+  NotificationPopup,
+  PaginationBar,
+} from "../../components";
 import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
 import {
   AcceptRespondAPI,
@@ -32,7 +35,6 @@ import {
   GetMyAssignments,
 } from "../../services/assignments.service";
 import { CreateReturnRequest } from "../../services/requestsForReturning.service";
- 
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -79,21 +81,15 @@ const MyAssignmentPage = () => {
   });
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
-  Number.isNaN(totalCount) || totalCount === 0
-    ? 1
-    : Math.ceil(totalCount / pageSize);
+    Number.isNaN(totalCount) || totalCount === 0
+      ? 1
+      : Math.ceil(totalCount / pageSize);
   const getAssignments = async (filterRequest) => {
     const res = await GetMyAssignments(filterRequest);
     setLoading(true);
     let fetchedMyAssignments = res?.data;
-
-    if (res.status === 200) {
-      setAssignments(fetchedMyAssignments?.data);
-      setTotalCount(fetchedMyAssignments?.totalCount);
-    } else {
-      setAssignments([]);
-      setTotalCount(0);
-    }
+    setAssignments(fetchedMyAssignments);
+    setTotalCount(res?.totalCount);
 
     if (
       filterRequest.sortOrder !== "" &&
@@ -130,7 +126,6 @@ const MyAssignmentPage = () => {
       }
       setLoading(false);
     }
-    setTotalCount(res?.data?.totalCount);
   };
 
   useEffect(() => {
@@ -298,19 +293,18 @@ const MyAssignmentPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}
-      >
+        }}>
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           My Assignments
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", padding: "40px" }}
-        ></Box>
+          sx={{ display: "flex", alignItems: "center", padding: "40px" }}></Box>
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}
-        >
-          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
+          <Sheet
+            ref={scrollRef}
+            sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -318,16 +312,14 @@ const MyAssignmentPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}
-              >
+                }}>
                 <TableRow>
                   <TableCell sx={tableHead}>
                     <Button
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("code")}
-                      endIcon={getSortIcon("code")}
-                    >
+                      endIcon={getSortIcon("code")}>
                       Asset Code
                     </Button>
                   </TableCell>
@@ -336,8 +328,7 @@ const MyAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("name")}
-                      endIcon={getSortIcon("name")}
-                    >
+                      endIcon={getSortIcon("name")}>
                       Asset Name
                     </Button>
                   </TableCell>
@@ -346,8 +337,7 @@ const MyAssignmentPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("date")}
                       endIcon={getSortIcon("date")}
-                      sx={buttonTableHead}
-                    >
+                      sx={buttonTableHead}>
                       Assigned Date
                     </Button>
                   </TableCell>
@@ -356,8 +346,7 @@ const MyAssignmentPage = () => {
                       sx={buttonTableHead}
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
-                      endIcon={getSortIcon("state")}
-                    >
+                      endIcon={getSortIcon("state")}>
                       State
                     </Button>
                   </TableCell>
@@ -369,8 +358,7 @@ const MyAssignmentPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={7}
-                      sx={{ textAlign: "center", padding: "28px" }}
-                    >
+                      sx={{ textAlign: "center", padding: "28px" }}>
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -385,8 +373,7 @@ const MyAssignmentPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}
-                        >
+                          }}>
                           No assignment found
                         </TableCell>
                       </TableRow>
@@ -394,8 +381,7 @@ const MyAssignmentPage = () => {
                       assignments.map((assignment) => (
                         <CustomTableRow
                           key={assignment.id}
-                          onClick={() => handleDetailDialog(assignment)}
-                        >
+                          onClick={() => handleDetailDialog(assignment)}>
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {assignment.asset.assetCode}
                           </TableCell>
@@ -406,8 +392,7 @@ const MyAssignmentPage = () => {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                               maxWidth: 150,
-                            }}
-                          >
+                            }}>
                             {assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
@@ -420,10 +405,10 @@ const MyAssignmentPage = () => {
                                   assignment.state === 0
                                     ? "green"
                                     : assignment.state === 1
-                                      ? "#D6001C"
-                                      : assignment.state === 2
-                                        ? "#FFC700"
-                                        : "blue",
+                                    ? "#D6001C"
+                                    : assignment.state === 2
+                                    ? "#FFC700"
+                                    : "blue",
                               }}>
                               {assignmentStateEnum[assignment.state]}
                             </span>
@@ -442,7 +427,7 @@ const MyAssignmentPage = () => {
                                 setOpenAcceptPopup(true);
                                 setAssignmentId(assignment.id);
                               }}
-                            >
+                              title="Accepted">
                               <DoneIcon />
                             </IconButton>
                             <IconButton
@@ -458,7 +443,7 @@ const MyAssignmentPage = () => {
                                 setOpenDeclinePopup(true);
                                 setAssignmentId(assignment.id);
                               }}
-                            >
+                              title="Declined">
                               <CloseIcon />
                             </IconButton>
                             <IconButton
@@ -476,8 +461,7 @@ const MyAssignmentPage = () => {
                                 e.stopPropagation();
                                 setOpenReturnPopup(true);
                                 setAssignmentId(assignment.id);
-                              }}
-                            >
+                              }}>
                               <RestartAltRounded />
                             </IconButton>
                           </TableCell>
@@ -492,7 +476,7 @@ const MyAssignmentPage = () => {
         </TableContainer>
         <PaginationBar
           filterRequest={filterRequest}
-          pageCount={pageCount}                            
+          pageCount={pageCount}
           handlePageChange={handlePageChange}
         />
       </Paper>
@@ -504,7 +488,7 @@ const MyAssignmentPage = () => {
         />
       )}
 
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openAcceptPopup}
         title="Are you sure?"
         content="Do you want to accept this assignment?"
@@ -513,7 +497,7 @@ const MyAssignmentPage = () => {
         handleConfirm={handleAcceptConfirm}
       />
 
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openDeclinePopup}
         title="Are you sure?"
         content="Do you want to decline this assignment?"
@@ -521,7 +505,7 @@ const MyAssignmentPage = () => {
         handleClose={handlePopupClose}
         handleConfirm={handleDeclineConfirm}
       />
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openReturnPopup}
         title="Are you sure?"
         content="Do you want to create a returning request for this asset?"

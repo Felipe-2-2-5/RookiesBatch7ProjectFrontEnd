@@ -211,7 +211,7 @@ const AssignmentTable = ({
                       <TableCell>
                         <IconButton
                           disabled={
-                            assignment.state === 0 || assignment.state === 1
+                            assignment.state !== 2
                           }
                           sx={{
                             "&:hover": {
@@ -226,7 +226,8 @@ const AssignmentTable = ({
                               )}`
                             );
                             e.stopPropagation();
-                          }}>
+                          }}
+                          title="Edit Assignment">
                           <CreateTwoTone />
                         </IconButton>
                         <IconButton
@@ -243,13 +244,13 @@ const AssignmentTable = ({
                             e.stopPropagation();
                             setOpenDeleteConfirmationPopup(true);
                             setSelectedAssignment(assignment);
-                          }}>
+                          }}
+                          title="Delete assignment">
                           <DeleteIcon />
                         </IconButton>
                         <IconButton
                           disabled={
-                            assignment.state === 1 ||
-                            assignment.state === 2 ||
+                            assignment.state !== 0 ||
                             assignment?.returnRequest != null
                           }
                           sx={{
@@ -262,7 +263,8 @@ const AssignmentTable = ({
                             e.stopPropagation();
                             setOpenReturnPopup(true);
                             setSelectedAssignment(assignment);
-                          }}>
+                          }}
+                          title="Request return assignment">
                           <RestartAltRounded />
                         </IconButton>
                       </TableCell>

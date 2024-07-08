@@ -14,7 +14,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { ChangePasswordDialog } from "./";
 import ComfirmationPopup from "./ComfirmationPopup";
-import { hubService } from "../services/hub.service"; // Import the hub service
 
 const Header = () => {
   const [openCancelPopup, setOpenCancelPopup] = useState(false);
@@ -47,8 +46,6 @@ const Header = () => {
     localStorage.removeItem("password");
     localStorage.removeItem("location");
     setIsAuthenticated(false);
-    await hubService.connection.stop(); // Stop the hub connection
-
     navigate("/login");
     window.location.reload();
   };

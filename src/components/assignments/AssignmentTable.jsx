@@ -226,7 +226,8 @@ const AssignmentTable = ({
                               )}`
                             );
                             e.stopPropagation();
-                          }}>
+                          }}
+                          title="Edit assignment">
                           <CreateTwoTone />
                         </IconButton>
                         <IconButton
@@ -243,7 +244,8 @@ const AssignmentTable = ({
                             e.stopPropagation();
                             setOpenDeleteConfirmationPopup(true);
                             setSelectedAssignment(assignment);
-                          }}>
+                          }}
+                          title="Delete assignment">
                           <DeleteIcon />
                         </IconButton>
                         <IconButton
@@ -262,7 +264,8 @@ const AssignmentTable = ({
                             e.stopPropagation();
                             setOpenReturnPopup(true);
                             setSelectedAssignment(assignment);
-                          }}>
+                          }}
+                          title="Create return request">
                           <RestartAltRounded />
                         </IconButton>
                       </TableCell>

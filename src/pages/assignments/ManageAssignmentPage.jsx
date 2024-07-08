@@ -22,12 +22,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   AssignmentDetailDialog,
-  ComfirmationPopup,
+  ConfirmationPopup,
   NotificationPopup,
   PaginationBar,
   SearchBar,
 } from "../../components";
-import ConfirmationPopup from "../../components/ComfirmationPopup";
 import AssignmentTable from "../../components/assignments/AssignmentTable";
 import { path } from "../../routes/routeContants";
 import {
@@ -509,7 +508,7 @@ const ManageAssignmentPage = () => {
           handleDialogClose={handleDialogClose}
         />
       )}
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openReturnPopup}
         title="Are you sure?"
         content="Do you want to create a returning request for this asset?"

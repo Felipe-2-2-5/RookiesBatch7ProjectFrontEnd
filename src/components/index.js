@@ -7,7 +7,7 @@
 // export { default as VerticalNavbarStaff } from "./VerticalNavbarStaff";
 export { default as PaginationBar } from "./PaginationBar";
 export { default as NotificationPopup } from "./NotificationPopup";
-export { default as ComfirmationPopup } from "./ComfirmationPopup";
+export { default as ConfirmationPopup } from "./ConfirmationPopup";
 export { default as SearchBar } from "./SearchBar";
 export { default as AssignmentDetailDialog } from "./assignments/AssignmentDetailDialog";
 export { default as ChangePasswordDialog } from "./shared/ChangePasswordDialog";

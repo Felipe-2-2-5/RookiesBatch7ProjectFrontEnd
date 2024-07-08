@@ -13,7 +13,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import { ChangePasswordDialog } from "./";
-import ComfirmationPopup from "./ComfirmationPopup";
+import ConfirmationPopup from "./ConfirmationPopup";
 import { hubService } from "../services/hub.service"; // Import the hub service
 
 const Header = () => {
@@ -115,7 +115,7 @@ const Header = () => {
           </Box>
         </Toolbar>
       </AppBar>
-      <ComfirmationPopup
+      <ConfirmationPopup
         open={openCancelPopup}
         title="Are you sure?"
         content="Do you want to log out?"

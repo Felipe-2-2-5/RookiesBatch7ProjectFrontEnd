@@ -3,15 +3,11 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormHelperText,
   Grid,
   IconButton,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -19,13 +15,13 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { NotificationPopup } from "../../components";
 import DialogAssetList from "../../components/DialogAssetList";
 import DialogUserList from "../../components/DialogUserList";
 import {
   EditAssignmentAPI,
   GetAssignment,
 } from "../../services/assignments.service";
-import { NotificationPopup } from "../../components";
 // import { format } from 'date-fns';
 
 // const NotificationPopup = ({
@@ -449,7 +445,7 @@ const EditAssignment = () => {
                       },
                     }}
                     sx={{
-                      my:0.5,
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {

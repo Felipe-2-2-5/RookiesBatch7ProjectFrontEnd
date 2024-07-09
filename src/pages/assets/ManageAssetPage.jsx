@@ -721,7 +721,7 @@ const ManageAssetPage = () => {
             display: "flex",
             flexDirection: "column",
             padding: "20px",
-            // maxHeight: "300px",
+            maxHeight: "625px",
             overflowY: "auto",
             wordWrap: "break-word",
             wordBreak: "break-all",

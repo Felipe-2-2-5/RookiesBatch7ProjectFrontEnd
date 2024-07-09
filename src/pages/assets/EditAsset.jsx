@@ -215,7 +215,7 @@ const EditAsset = () => {
             }}>
             <Grid
               container
-              spacing={1}>
+              spacing={2}>
               <Grid
                 item
                 xs={3}
@@ -322,6 +322,7 @@ const EditAsset = () => {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     sx={{
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },
@@ -332,6 +333,7 @@ const EditAsset = () => {
                     value={asset.installedDate}
                     name="installedDate"
                     slotProps={{
+                      field: { clearable: true },
                       textField: {
                         error: formErrors.installedDate,
                         onBlur: () => handleDateBlur(),

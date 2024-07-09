@@ -607,7 +607,7 @@ const ManageUserPage = () => {
               // maxHeight: "300px",
               overflowY: "auto",
               wordWrap: "break-word",
-              wordBreak: "break-all",
+              wordBreak: "break-word",
             }}>
             <Grid
               container

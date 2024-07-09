@@ -362,6 +362,7 @@ const CreateAsset = () => {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     sx={{
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },
@@ -372,6 +373,7 @@ const CreateAsset = () => {
                     value={asset.installedDate}
                     name="installedDate"
                     slotProps={{
+                      field: { clearable: true },
                       textField: {
                         error: formErrors.installedDate,
                         onBlur: () => handleDateBlur(),

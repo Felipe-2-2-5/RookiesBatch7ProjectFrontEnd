@@ -354,6 +354,7 @@ const CreateUser = () => {
                   locale={vi}>
                   <DatePicker
                     slotProps={{
+                      field: { clearable: true },
                       textField: {
                         error: formErrors.dateOfBirth && touched.dateOfBirth,
                         onBlur: () => handleDateBlur("dateOfBirth"),
@@ -361,6 +362,8 @@ const CreateUser = () => {
                     }}
                     // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
+                      my: 0.5,
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },
@@ -447,12 +450,14 @@ const CreateUser = () => {
                   locale={vi}>
                   <DatePicker
                     slotProps={{
+                      field: { clearable: true },
                       textField: {
                         error: formErrors.joinedDate && touched.joinedDate,
                         onBlur: () => handleDateBlur("joinedDate"),
                       },
                     }}
                     sx={{
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },

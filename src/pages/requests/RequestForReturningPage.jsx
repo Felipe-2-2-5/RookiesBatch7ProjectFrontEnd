@@ -499,6 +499,7 @@ const RequestForReturningPage = () => {
                 borderColor: "black",
               },
             }}
+            
           />
         </Box>
 
@@ -845,7 +846,7 @@ const RequestForReturningPage = () => {
             padding: "20px",
             overflowY: "auto",
             wordWrap: "break-word",
-            wordBreak: "break-all",
+            wordBreak: "break-word",
           }}>
           {selectedReturnRequest ? (
             <>

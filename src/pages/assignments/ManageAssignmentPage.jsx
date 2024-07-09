@@ -193,7 +193,6 @@ const ManageAssignmentPage = () => {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState(null);
-  const [, setCleared] = useState(false);
 
   const handleDetailDialog = async (assignment) => {
     const res = await GetAssignment(assignment.id);
@@ -392,7 +391,7 @@ const ManageAssignmentPage = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DatePicker
               slotProps={{
-                field: { clearable: true, onClear: () => setCleared(true) },
+                field: { clearable: true },
               }}
               label="Assigned Date"
               value={assignedDate}
@@ -411,13 +410,13 @@ const ManageAssignmentPage = () => {
                     ...prev,
                     assignedDate: "",
                   }));
-                  getAssignments(filterRequest);
+                  // getAssignments(filterRequest);
                 }
               }}
               clearable
               sx={{
+                width: 240,
                 marginLeft: "16px",
-                minWidth: 200,
                 "& .MuiInputLabel-root": {
                   color: "black",
                 },
@@ -441,8 +440,8 @@ const ManageAssignmentPage = () => {
                     style: { color: "black" },
                   }}
                   sx={{
+                    width: 240,
                     marginLeft: "16px",
-                    minWidth: 200,
                     "& .MuiInputLabel-root": {
                       color: "black",
                     },

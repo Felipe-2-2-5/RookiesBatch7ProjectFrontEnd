@@ -322,7 +322,7 @@ const EditAsset = () => {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     sx={{
-                      width: 373,
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },

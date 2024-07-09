@@ -448,7 +448,7 @@ const EditAssignment = () => {
                       },
                     }}
                     sx={{
-                      width: 506,
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },

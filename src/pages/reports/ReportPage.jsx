@@ -15,9 +15,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationBar } from "../../components";
-import { ExportReport, FilterReport } from "../../services/asset.service";
-import LoadingDialog from "../../components/LoadingSpinner";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { ExportReport, FilterReport } from "../../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {

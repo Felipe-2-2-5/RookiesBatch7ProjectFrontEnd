@@ -412,7 +412,19 @@ const ManageAssetPage = () => {
                   />
                 )}
                 onChange={handleCategoryChange}
-                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
+                sx={{
+                  "& .MuiOutlinedInput-input": { color: "black" },
+                  maxHeight: 300, // Maximum height for the dropdown menu
+                  overflowY: 'auto', // Enable vertical scrolling
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 300,
+                    },
+                  },
+                }}
+              >
                 <MenuItem value="All">All</MenuItem>
                 {categories ? (
                   categories.map((category) => (
@@ -462,13 +474,13 @@ const ManageAssetPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
 
@@ -743,7 +755,7 @@ const ManageAssetPage = () => {
             // maxHeight: "300px",
             overflowY: "auto",
             wordWrap: "break-word",
-            wordBreak: "break-all",
+            wordBreak: "break-word",
           }}>
           {selectedAsset ? (
             <>
@@ -853,9 +865,17 @@ const ManageAssetPage = () => {
                 <Grid
                   item
                   xs={7}>
-                  <Typography variant="body1">
-                    {selectedAsset.specification}
-                  </Typography>
+                  <div
+                    style={{
+                      maxHeight: "100px",
+                      overflowY: "auto",
+                      wordWrap: "break-word",
+                      wordBreak: "break-word",
+                    }}>
+                    <Typography variant="body1">
+                      {selectedAsset.specification}
+                    </Typography>
+                  </div>
                 </Grid>
               </Grid>
 

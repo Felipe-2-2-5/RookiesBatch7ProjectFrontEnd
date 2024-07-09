@@ -44,10 +44,10 @@ export const FilterReport = async (body) => {
   return response;
 };
 
-export const ExportReport = async () => {
+export const ExportReport = async (body) => {
   try {
-    const response = await httpClient.post("/assets/report/export", {}, {
-      responseType: 'blob', // Important for binary data
+    const response = await httpClient.post("/assets/report/export", body, {
+      responseType: 'blob',
     });
 
     // Create a URL for the blob data
@@ -55,7 +55,7 @@ export const ExportReport = async () => {
     const link = document.createElement('a');
     link.href = url;
 
-    // Get the filename from the response headers if available
+    // Get the filename from the response headers
     const contentDisposition = response.headers['content-disposition'];
     let fileName = 'AssetReport.xlsx';
     if (contentDisposition && contentDisposition.includes('filename=')) {
@@ -66,8 +66,10 @@ export const ExportReport = async () => {
     document.body.appendChild(link);
     link.click();
 
-    document.body.removeChild(link); // Remove the link after downloading
-    window.URL.revokeObjectURL(url); // Free up memory
+    // Remove the link after downloading
+    document.body.removeChild(link);
+    // Free up memory
+    window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Error downloading report:', error);
   }

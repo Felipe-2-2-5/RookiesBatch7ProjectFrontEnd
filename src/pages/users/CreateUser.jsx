@@ -362,6 +362,7 @@ const CreateUser = () => {
                     }}
                     // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {

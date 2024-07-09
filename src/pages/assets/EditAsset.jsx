@@ -215,7 +215,7 @@ const EditAsset = () => {
             }}>
             <Grid
               container
-              spacing={1}>
+              spacing={2}>
               <Grid
                 item
                 xs={3}

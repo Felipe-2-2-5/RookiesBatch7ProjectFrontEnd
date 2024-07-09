@@ -330,7 +330,7 @@ const EditUser = () => {
           <form onSubmit={handleSubmit}>
             <Grid
               container
-              spacing={1}>
+              spacing={2}>
               <Grid
                 item
                 xs={3}
@@ -415,6 +415,7 @@ const EditUser = () => {
                     }}
                     // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
+                      my:0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
@@ -509,6 +510,7 @@ const EditUser = () => {
                       },
                     }}
                     sx={{
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {

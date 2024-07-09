@@ -54,7 +54,7 @@ const AssignmentDetailDialog = ({
           padding: "20px",
           overflowY: "auto",
           wordWrap: "break-word",
-          wordBreak: "break-all",
+          wordBreak: "break-word",
         }}>
         <Grid
           container
@@ -88,7 +88,7 @@ const AssignmentDetailDialog = ({
                 maxHeight: "100px",
                 overflowY: "auto",
                 wordWrap: "break-word",
-                wordBreak: "break-all",
+                wordBreak: "break-word",
               }}></div>
             <Typography variant="body1">
               {selectedAssignment.asset.assetName}
@@ -109,7 +109,7 @@ const AssignmentDetailDialog = ({
                 maxHeight: "100px",
                 overflowY: "auto",
                 wordWrap: "break-word",
-                wordBreak: "break-all",
+                wordBreak: "break-word",
               }}>
               <Typography variant="body1">
                 {selectedAssignment.asset.specification}
@@ -120,7 +120,7 @@ const AssignmentDetailDialog = ({
             item
             xs={4}>
             <Typography variant="body1">
-              <strong>Assigned to:</strong>
+              <strong>Assigned To:</strong>
             </Typography>
           </Grid>
           <Grid
@@ -134,7 +134,7 @@ const AssignmentDetailDialog = ({
             item
             xs={4}>
             <Typography variant="body1">
-              <strong>Assigned by:</strong>
+              <strong>Assigned By:</strong>
             </Typography>
           </Grid>
           <Grid
@@ -187,7 +187,7 @@ const AssignmentDetailDialog = ({
                 maxHeight: "100px",
                 overflowY: "auto",
                 wordWrap: "break-word",
-                wordBreak: "break-all",
+                wordBreak: "break-word",
               }}>
               <Typography variant="body1">{selectedAssignment.note}</Typography>
             </div>

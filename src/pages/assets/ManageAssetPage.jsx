@@ -26,13 +26,13 @@ import {
   styled,
 } from "@mui/material";
 import {
-  Edit as EditIcon,
   HighlightOff as DeleteIcon,
   ArrowDropDown,
   ArrowDropUp,
   FilterAltOutlined as FilterIcon,
   Search as SearchIcon,
   DisabledByDefault as CloseIcon,
+  CreateTwoTone,
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import { useNavigate } from "react-router";
@@ -163,6 +163,23 @@ const ManageAssetPage = () => {
       sortOrder: "",
       page: 1,
     }));
+  };
+  const stateStyles = {
+    0: {  // Available
+      color: "#4CAF50", // Green
+    },
+    1: {  // Not available
+      color: "#D6001C", // Red
+    },
+    2: {  // Waiting for Recycling
+      color: "#FFC107", // Yellow
+    },
+    3: {  // Recycled
+      color: "#757575", // Grey
+    },
+    4: {  // Assigned
+      color: "#1976D2", // Blue
+    },
   };
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -395,7 +412,19 @@ const ManageAssetPage = () => {
                   />
                 )}
                 onChange={handleCategoryChange}
-                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
+                sx={{
+                  "& .MuiOutlinedInput-input": { color: "black" },
+                  maxHeight: 300, // Maximum height for the dropdown menu
+                  overflowY: 'auto', // Enable vertical scrolling
+                }}
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 300,
+                    },
+                  },
+                }}
+              >
                 <MenuItem value="All">All</MenuItem>
                 {categories ? (
                   categories.map((category) => (
@@ -445,13 +474,13 @@ const ManageAssetPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
 
@@ -601,7 +630,7 @@ const ManageAssetPage = () => {
                           <TableCell sx={{ paddingLeft: "40px" }}>
                             {asset.category?.name}
                           </TableCell>
-                          <TableCell sx={{ paddingLeft: "40px" }}>
+                          <TableCell sx={{ color: stateStyles[asset.state], paddingLeft: "40px" }}>
                             {assetStateEnum[asset.state]}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "40px" }}>
@@ -610,7 +639,7 @@ const ManageAssetPage = () => {
                                 <IconButton
                                   aria-label="edit"
                                   disabled>
-                                  <EditIcon />
+                                  <CreateTwoTone />
                                 </IconButton>
                                 <IconButton
                                   aria-label="delete"
@@ -632,8 +661,9 @@ const ManageAssetPage = () => {
                                     navigate(
                                       path.assetEdit.replace(":id", asset.id)
                                     );
-                                  }}>
-                                  <EditIcon />
+                                  }}
+                                  title="Edit asset">
+                                  <CreateTwoTone />
                                 </IconButton>
                                 <IconButton
                                   aria-label="delete"
@@ -646,7 +676,8 @@ const ManageAssetPage = () => {
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     handleDeleteIconClick(asset);
-                                  }}>
+                                  }}
+                                  title="Delete asset">
                                   <DeleteIcon />
                                 </IconButton>
                               </>
@@ -724,7 +755,7 @@ const ManageAssetPage = () => {
             maxHeight: "625px",
             overflowY: "auto",
             wordWrap: "break-word",
-            wordBreak: "break-all",
+            wordBreak: "break-word",
           }}>
           {selectedAsset ? (
             <>
@@ -834,9 +865,17 @@ const ManageAssetPage = () => {
                 <Grid
                   item
                   xs={7}>
-                  <Typography variant="body1">
-                    {selectedAsset.specification}
-                  </Typography>
+                  <div
+                    style={{
+                      maxHeight: "100px",
+                      overflowY: "auto",
+                      wordWrap: "break-word",
+                      wordBreak: "break-word",
+                    }}>
+                    <Typography variant="body1">
+                      {selectedAsset.specification}
+                    </Typography>
+                  </div>
                 </Grid>
               </Grid>
 

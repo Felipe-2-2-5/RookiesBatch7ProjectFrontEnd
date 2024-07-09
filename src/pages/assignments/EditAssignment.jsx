@@ -25,43 +25,44 @@ import {
   EditAssignmentAPI,
   GetAssignment,
 } from "../../services/assignments.service";
+import { NotificationPopup } from "../../components";
 // import { format } from 'date-fns';
 
-const NotificationPopup = ({
-  open,
-  handleClose,
-  title,
-  content,
-  closeContent,
-}) => {
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      disableBackdropClick
-      disableEscapeKeyDown
-    >
-      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <p>{content}</p>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleClose}
-          sx={{
-            color: "white",
-            bgcolor: "#D6001C",
-            "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
-          {closeContent ? closeContent : "Ok"}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+// const NotificationPopup = ({
+//   open,
+//   handleClose,
+//   title,
+//   content,
+//   closeContent,
+// }) => {
+//   return (
+//     <Dialog
+//       open={open}
+//       onClose={handleClose}
+//       disableBackdropClick
+//       disableEscapeKeyDown
+//     >
+//       <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+//         {title}
+//       </DialogTitle>
+//       <DialogContent>
+//         <p>{content}</p>
+//       </DialogContent>
+//       <DialogActions>
+//         <Button
+//           onClick={handleClose}
+//           sx={{
+//             color: "white",
+//             bgcolor: "#D6001C",
+//             "&:hover": { bgcolor: "#D6001C" },
+//           }}
+//         >
+//           {closeContent ? closeContent : "Ok"}
+//         </Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// };
 
 const formatDate = (date) => {
   if (!date) return "";

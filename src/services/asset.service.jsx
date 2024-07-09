@@ -20,6 +20,11 @@ export const FilterRequest = async (body) => {
   return response;
 };
 
+export const FilterRequestForEdit = async (id, body) => {
+  const response = await httpClient.post(`/assets/filter-choosing/${id}`, body);
+  return response;
+};
+
 export const CreateAssetAPI = async (body) => {
   const response = await httpClient.post("/assets", body);
   return response;

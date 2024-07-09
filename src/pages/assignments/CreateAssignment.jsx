@@ -360,12 +360,14 @@ const CreateAssignment = () => {
                 <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     slotProps={{
+                      field: { clearable: true },
                       textField: {
                         error: formErrors.assignedDate && touched.assignedDate,
                         onBlur: () => handleDateBlur("assignedDate"),
                       },
                     }}
                     sx={{
+                      width: 506,
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },

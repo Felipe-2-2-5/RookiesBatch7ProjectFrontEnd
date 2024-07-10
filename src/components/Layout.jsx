@@ -20,10 +20,9 @@ import { AdminRoutes, StaffRoutes, BaseRoutes } from "../routes";
 import { ChangePassword, LoginUser } from "../services/users.service";
 import Footer from "./Footer";
 import Header from "./Header";
-import {NotificationPopup} from "./";
 import VerticalNavbarAdmin from "./VerticalNavbarAdmin";
 import VerticalNavbarStaff from "./VerticalNavbarStaff";
-
+import { NotificationPopup } from "../components";
 const Layout = () => {
   const navigate = useNavigate();
   const { currentUser, isAuthenticated, setIsAuthenticated } = useAuthContext();
@@ -38,56 +37,42 @@ const Layout = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
 
-  //   if (new Date(currentUser.expires * 1000) < new Date()) {
-  //     setIsAuthenticated(false);
-  //     localStorage.removeItem("token");
-
-  //   }
-  // }, [currentUser.expires, isAuthenticated, setIsAuthenticated]);
-
   const handelSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
         const userId = currentUser.id;
-        const response1 = await ChangePassword({
+        await ChangePassword({
           id: userId,
           oldPassword: oldPassword,
           newPassword: newPassword,
           confirmPassword: newPassword,
         });
 
-        if (response1.data === true) {
-          const username = currentUser.name;
-          const response2 = await LoginUser({
-            userName: username,
-            password: newPassword,
-          });
+        const username = currentUser.name;
+        const response2 = await LoginUser({
+          userName: username,
+          password: newPassword,
+        });
 
-          const data = response2.data;
-          setIsAuthenticated(true);
-          localStorage.setItem("token", data.token);
-          currentUser.isFirst = false;
+        const data = response2.data;
+        setIsAuthenticated(true);
+        localStorage.setItem("token", data.token);
+        currentUser.isFirst = false;
 
-          setNewPassword("");
-          localStorage.removeItem("firstLogin");
-          setShowSuccessDialog(true);
-          localStorage.removeItem("password");
-        } else {
-          setErrorMessage("Failed to change password. Please try again.");
-          setShowErrorDialog(true);
-        }
+        setNewPassword("");
+        localStorage.removeItem("firstLogin");
+        setShowSuccessDialog(true);
+        localStorage.removeItem("password");
       } else {
         setErrorMessage("User token not found. Please login again.");
         setShowErrorDialog(true);
         navigate("/");
       }
     } catch (error) {
-      console.error("Error:", error);
-      setErrorMessage(
-        "An error occurred while changing password. Please try again later."
-      );
+      console.error("Error 123123123123123 :", error);
       setShowErrorDialog(true);
+      setErrorMessage(error.UserMessage);
     }
   };
 
@@ -318,7 +303,7 @@ const Layout = () => {
       <NotificationPopup
         open={showErrorDialog}
         title="Error"
-        message={errorMessage}
+        content={errorMessage}
         handleClose={() => setShowErrorDialog(false)}
       />
     </div>

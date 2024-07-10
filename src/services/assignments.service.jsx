@@ -1,4 +1,3 @@
-import { getAssignmentState } from "../enum/assignmentStateEnum";
 import { httpClient } from "../httpClient/httpClient";
 
 export const FilterAssignment = async (body) => {
@@ -30,17 +29,11 @@ export const GetMyAssignments = async (body) => {
   return response.data;
 };
 
-export const AcceptRespondAPI = async (id) => {
-  var acceptState = { state: getAssignmentState("Accepted") };
-  // try {
-  await httpClient.put(`/assignments/${id}/respond`, acceptState);
-  // } catch (error) {
-  //   console.error("Error in AcceptRespondAPI:", error);
-  //   // throw error;  // Re-throw the error after logging it
-  // }
-}
+export const AcceptRespondAPI = async (id, dto) => {
+  await httpClient.put(`/assignments/${id}/respond`, dto);
+};
 
-export const DeclineRespondAPI = async (id) => {
-  var declineState = { state: getAssignmentState("Declined") };
-  await httpClient.put(`/assignments/${id}/respond`, declineState)
-}
+// export const DeclineRespondAPI = async (id) => {
+//   var declineState = { state: getAssignmentState("Declined") };
+//   await httpClient.put(`/assignments/${id}/respond`, declineState)
+// }

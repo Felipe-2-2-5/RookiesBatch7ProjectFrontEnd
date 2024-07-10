@@ -3,15 +3,11 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormHelperText,
   Grid,
   IconButton,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -19,6 +15,7 @@ import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { NotificationPopup } from "../../components";
 import DialogAssetList from "../../components/DialogAssetList";
 import DialogUserList from "../../components/DialogUserList";
 import {
@@ -27,41 +24,41 @@ import {
 } from "../../services/assignments.service";
 // import { format } from 'date-fns';
 
-const NotificationPopup = ({
-  open,
-  handleClose,
-  title,
-  content,
-  closeContent,
-}) => {
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      disableBackdropClick
-      disableEscapeKeyDown
-    >
-      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <p>{content}</p>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleClose}
-          sx={{
-            color: "white",
-            bgcolor: "#D6001C",
-            "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
-          {closeContent ? closeContent : "Ok"}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+// const NotificationPopup = ({
+//   open,
+//   handleClose,
+//   title,
+//   content,
+//   closeContent,
+// }) => {
+//   return (
+//     <Dialog
+//       open={open}
+//       onClose={handleClose}
+//       disableBackdropClick
+//       disableEscapeKeyDown
+//     >
+//       <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+//         {title}
+//       </DialogTitle>
+//       <DialogContent>
+//         <p>{content}</p>
+//       </DialogContent>
+//       <DialogActions>
+//         <Button
+//           onClick={handleClose}
+//           sx={{
+//             color: "white",
+//             bgcolor: "#D6001C",
+//             "&:hover": { bgcolor: "#D6001C" },
+//           }}
+//         >
+//           {closeContent ? closeContent : "Ok"}
+//         </Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// };
 
 const formatDate = (date) => {
   if (!date) return "";
@@ -448,7 +445,7 @@ const EditAssignment = () => {
                       },
                     }}
                     sx={{
-                      my:0.5,
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {

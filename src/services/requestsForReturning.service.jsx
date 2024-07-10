@@ -14,10 +14,14 @@ export const CreateReturnRequest = async (assignmentId) => {
   return response;
 };
 export const CancelReturnRequest = async (id) => {
-  const response = await httpClient.delete(`/return-requests/cancel-request/${id}`);
+  const response = await httpClient.delete(
+    `/return-requests/cancel-request/${id}`
+  );
   return response;
 };
 export const CompeleteReturnRequest = async (id) => {
-  const response = await httpClient.put(`/return-requests/complete-requests/${id}`);
+  const response = await httpClient.put(
+    `/return-requests/complete-requests/${id}`
+  );
   return response;
 };

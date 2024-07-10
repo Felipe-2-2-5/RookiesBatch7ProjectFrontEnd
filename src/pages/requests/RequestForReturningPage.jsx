@@ -291,7 +291,7 @@ const RequestForReturningPage = () => {
       await CompeleteReturnRequest(selectedReturnRequest.id);
       getReturnRequests(filterRequest);
       setSuccess(true);
-      setMessage("The request has been successfully completed.");
+      setMessage("The request has been completed successfully.");
       setOpenConfirmPopup(false);
     } catch (err) {
       if (err) {
@@ -337,7 +337,7 @@ const RequestForReturningPage = () => {
         <NotificationPopup
           open={!!message}
           handleClose={() => setMessage("")}
-          title={success ? "Success" : "Error"}
+          title={success ? "Notifications" : "Error"}
           content={message}
           closeContent="Close"
         />

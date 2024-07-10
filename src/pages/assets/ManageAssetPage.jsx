@@ -318,7 +318,7 @@ const ManageAssetPage = () => {
         getAssets(filterRequest);
         setNotiTitle("Notifications");
         setNotiMessage(
-          `Asset ${selectedAsset.assetName} has been deleted successfully!`
+          `Asset <b>${selectedAsset.assetName}</b> has been <b>deleted</b> successfully.`
         );
         setNoti(true);
       } catch (error) {
@@ -779,7 +779,7 @@ const ManageAssetPage = () => {
             display: "flex",
             flexDirection: "column",
             padding: "20px",
-            // maxHeight: "300px",
+            maxHeight: "625px",
             overflowY: "auto",
             wordWrap: "break-word",
             wordBreak: "break-word",

@@ -23,8 +23,7 @@ const NotificationPopup = ({
       onClose={handleClose}
       disableBackdropClick
       disableEscapeKeyDown
-      maxWidth="md"
-    >
+      maxWidth="md">
       <DialogTitle
         sx={{
           borderBottom: "3px solid grey",
@@ -32,13 +31,18 @@ const NotificationPopup = ({
           fontWeight: "bold",
           minWidth: 400,
           bgcolor: "lightgrey",
-        }}
-      >
+        }}>
         {title}
       </DialogTitle>
       <DialogContent>
         {contentLines.map((line, index) => (
-          <Typography key={index} dangerouslySetInnerHTML={{ __html: line }} />
+          <Typography
+            key={index}
+            dangerouslySetInnerHTML={{ __html: line }}
+            sx={{
+              paddingTop: "10px",
+            }}
+          />
         ))}
       </DialogContent>
       <DialogActions>
@@ -48,8 +52,7 @@ const NotificationPopup = ({
             color: "white",
             bgcolor: "#D6001C",
             "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
+          }}>
           {closeContent ? closeContent : "Ok"}
         </Button>
       </DialogActions>

@@ -7,7 +7,7 @@ import {
   Grid,
   IconButton,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -302,7 +302,7 @@ const EditAssignment = () => {
       if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response));
         setTitlePopup("Notifications");
-        setContentPopup("Update successfully");
+        setContentPopup("<b>Assignment</b> has been updated successfully.");
         displayNotificationPopup();
       }
     } catch (error) {
@@ -334,12 +334,13 @@ const EditAssignment = () => {
               color: "#d32f2f",
               fontWeight: "bold",
               fontSize: "20px",
-            }}
-          >
+            }}>
             Edit Assignment
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={1}>
+            <Grid
+              container
+              spacing={1}>
               <Grid
                 item
                 xs={3}
@@ -347,14 +348,15 @@ const EditAssignment = () => {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <Typography onClick={handleUserDialogOpen}>
                   User
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -393,14 +395,15 @@ const EditAssignment = () => {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <Typography handleAssetDialogOpen>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -432,14 +435,21 @@ const EditAssignment = () => {
                   <FormHelperText error>{formErrors.asset}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Assigned Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
+              <Grid
+                item
+                xs={9}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  locale={vi}>
                   <DatePicker
                     slotProps={{
                       field: { clearable: true },
@@ -477,10 +487,15 @@ const EditAssignment = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>Note</Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -502,10 +517,11 @@ const EditAssignment = () => {
                   <FormHelperText error>{formErrors.note}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}>
                 <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
-                >
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
                   <Button
                     variant="contained"
                     type="submit"
@@ -520,15 +536,13 @@ const EditAssignment = () => {
                       Object.values(formErrors).some((error) => error) ||
                       !isSingleFieldChanged()
                     }
-                    onClick={handleSubmit}
-                  >
+                    onClick={handleSubmit}>
                     Save
                   </Button>
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-assignment")}
-                  >
+                    onClick={() => navigate("/manage-assignment")}>
                     Cancel
                   </Button>
                 </Box>

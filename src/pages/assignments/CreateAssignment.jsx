@@ -7,57 +7,54 @@ import {
   Grid,
   IconButton,
   TextField,
-  Typography,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  DialogTitle,
+  Typography
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
+import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DialogUserList from "../../components/DialogUserList";
 import DialogAssetList from "../../components/DialogAssetList";
+import DialogUserList from "../../components/DialogUserList";
+import NotificationPopup from "../../components/shared/NotificationPopup";
 import { CreateAssignmentAPI } from "../../services/assignments.service";
-import { format } from "date-fns";
 
-const NotificationPopup = ({
-  open,
-  handleClose,
-  title,
-  content,
-  closeContent,
-}) => {
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      disableBackdropClick
-      disableEscapeKeyDown
-    >
-      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <p>{content}</p>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleClose}
-          sx={{
-            color: "white",
-            bgcolor: "#D6001C",
-            "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
-          {closeContent ? closeContent : "Ok"}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+// const NotificationPopup = ({
+//   open,
+//   handleClose,
+//   title,
+//   content,
+//   closeContent,
+// }) => {
+//   return (
+//     <Dialog
+//       open={open}
+//       onClose={handleClose}
+//       disableBackdropClick
+//       disableEscapeKeyDown
+//     >
+//       <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
+//         {title}
+//       </DialogTitle>
+//       <DialogContent>
+//         <p>{content}</p>
+//       </DialogContent>
+//       <DialogActions>
+//         <Button
+//           onClick={handleClose}
+//           sx={{
+//             color: "white",
+//             bgcolor: "#D6001C",
+//             "&:hover": { bgcolor: "#D6001C" },
+//           }}
+//         >
+//           {closeContent ? closeContent : "Ok"}
+//         </Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// };
 
 const CreateAssignment = () => {
   const navigate = useNavigate();
@@ -223,7 +220,8 @@ const CreateAssignment = () => {
         );
         setTitlePopup("Notifications");
         setContentPopup(
-          `Asset ${assignments.asset.assetName} has been assigned to ${assignments.user.firstName} ${assignments.user.lastName}.`
+          // `Asset ${assignments.asset.assetName} has been assigned to ${assignments.user.firstName} ${assignments.user.lastName}.`
+          `Asset: <strong>${assignments.asset.assetName}</strong> has been assigned to <strong>${assignments.user.firstName} ${assignments.user.lastName}</strong>.`
         );
         displayNotificationPopup();
       }
@@ -367,7 +365,7 @@ const CreateAssignment = () => {
                       },
                     }}
                     sx={{
-                      my:0.5,
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {

@@ -10,7 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  styled
+  styled,
 } from "@mui/material";
 import React from "react";
 
@@ -23,14 +23,14 @@ import { assignmentStateEnum } from "../../enum/assignmentStateEnum";
 import formatDate from "../../utils/formatDate";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
-    "&:hover": {
-      backgroundColor: theme.palette.action.hover,
-      cursor: "pointer",
-    },
-  }));
+  "&:hover": {
+    backgroundColor: theme.palette.action.hover,
+    cursor: "pointer",
+  },
+}));
 const tableHead = {
-  width: "15%",
-  paddingLeft: "40px",
+  width: "auto",
+  paddingLeft: "10px",
 };
 
 const buttonTableHead = {
@@ -42,16 +42,20 @@ const buttonTableHead = {
 };
 
 const stateStyles = {
-  0: {  // Accepted
+  0: {
+    // Accepted
     color: "#4CAF50", // Green
   },
-  1: {  // Declined
+  1: {
+    // Declined
     color: "#D6001C", // Red
   },
-  2: {  // Waiting for acceptance
+  2: {
+    // Waiting for acceptance
     color: "#FFC107", // Yellow
   },
-  3: {  // Waiting for returning
+  3: {
+    // Waiting for returning
     color: "#1976D2", // Blue
   },
 };
@@ -86,7 +90,7 @@ const AssignmentTable = ({
               zIndex: 1,
             }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: "bold", paddingLeft: "40px" }}>
+              <TableCell sx={{ fontWeight: "bold", paddingLeft: "35px" }}>
                 No.
               </TableCell>
               <TableCell sx={tableHead}>
@@ -98,7 +102,7 @@ const AssignmentTable = ({
                   Asset Code
                 </Button>
               </TableCell>
-              <TableCell sx={tableHead}>
+              <TableCell sx={{ fontWeight: "bold" }}>
                 <Button
                   sx={buttonTableHead}
                   variant="text"
@@ -183,39 +187,41 @@ const AssignmentTable = ({
                     <CustomTableRow
                       key={assignment.id}
                       onClick={() => handleDetailDialog(assignment)}>
-                      <TableCell sx={{ paddingLeft: "40px" }}>
+                      <TableCell sx={{ paddingLeft: "40px", width: "5%" }}>
                         {index + 1}
                       </TableCell>
-                      <TableCell sx={{ paddingLeft: "40px" }}>
+                      <TableCell sx={{ width: "9%" }}>
                         {assignment.asset.assetCode}
                       </TableCell>
                       <TableCell
                         sx={{
-                          paddingLeft: "40px",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
                           maxWidth: 150,
+                          width: "12%",
                         }}>
                         {assignment.asset.assetName}
                       </TableCell>
-                      <TableCell sx={{ paddingLeft: "40px" }}>
+                      <TableCell sx={{ width: "10%" }}>
                         {assignment.assignedTo.userName}
                       </TableCell>
-                      <TableCell sx={{ paddingLeft: "40px" }}>
+                      <TableCell sx={{ width: "10%" }}>
                         {assignment.assignedBy.userName}
                       </TableCell>
-                      <TableCell sx={{ paddingLeft: "40px" }}>
+                      <TableCell sx={{ width: "10%" }}>
                         {formatDate(assignment.assignedDate)}
                       </TableCell>
-                      <TableCell sx={{ color: stateStyles[assignment.state], paddingLeft: "40px" }}>
-                          {assignmentStateEnum[assignment.state]}
+                      <TableCell
+                        sx={{
+                          color: stateStyles[assignment.state],
+                          width: "14%",
+                        }}>
+                        {assignmentStateEnum[assignment.state]}
                       </TableCell>
                       <TableCell>
                         <IconButton
-                          disabled={
-                            assignment.state !== 2
-                          }
+                          disabled={assignment.state !== 2}
                           sx={{
                             "&:hover": {
                               backgroundColor: "#bcbcbc",

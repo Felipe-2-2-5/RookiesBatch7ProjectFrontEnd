@@ -125,10 +125,12 @@ const RequestForReturningPage = () => {
     }));
   };
   const stateStyles = {
-    0: {  // Completed
+    0: {
+      // Completed
       color: "#757575", // Grey
     },
-    1: {  // Waiting for Returning
+    1: {
+      // Waiting for Returning
       color: "#1976D2", // Blue
     },
   };
@@ -260,10 +262,7 @@ const RequestForReturningPage = () => {
       setSuccess(true);
       setMessage("The request has been successfully cancelled.");
     } catch (err) {
-      if (err?.ErrorCode === 404) {
-        setSuccess(false);
-        setCancelDialogOpen(false);
-      } else {
+      if (err) {
         setSuccess(false);
         setCancelDialogOpen(false);
         setMessage(err?.UserMessage);
@@ -296,10 +295,7 @@ const RequestForReturningPage = () => {
       setMessage("The request has been successfully completed.");
       setOpenConfirmPopup(false);
     } catch (err) {
-      if (err?.ErrorCode === 404) {
-        setSuccess(false);
-        setOpenConfirmPopup(false);
-      } else {
+      if (err) {
         setSuccess(false);
         setOpenConfirmPopup(false);
         setMessage(err?.UserMessage);
@@ -315,7 +311,8 @@ const RequestForReturningPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}>
+        }}
+      >
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Request List
         </h2>
@@ -345,7 +342,9 @@ const RequestForReturningPage = () => {
           content={message}
           closeContent="Close"
         />
-        <Box sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+        <Box
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+        >
           <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
             {/* State Filter */}
             <FormControl
@@ -356,14 +355,16 @@ const RequestForReturningPage = () => {
                   "&:hover fieldset": { borderColor: "black" },
                   "&.Mui-focused fieldset": { borderColor: "black" },
                 },
-              }}>
+              }}
+            >
               <InputLabel
                 sx={{
                   color: "black",
                   "&.Mui-focused": {
                     color: "black",
                   },
-                }}>
+                }}
+              >
                 State
               </InputLabel>
               <Select
@@ -371,18 +372,14 @@ const RequestForReturningPage = () => {
                 value={selectedState}
                 name="state"
                 IconComponent={(props) => (
-                  <FilterIcon
-                    {...props}
-                    style={{ transform: "none" }}
-                  />
+                  <FilterIcon {...props} style={{ transform: "none" }} />
                 )}
                 onChange={handleStateChange}
-                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
+                sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
+              >
                 <MenuItem value="All">All</MenuItem>
                 {Object.values(requestStateEnum).map((state) => (
-                  <MenuItem
-                    key={state}
-                    value={state}>
+                  <MenuItem key={state} value={state}>
                     {state}
                   </MenuItem>
                 ))}
@@ -482,7 +479,8 @@ const RequestForReturningPage = () => {
                       },
                       width: "120%",
                     }}
-                    onClick={handleSearchClick}>
+                    onClick={handleSearchClick}
+                  >
                     <SearchIcon />
                   </IconButton>
                 </InputAdornment>
@@ -491,25 +489,23 @@ const RequestForReturningPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
+                {
+                  color: "black",
+                },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
+                {
+                  borderColor: "black",
+                },
             }}
-            
           />
         </Box>
 
         {/* Request Table */}
         <TableContainer
           component={Paper}
-          sx={{ height: "calc(100% - 180px)", position: "relative" }}>
-          <Sheet
-            ref={scrollRef}
-            sx={{ overflow: "auto", height: "100%" }}>
+          sx={{ height: "calc(100% - 180px)", position: "relative" }}
+        >
+          <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
             <Table stickyHeader>
               <TableHead
                 sx={{
@@ -517,7 +513,8 @@ const RequestForReturningPage = () => {
                   top: 0,
                   backgroundColor: "white",
                   zIndex: 1,
-                }}>
+                }}
+              >
                 <TableRow>
                   <TableCell
                     sx={{
@@ -538,7 +535,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("assetCode")}
                       endIcon={getSortIcon("assetCode")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Asset Code
                     </Button>
                   </TableCell>
@@ -553,7 +551,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("assetName")}
                       endIcon={getSortIcon("assetName")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Asset Name
                     </Button>
                   </TableCell>
@@ -568,7 +567,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("assignedTo")}
                       endIcon={getSortIcon("assignedTo")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Assigned To
                     </Button>
                   </TableCell>
@@ -583,7 +583,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("requestedBy")}
                       endIcon={getSortIcon("requestedBy")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Requested By
                     </Button>
                   </TableCell>
@@ -598,7 +599,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("assignedDate")}
                       endIcon={getSortIcon("assignedDate")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Assigned Date
                     </Button>
                   </TableCell>
@@ -613,7 +615,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("acceptedBy")}
                       endIcon={getSortIcon("acceptedBy")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Accepted By
                     </Button>
                   </TableCell>
@@ -628,7 +631,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("returnedDate")}
                       endIcon={getSortIcon("returnedDate")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       Returned Date
                     </Button>
                   </TableCell>
@@ -643,7 +647,8 @@ const RequestForReturningPage = () => {
                       variant="text"
                       onClick={() => handleHeaderClick("state")}
                       endIcon={getSortIcon("state")}
-                      sx={buttonTableHead}>
+                      sx={buttonTableHead}
+                    >
                       State
                     </Button>
                   </TableCell>
@@ -655,7 +660,8 @@ const RequestForReturningPage = () => {
                       minWidth: "auto",
                       color: "black",
                       padding: "16px",
-                    }}></TableCell>
+                    }}
+                  ></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -663,7 +669,8 @@ const RequestForReturningPage = () => {
                   <TableRow>
                     <TableCell
                       colSpan={6}
-                      sx={{ textAlign: "center", padding: "28px" }}>
+                      sx={{ textAlign: "center", padding: "28px" }}
+                    >
                       <CircularProgress />
                     </TableCell>
                   </TableRow>
@@ -678,7 +685,8 @@ const RequestForReturningPage = () => {
                             textAlign: "center",
                             padding: "28px",
                             fontWeight: "bold",
-                          }}>
+                          }}
+                        >
                           No Request for Returning found
                         </TableCell>
                       </TableRow>
@@ -703,7 +711,8 @@ const RequestForReturningPage = () => {
                               textOverflow: "ellipsis",
                               whiteSpace: "nowrap",
                               maxWidth: 150,
-                            }}>
+                            }}
+                          >
                             {returnRequest.assignment.asset.assetName}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>
@@ -721,21 +730,22 @@ const RequestForReturningPage = () => {
                           <TableCell sx={{ paddingLeft: "10px" }}>
                             {returnRequest.returnedDate}
                           </TableCell>
-                          <TableCell sx={{ color: stateStyles[returnRequest.state], paddingLeft: "10px" }}>
+                          <TableCell
+                            sx={{
+                              color: stateStyles[returnRequest.state],
+                              paddingLeft: "10px",
+                            }}
+                          >
                             {requestStateEnum[returnRequest.state]}
                           </TableCell>
                           <TableCell sx={{ paddingLeft: "10px" }}>
                             {requestStateEnum[returnRequest.state] ===
-                              "Completed" ? (
+                            "Completed" ? (
                               <>
-                                <IconButton
-                                  aria-label="complete"
-                                  disabled>
+                                <IconButton aria-label="complete" disabled>
                                   <CompleteIcon />
                                 </IconButton>
-                                <IconButton
-                                  aria-label="cancel"
-                                  disabled>
+                                <IconButton aria-label="cancel" disabled>
                                   <Cancelcon />
                                 </IconButton>
                               </>
@@ -752,7 +762,8 @@ const RequestForReturningPage = () => {
                                   onClick={(e) => {
                                     handleConfirmRequestClick(e, returnRequest);
                                   }}
-                                  title="Accept request">
+                                  title="Accept request"
+                                >
                                   <CompleteIcon />
                                 </IconButton>
                                 <IconButton
@@ -769,7 +780,8 @@ const RequestForReturningPage = () => {
                                       e
                                     )
                                   }
-                                  title="Cancel request">
+                                  title="Cancel request"
+                                >
                                   <Cancelcon />
                                 </IconButton>
                               </>
@@ -789,7 +801,8 @@ const RequestForReturningPage = () => {
             display: "flex",
             justifyContent: "flex-end",
             paddingTop: "15px",
-          }}>
+          }}
+        >
           <Pagination
             count={pageCount}
             variant="outlined"
@@ -814,7 +827,8 @@ const RequestForReturningPage = () => {
         open={dialogOpen}
         onClose={handleDialogClose}
         fullWidth
-        maxWidth="md">
+        maxWidth="md"
+      >
         <DialogTitle
           sx={{
             bgcolor: "grey.300",
@@ -824,7 +838,8 @@ const RequestForReturningPage = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-          }}>
+          }}
+        >
           Detailed Request Information
           <IconButton
             aria-label="close"
@@ -834,7 +849,8 @@ const RequestForReturningPage = () => {
               right: 10,
               top: 12,
               color: "#D6001C",
-            }}>
+            }}
+          >
             <CloseIcon />
           </IconButton>
         </DialogTitle>
@@ -847,149 +863,97 @@ const RequestForReturningPage = () => {
             overflowY: "auto",
             wordWrap: "break-word",
             wordBreak: "break-word",
-          }}>
+          }}
+        >
           {selectedReturnRequest ? (
             <>
-              <Typography
-                variant="h6"
-                sx={{ marginTop: 2 }}
-                gutterBottom>
+              <Typography variant="h6" sx={{ marginTop: 2 }} gutterBottom>
                 {/* Request Details */}
               </Typography>
-              <Grid
-                container
-                spacing={2}>
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+              <Grid container spacing={2}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Asset Code:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.asset?.assetCode}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Asset Name:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.asset?.assetName}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Assigned To:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.assignment.assignedTo?.userName}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Requested By:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.requestor?.userName}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Assigned Date:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {formatDate(selectedReturnRequest.assignment?.assignedDate)}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Accepted By:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.acceptor?.userName}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     Returned Date:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {selectedReturnRequest.returnedDate}
                   </Typography>
                 </Grid>
 
-                <Grid
-                  item
-                  xs={5}>
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: "bold" }}>
+                <Grid item xs={5}>
+                  <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                     State:
                   </Typography>
                 </Grid>
-                <Grid
-                  item
-                  xs={7}>
+                <Grid item xs={7}>
                   <Typography variant="body1">
                     {requestStateEnum[selectedReturnRequest.state]}
                   </Typography>
@@ -1003,7 +967,8 @@ const RequestForReturningPage = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 height: "200px",
-              }}>
+              }}
+            >
               <CircularProgress />
             </Box>
           )}

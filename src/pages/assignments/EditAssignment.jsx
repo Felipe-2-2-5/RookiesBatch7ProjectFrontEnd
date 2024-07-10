@@ -161,9 +161,11 @@ const EditAssignment = () => {
           });
         }
       } catch (error) {
-        setTitlePopup("Error");
-        setContentPopup(`Failed to fetch user data: ${error.message}`);
-        displayNotificationPopup();
+        if (error) {
+          setTitlePopup("Error");
+          setContentPopup(`Failed to fetch user data: ${error.message}`);
+          displayNotificationPopup();
+        }
       }
     };
     getAssignmentById(id);
@@ -307,9 +309,11 @@ const EditAssignment = () => {
         displayNotificationPopup();
       }
     } catch (error) {
-      setTitlePopup("Error");
-      setContentPopup(`error: ${error.DevMessage}`);
-      displayNotificationPopup();
+      if (error) {
+        setTitlePopup("Error");
+        setContentPopup(`error: ${error.DevMessage}`);
+        displayNotificationPopup();
+      }
     }
   };
 
@@ -448,7 +452,7 @@ const EditAssignment = () => {
                       },
                     }}
                     sx={{
-                      my:0.5,
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {

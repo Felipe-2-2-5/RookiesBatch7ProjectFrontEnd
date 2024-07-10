@@ -226,9 +226,11 @@ const CreateAssignment = () => {
         displayNotificationPopup();
       }
     } catch (error) {
-      setTitlePopup("Error");
-      setContentPopup(`error: ${error.DevMessage}`);
-      displayNotificationPopup();
+      if (error) {
+        setTitlePopup("Error");
+        setContentPopup(`error: ${error.DevMessage}`);
+        displayNotificationPopup();
+      }
     }
   };
 

@@ -23,6 +23,7 @@ import {
 } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FilterRequest } from "../services/users.service";
+import { FilterRequestForEdit } from "../services/users.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -61,6 +62,14 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
     pageSize: "20",
     type: "",
   });
+  // // Inside your component
+  // const searchInputRef = useRef(null);
+  // useEffect(() => {
+  //   if (visibleDialog && searchInputRef.current) {
+  //     searchInputRef.current.focus();
+  //   }
+  // }, [visibleDialog]);  // Dependency on the dialog visibility state
+
   const [users, setUsers] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -71,18 +80,16 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
 
   const getUsers = useCallback(async (filterRequest) => {
     setLoading(true);
-    const res = await FilterRequest(filterRequest);
-    const fetchedUsers = res.data.data;
-    setTotalCount(res.data.totalCount);
     if (firstUser) {
-      if (fetchedUsers.some(user => user.id === firstUser.id)) {
-        // Filter fetchedUsers to exclude selectedUser
-        const filteredUsers = fetchedUsers.filter(user => user.id !== firstUser.id);
-        setUsers([firstUser, ...filteredUsers]);
-      } else {
-        setUsers([firstUser, ...fetchedUsers]);
-      }
-    } else {
+      const res = await FilterRequestForEdit((selectedUser === firstUser) ? firstUser.id : selectedUser.id, filterRequest);
+      const fetchedUsers = res.data.data;
+      setTotalCount(res.data.totalCount);
+      setUsers([...fetchedUsers]);
+    }
+    else {
+      const res = await FilterRequest(filterRequest);
+      const fetchedUsers = res.data.data;
+      setTotalCount(res.data.totalCount);
       setUsers([...fetchedUsers])
     }
     if (scrollRef.current) {
@@ -92,7 +99,8 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
       });
     }
     setLoading(false);
-  }, [firstUser]);
+  }, [firstUser, selectedUser]);
+
   useEffect(() => {
     getUsers(filterRequest);
   }, [filterRequest, getUsers]);
@@ -125,7 +133,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
 
   const handleSelectUser = (user) => {
     setChosenUser(user)
-    // setSelectedUser(user);
   };
 
   const handleSave = () => {
@@ -134,7 +141,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
   };
 
   const handleCancel = () => {
-    // setSelectedUser(null)
     setVisibleDialog(false);
   };
 
@@ -155,7 +161,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "name";
+          newSortColumn = column;
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -164,7 +170,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
         newSortOrder = "";
         newSortColumn = column;
       }
-
       return {
         ...prev,
         sortColumn: newSortColumn,
@@ -174,28 +179,37 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
   };
 
   const getSortIcon = (column) => {
+    const iconStyle = {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+    };
+
     if (filterRequest.sortColumn === column) {
       if (filterRequest.sortOrder === "descend") {
         return (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={iconStyle}>
             <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
             <CustomArrowDropDown />
           </div>
         );
       }
+      if (filterRequest.sortOrder === "") {
+        return (
+          <div style={iconStyle}>
+            <CustomArrowDropUp />
+            <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
+          </div>
+        );
+      }
+    } else
       return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <CustomArrowDropUp />
+        <div style={iconStyle}>
+          <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
           <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
         </div>
       );
-    }
-    return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-        <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
-        <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
-      </div>
-    );
   };
 
   return (
@@ -232,6 +246,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
             value={searchTerm}
             onChange={handleSearchChange}
             onKeyPress={handleKeyPress}
+            // inputRef={searchInputRef}  // Set the ref to the TextField
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -341,7 +356,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
                       key={index}
                       onClick={() => handleSelectUser(user)}
                       sx={{
-                        backgroundColor: firstUser && index === 0 ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
+                        backgroundColor: chosenUser?.staffCode === user.staffCode ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
                       }}
                     >
                       <TableCell>

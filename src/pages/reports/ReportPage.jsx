@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { PaginationBar } from "../../components";
+import LoadingSpinner from "../../components/LoadingSpinner";
 import { ExportReport, FilterReport } from "../../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
@@ -42,6 +43,7 @@ const ReportPage = () => {
   const [totalCount, setTotalCount] = useState();
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingExport, setLoadingExport] = useState(null);
   const [filterRequest, setFilterRequest] = useState({
     sortColumn: "Category",
     sortOrder: "",
@@ -74,7 +76,6 @@ const ReportPage = () => {
       setLoading(false);
     }
   };
-  console.log(filterRequest);
   useEffect(() => {
     getReports(filterRequest);
   }, [filterRequest]);
@@ -88,10 +89,13 @@ const ReportPage = () => {
 
   const handleExport = () => {
     const exportReport = async (filterRequest) => {
+      setLoadingExport(true);
       try {
         await ExportReport(filterRequest);
       } catch (error) {
         console.error("Error downloading report:", error);
+      } finally {
+        setLoadingExport(false);
       }
     };
     exportReport(filterRequest);
@@ -364,6 +368,8 @@ const ReportPage = () => {
           handlePageChange={handlePageChange}
         />
       </Paper>
+
+      <LoadingSpinner loading={loadingExport} />
     </>
   );
 };

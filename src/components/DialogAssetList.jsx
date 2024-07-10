@@ -22,7 +22,7 @@ import {
   styled,
 } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AssetFilterRequest } from "../services/asset.service";
+import { AssetFilterRequest, FilterRequestForEdit } from "../services/asset.service";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -60,8 +60,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     page: 1,
     pageSize: "20",
     category: "",
-    state: "Available"
-
+    state: firstAsset ? `${firstAsset.id}` : "Available"
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
@@ -73,19 +72,16 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
 
   const getAssets = useCallback(async (filterRequest) => {
     setLoading(true);
-    const res = await AssetFilterRequest(filterRequest);
-    const fetchedAssets = res.data.data;
-    setTotalCount(res.data.totalCount);
-
-    // const userCreated = JSON.parse(sessionStorage.getItem("user_created"));
-    // if (userCreated) {
-    //   setAssets([userCreated, firstAsset, ...fetchedAssets]);
-    //   sessionStorage.removeItem("user_created");
-    // } else 
     if (firstAsset) {
-      setAssets([firstAsset, ...fetchedAssets]);
+      const res = await FilterRequestForEdit((selectedAsset === firstAsset) ? firstAsset.id : selectedAsset.id, filterRequest);
+      const fetchedAssets = res.data.data;
+      setTotalCount(res.data.totalCount);
+      setAssets([...fetchedAssets]);
     }
     else {
+      const res = await AssetFilterRequest(filterRequest);
+      const fetchedAssets = res.data.data;
+      setTotalCount(res.data.totalCount);
       setAssets([...fetchedAssets]);
     }
     if (scrollRef.current) {
@@ -95,7 +91,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       });
     }
     setLoading(false);
-  }, [firstAsset]);
+  }, [firstAsset, selectedAsset]);
 
   useEffect(() => {
     getAssets(filterRequest);
@@ -159,7 +155,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           newSortColumn = column;
         } else if (prev.sortOrder === "descend") {
           newSortOrder = "";
-          newSortColumn = "assetName";
+          newSortColumn = column;
         } else {
           newSortOrder = "";
           newSortColumn = column;
@@ -344,7 +340,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                       key={index}
                       onClick={() => handleSelectAsset(asset)}
                       sx={{
-                        backgroundColor: firstAsset && index === 0 ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
+                        backgroundColor: chosenAsset?.assetCode === asset.assetCode ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
                       }}
                     >
                       <TableCell>
@@ -352,6 +348,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                           sx={{
                             color: "#000",
                             "&.Mui-checked": { color: "#d32f2f" },
+
                           }}
                           checked={chosenAsset?.assetCode === asset.assetCode}
                           onChange={() => handleSelectAsset(asset)}

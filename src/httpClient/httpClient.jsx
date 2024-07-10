@@ -57,7 +57,7 @@ instance.interceptors.response.use(
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
         default:
-          errorMessage = err.response.data;
+          errorMessage = err?.response?.data;
           break;
       }
     }

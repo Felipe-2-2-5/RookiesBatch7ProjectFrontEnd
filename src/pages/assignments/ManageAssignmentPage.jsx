@@ -272,9 +272,11 @@ const ManageAssignmentPage = () => {
       setOpenReturnPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage("<b>Return request</b> has been <b>created</b> successfully.");
+      setNotiMessage(
+        "<b>Return request</b> has been <b>created</b> successfully."
+      );
     } catch (error) {
-      if (error) {
+      if (error.UserMessage) {
         setNotiTitle("Error");
         setNotiMessage(error.UserMessage);
         setNoti(true);
@@ -290,7 +292,7 @@ const ManageAssignmentPage = () => {
       setNotiTitle("Notifications");
       setNotiMessage(`<b>Assignment</b> has been <b>deleted</b> successfully.`);
     } catch (error) {
-      if (error) {
+      if (error.UserMessage) {
         setNotiTitle("Error");
         setNotiMessage(error.UserMessage);
         setNoti(true);

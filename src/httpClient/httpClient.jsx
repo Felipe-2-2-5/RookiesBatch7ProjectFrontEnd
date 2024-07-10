@@ -48,7 +48,7 @@ instance.interceptors.response.use(
           break;
         }
         case 404:
-          errorMessage = "Resource not found.";
+          errorMessage = "Resource not found or has been deleted.";
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
         case 500:

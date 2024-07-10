@@ -232,7 +232,7 @@ const CreateUser = () => {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
-            `User ${users.firstName} ${users.lastName} has been created.`
+            `User <b>${users.firstName} ${users.lastName}</b> has been <b>created</b> successfully.`
           );
           displayNotificationPopup();
         }

@@ -167,7 +167,7 @@ const CreateAsset = () => {
       sessionStorage.setItem("asset_created", JSON.stringify(res.data));
       setOpenPopup(true);
       setTitlePopup("Notifications");
-      setContentPopup(`Asset ${asset.name}  has been created.`);
+      setContentPopup(`Asset <b>${asset.name}</b>  has been <b>created</b> successfully.`);
     }
   };
   const handleCancel = () => {

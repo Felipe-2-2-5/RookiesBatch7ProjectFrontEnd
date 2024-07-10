@@ -163,7 +163,7 @@ const MyAssignmentPage = () => {
         getAssignments(filterRequest);
         setOpenAcceptPopup(false);
         setNotiTitle("Notifications");
-        setNotiMessage("Accept successfully!");
+        setNotiMessage("Assignment has been <b>accepted</b> successfully.");
         setNoti(true);
       } catch (err) {
         setNotiTitle("Error");
@@ -186,7 +186,7 @@ const MyAssignmentPage = () => {
         getAssignments(filterRequest);
         setOpenDeclinePopup(false);
         setNotiTitle("Notifications");
-        setNotiMessage("Decline successfully!");
+        setNotiMessage("Assignment has been <b>declined</b> successfully.");
         setNoti(true);
       } catch (err) {
         setNotiTitle("Error");
@@ -209,7 +209,7 @@ const MyAssignmentPage = () => {
       getAssignments(filterRequest);
       setOpenReturnPopup(false);
       setNotiTitle("Notifications");
-      setNotiMessage("Return request has been created successfully!");
+      setNotiMessage("Return request has been <b>created</b> successfully.");
       setNoti(true);
     } catch (e) {
       setNotiTitle("Error");

@@ -20,42 +20,6 @@ import DialogUserList from "../../components/DialogUserList";
 import NotificationPopup from "../../components/shared/NotificationPopup";
 import { CreateAssignmentAPI } from "../../services/assignments.service";
 
-// const NotificationPopup = ({
-//   open,
-//   handleClose,
-//   title,
-//   content,
-//   closeContent,
-// }) => {
-//   return (
-//     <Dialog
-//       open={open}
-//       onClose={handleClose}
-//       disableBackdropClick
-//       disableEscapeKeyDown
-//     >
-//       <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-//         {title}
-//       </DialogTitle>
-//       <DialogContent>
-//         <p>{content}</p>
-//       </DialogContent>
-//       <DialogActions>
-//         <Button
-//           onClick={handleClose}
-//           sx={{
-//             color: "white",
-//             bgcolor: "#D6001C",
-//             "&:hover": { bgcolor: "#D6001C" },
-//           }}
-//         >
-//           {closeContent ? closeContent : "Ok"}
-//         </Button>
-//       </DialogActions>
-//     </Dialog>
-//   );
-// };
-
 const CreateAssignment = () => {
   const navigate = useNavigate();
   const [visibleDialog, setVisibleDialog] = useState(false);
@@ -220,8 +184,7 @@ const CreateAssignment = () => {
         );
         setTitlePopup("Notifications");
         setContentPopup(
-          // `Asset ${assignments.asset.assetName} has been assigned to ${assignments.user.firstName} ${assignments.user.lastName}.`
-          `Asset: <strong>${assignments.asset.assetName}</strong> has been assigned to <strong>${assignments.user.firstName} ${assignments.user.lastName}</strong>.`
+          `Asset <b>${assignments.asset.assetName}</b> has been assigned to <b>${assignments.user.firstName} ${assignments.user.lastName}</b>.`
         );
         displayNotificationPopup();
       }
@@ -252,12 +215,13 @@ const CreateAssignment = () => {
               color: "#d32f2f",
               fontWeight: "bold",
               fontSize: "20px",
-            }}
-          >
+            }}>
             Create New Assignment
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={1}>
+            <Grid
+              container
+              spacing={1}>
               <Grid
                 item
                 xs={3}
@@ -265,14 +229,15 @@ const CreateAssignment = () => {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <Typography onClick={handleUserDialogOpen}>
                   User
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -311,14 +276,15 @@ const CreateAssignment = () => {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
-                }}
-              >
+                }}>
                 <Typography handleAssetDialogOpen>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -348,14 +314,21 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.asset}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Assigned Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid item xs={9}>
-                <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
+              <Grid
+                item
+                xs={9}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDateFns}
+                  locale={vi}>
                   <DatePicker
                     slotProps={{
                       field: { clearable: true },
@@ -393,10 +366,15 @@ const CreateAssignment = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>Note</Typography>
               </Grid>
-              <Grid item xs={9}>
+              <Grid
+                item
+                xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -418,10 +396,11 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.note}</FormHelperText>
                 )}
               </Grid>
-              <Grid item xs={12}>
+              <Grid
+                item
+                xs={12}>
                 <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
-                >
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
                   <Button
                     variant="contained"
                     type="submit"
@@ -438,15 +417,13 @@ const CreateAssignment = () => {
                       !assignments.asset ||
                       !assignments.assignedDate
                     }
-                    onClick={handleSubmit}
-                  >
+                    onClick={handleSubmit}>
                     Save
                   </Button>
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-assignment")}
-                  >
+                    onClick={() => navigate("/manage-assignment")}>
                     Cancel
                   </Button>
                 </Box>

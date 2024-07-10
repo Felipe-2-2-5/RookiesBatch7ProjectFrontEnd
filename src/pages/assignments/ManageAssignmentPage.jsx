@@ -272,7 +272,7 @@ const ManageAssignmentPage = () => {
       setOpenReturnPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage("Return request has been created successfully!");
+      setNotiMessage("<b>Return request</b> has been <b>created</b> successfully.");
     } catch (error) {
       console.error("Failed to create return request", error);
       alert(error);
@@ -285,7 +285,7 @@ const ManageAssignmentPage = () => {
       setOpenDeleteConfirmationPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage(`Assignment has been deleted successfully!`);
+      setNotiMessage(`<b>Assignment</b> has been <b>deleted</b> successfully.`);
     } catch (error) {
       console.error("Failed to delete assignment", error);
       alert(error);

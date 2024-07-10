@@ -48,7 +48,7 @@ instance.interceptors.response.use(
           break;
         }
         case 404:
-          errorMessage = err.response.data.UserMessage;
+          errorMessage = err?.response?.data?.UserMessage;
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
         case 500:

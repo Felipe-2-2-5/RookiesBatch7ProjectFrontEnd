@@ -367,7 +367,8 @@ const CreateAssignment = () => {
                       },
                     }}
                     sx={{
-                      width: 506,
+                      my:0.5,
+                      width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
                         "&.Mui-focused fieldset": { borderColor: "#000" },

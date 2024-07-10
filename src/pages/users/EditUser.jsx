@@ -134,13 +134,15 @@ const EditUser = () => {
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
     } else if (!isValid) {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        }  must contain only alphabetical characters and spaces.`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }  must contain only alphabetical characters and spaces.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -151,8 +153,9 @@ const EditUser = () => {
     const { name, value } = event.target;
     const trimmedValue = value.trim();
     if (trimmedValue.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     }
     setUsers({ ...users, [name]: trimmedValue });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -184,8 +187,9 @@ const EditUser = () => {
 
     setUsers({ ...users, [name]: trimmedValue });
     if (value.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (value.length > 20 || value.length < 2) {
       errorMessage = "The length of Firstname should be 2-20 characters.";
     } else if (!isValid) {
@@ -288,7 +292,7 @@ const EditUser = () => {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
-            `User ${users.firstName} ${users.lastName} has been updated.`
+            `User <b>${users.firstName} ${users.lastName}</b> has been <b>updated</b> successfully.`
           );
           displayNotificationPopup();
         }
@@ -415,7 +419,7 @@ const EditUser = () => {
                     }}
                     // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
-                      my:0.5,
+                      my: 0.5,
                       width: "100%",
                       "& label.Mui-focused": { color: "#000" },
                       "& .MuiOutlinedInput-root": {
@@ -527,7 +531,7 @@ const EditUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                      // error={formErrors.joinedDate !== "" && touched.joinedDate}
+                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />

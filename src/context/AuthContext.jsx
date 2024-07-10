@@ -66,7 +66,6 @@ const AuthProvider = ({ children }) => {
             setTimeout(handleTokenExpiry, expiryTime);
           }
         } catch (error) {
-          console.error("Error decoding token: ", error);
           handleTokenExpiry();
         }
       } else {

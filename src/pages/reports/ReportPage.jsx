@@ -51,7 +51,6 @@ const ReportPage = () => {
     pageSize: "20",
   });
 
-  console.log(loadingExport);
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
     Number.isNaN(totalCount) || totalCount === 0

@@ -132,7 +132,7 @@ const ManageAssetPage = () => {
         const res = await GetCategories();
         setCategories(res.data);
       } catch (error) {
-        if (error) {
+        if (error.UserMessage) {
           setNotiTitle("Error");
           setNotiMessage(error.UserMessage);
           setNoti(true);
@@ -322,7 +322,7 @@ const ManageAssetPage = () => {
         );
         setNoti(true);
       } catch (error) {
-        if (error) {
+        if (error.UserMessage) {
           setNotiTitle("Error");
           setNotiMessage(error.UserMessage);
           setNoti(true);

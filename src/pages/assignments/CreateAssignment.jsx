@@ -189,9 +189,9 @@ const CreateAssignment = () => {
         displayNotificationPopup();
       }
     } catch (error) {
-      if (error) {
+      if (error.UserMessage) {
         setTitlePopup("Error");
-        setContentPopup(`error: ${error.DevMessage}`);
+        setContentPopup(`error: ${error.UserMessage}`);
         displayNotificationPopup();
       }
     }
@@ -217,13 +217,12 @@ const CreateAssignment = () => {
               color: "#d32f2f",
               fontWeight: "bold",
               fontSize: "20px",
-            }}>
+            }}
+          >
             Create New Assignment
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid
-              container
-              spacing={1}>
+            <Grid container spacing={1}>
               <Grid
                 item
                 xs={3}
@@ -231,15 +230,14 @@ const CreateAssignment = () => {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
-                }}>
+                }}
+              >
                 <Typography onClick={handleUserDialogOpen}>
                   User
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -278,15 +276,14 @@ const CreateAssignment = () => {
                   display: "flex",
                   alignItems: "center",
                   cursor: "pointer",
-                }}>
+                }}
+              >
                 <Typography handleAssetDialogOpen>
                   Asset
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -316,21 +313,14 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.asset}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Assigned Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDateFns}
-                  locale={vi}>
+              <Grid item xs={9}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     slotProps={{
                       field: { clearable: true },
@@ -368,15 +358,10 @@ const CreateAssignment = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>Note</Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -398,11 +383,10 @@ const CreateAssignment = () => {
                   <FormHelperText error>{formErrors.note}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={12}>
+              <Grid item xs={12}>
                 <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
+                >
                   <Button
                     variant="contained"
                     type="submit"
@@ -419,13 +403,15 @@ const CreateAssignment = () => {
                       !assignments.asset ||
                       !assignments.assignedDate
                     }
-                    onClick={handleSubmit}>
+                    onClick={handleSubmit}
+                  >
                     Save
                   </Button>
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-assignment")}>
+                    onClick={() => navigate("/manage-assignment")}
+                  >
                     Cancel
                   </Button>
                 </Box>

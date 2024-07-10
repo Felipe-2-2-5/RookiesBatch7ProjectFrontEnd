@@ -195,7 +195,6 @@ const ManageUserPage = () => {
         newSortOrder = "";
         newSortColumn = column;
       }
-
       return {
         ...prev,
         sortColumn: newSortColumn,
@@ -363,13 +362,13 @@ const ManageUserPage = () => {
             sx={{
               marginLeft: "auto",
               "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
+              {
+                color: "black",
+              },
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
+              {
+                borderColor: "black",
+              },
             }}
           />
           <Button

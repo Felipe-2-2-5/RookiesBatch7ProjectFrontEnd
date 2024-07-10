@@ -15,6 +15,11 @@ export const FilterRequest = async (body) => {
   return response;
 };
 
+export const FilterRequestForEdit = async (id, body) => {
+  const response = await httpClient.post(`/users/filter-choosing/${id}`, body);
+  return response;
+};
+
 export const GetUsers = async () => {
   const response = await httpClient.get("/users");
   return response;

@@ -184,7 +184,7 @@ const EditAsset = () => {
       sessionStorage.setItem("asset_created", JSON.stringify(res.data));
       setOpenPopup(true);
       setTitlePopup("Notifications");
-      setContentPopup(`Asset ${asset.assetName}  has been edited.`);
+      setContentPopup(`Asset <b>${asset.assetName}</b>  has been <b>updated</b> successfully.`);
     }
   };
   const handleCancel = () => {

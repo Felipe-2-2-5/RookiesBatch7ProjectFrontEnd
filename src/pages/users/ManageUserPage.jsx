@@ -291,7 +291,7 @@ const ManageUserPage = () => {
           <NotificationPopup
             open={successPopupOpen}
             handleClose={() => setSuccessPopupOpen(false)}
-            title="Success"
+            title="Notifications"
             content={popupMessage}
           />
           <NotificationPopup

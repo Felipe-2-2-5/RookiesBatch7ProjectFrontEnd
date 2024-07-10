@@ -3,15 +3,11 @@ import {
   Box,
   Button,
   Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormHelperText,
   Grid,
   IconButton,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -21,43 +17,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DialogAssetList from "../../components/DialogAssetList";
 import DialogUserList from "../../components/DialogUserList";
+import NotificationPopup from "../../components/shared/NotificationPopup";
 import { CreateAssignmentAPI } from "../../services/assignments.service";
-
-const NotificationPopup = ({
-  open,
-  handleClose,
-  title,
-  content,
-  closeContent,
-}) => {
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      disableBackdropClick
-      disableEscapeKeyDown
-    >
-      <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-        {title}
-      </DialogTitle>
-      <DialogContent>
-        <p>{content}</p>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          onClick={handleClose}
-          sx={{
-            color: "white",
-            bgcolor: "#D6001C",
-            "&:hover": { bgcolor: "#D6001C" },
-          }}
-        >
-          {closeContent ? closeContent : "Ok"}
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
 
 const CreateAssignment = () => {
   const navigate = useNavigate();

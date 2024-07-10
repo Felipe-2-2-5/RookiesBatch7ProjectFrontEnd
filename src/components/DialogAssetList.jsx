@@ -60,7 +60,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     page: 1,
     pageSize: "20",
     category: "",
-    state: ""
+    state: firstAsset ? `${firstAsset.id}` : "Available"
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
@@ -72,7 +72,6 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
 
   const getAssets = useCallback(async (filterRequest) => {
     setLoading(true);
-    console.log(filterRequest);
     if (firstAsset) {
       const res = await FilterRequestForEdit((selectedAsset === firstAsset) ? firstAsset.id : selectedAsset.id, filterRequest);
       const fetchedAssets = res.data.data;

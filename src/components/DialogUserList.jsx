@@ -70,7 +70,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
   //   }
   // }, [visibleDialog]);  // Dependency on the dialog visibility state
 
-  console.log(selectedUser === firstUser);
   const [users, setUsers] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
   const pageCount =
@@ -78,33 +77,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
       ? 1
       : Math.ceil(totalCount / pageSize);
   const [searchTerm, setSearchTerm] = useState("");
-
-  // const getUsers = useCallback(async (filterRequest) => {
-  //   setLoading(true);
-  //   const res = await FilterRequest(filterRequest);
-  //   const fetchedUsers = res.data.data;
-  //   setTotalCount(res.data.totalCount);
-  //   if (firstUser) {
-  //     if (fetchedUsers.some(user => user.id === firstUser.id)) {
-  //       // Filter fetchedUsers to exclude selectedUser
-  //       const filteredUsers = fetchedUsers.filter(user => user.id !== firstUser.id);
-  //       setUsers([firstUser, ...filteredUsers]);
-  //     } else {
-  //       setUsers([firstUser, ...fetchedUsers]);
-  //     }
-  //   } else {
-  //     setUsers([...fetchedUsers])
-  //   }
-  //   console.log(users);
-
-  //   if (scrollRef.current) {
-  //     scrollRef.current.scrollTo({
-  //       top: 0,
-  //       behavior: "smooth",
-  //     });
-  //   }
-  //   setLoading(false);
-  // }, [firstUser]);
 
   const getUsers = useCallback(async (filterRequest) => {
     setLoading(true);
@@ -147,7 +119,6 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
     }));
   };
 
-  console.log(chosenUser);
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       setSearchTerm(trimmedSearchTerm);

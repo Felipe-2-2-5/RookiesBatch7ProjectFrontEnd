@@ -289,7 +289,6 @@ const RequestForReturningPage = () => {
 
   const handleCompleteRequest = async () => {
     try {
-      console.log(selectedReturnRequest);
       await CompeleteReturnRequest(selectedReturnRequest.id);
       getReturnRequests(filterRequest);
       setSuccess(true);
@@ -499,7 +498,7 @@ const RequestForReturningPage = () => {
                 borderColor: "black",
               },
             }}
-            
+
           />
         </Box>
 

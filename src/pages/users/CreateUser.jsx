@@ -273,7 +273,7 @@ const CreateUser = () => {
           <form onSubmit={handleSubmit}>
             <Grid
               container
-              spacing={1}>
+              spacing={2}>
               <Grid
                 item
                 xs={3}
@@ -360,7 +360,6 @@ const CreateUser = () => {
                         onBlur: () => handleDateBlur("dateOfBirth"),
                       },
                     }}
-                    // onBlur={(date) => handleDateChange("dateOfBirth", date)}
                     sx={{
                       my: 0.5,
                       width: "100%",

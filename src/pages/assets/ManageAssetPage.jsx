@@ -268,7 +268,6 @@ const ManageAssetPage = () => {
         newSortOrder = "";
         newSortColumn = column;
       }
-
       return {
         ...prev,
         sortColumn: newSortColumn,

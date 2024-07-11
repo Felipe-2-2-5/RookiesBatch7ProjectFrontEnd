@@ -98,7 +98,8 @@ const CreateUser = () => {
   const handleLastNameBlur = (event) => {
     const { name, value } = event.target;
     // const trimmedValue = value.replace(/\s+/g, " ");
-    let trimmedValue = value.replace(/[^a-zA-Z]/g, "");
+    let trimmedValue = value.replace(/[^a-zA-Z\s]/g, "");
+    trimmedValue = trimmedValue.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
     const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
 

@@ -5,7 +5,6 @@ import {
   HighlightOff as DeleteIcon,
   DisabledByDefault,
   FilterAltOutlined,
-  Search,
 } from "@mui/icons-material";
 import { Sheet } from "@mui/joy";
 import {
@@ -18,7 +17,6 @@ import {
   FormControl,
   Grid,
   IconButton,
-  InputAdornment,
   InputLabel,
   MenuItem,
   Pagination,
@@ -30,13 +28,16 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
   styled,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { NotificationPopup, ConfirmationPopup } from "../../components";
+import {
+  NotificationPopup,
+  ConfirmationPopup,
+  SearchBar,
+} from "../../components";
 import { useAuthContext } from "../../context/AuthContext";
 import { GenderEnum } from "../../enum/genderEnum";
 import { path } from "../../routes/routeContants";
@@ -340,44 +341,15 @@ const ManageUserPage = () => {
               <MenuItem value="Staff">Staff</MenuItem>
             </Select>
           </FormControl>
-          <TextField
-            variant="outlined"
-            label="Search"
-            value={searchTerm}
-            name="search"
-            onChange={handleSearchChange}
-            onKeyPress={handleKeyPress}
-            error={false}
+
+          <SearchBar
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+            handleKeyPress={handleKeyPress}
+            handleSearchClick={handleSearchClick}
             title="Search by Staff Code or Full Name"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    sx={{
-                      "& label.Mui-focused": { color: "#000" },
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": { borderColor: "#000" },
-                      },
-                      width: "120%",
-                    }}
-                    onClick={handleSearchClick}
-                  >
-                    <Search />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              marginLeft: "auto",
-              "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
-            }}
+            placeholder="Staff Code, Full Name"
+            customWidth={"30%"}
           />
           <Button
             variant="contained"

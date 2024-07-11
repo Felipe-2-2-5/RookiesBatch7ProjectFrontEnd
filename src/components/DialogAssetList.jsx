@@ -1,12 +1,10 @@
-import { ArrowDropDown, ArrowDropUp, Search } from "@mui/icons-material";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import {
   Box,
   Button,
   CircularProgress,
   Dialog,
   DialogActions,
-  IconButton,
-  InputAdornment,
   Pagination,
   Paper,
   Radio,
@@ -16,13 +14,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
-
   styled,
 } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AssetFilterRequest, FilterRequestForEdit } from "../services/asset.service";
+import {
+  AssetFilterRequest,
+  FilterRequestForEdit,
+} from "../services/asset.service";
+import SearchBar from "./shared/SearchBar";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -48,7 +48,14 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, firstAsset, selectedAsset, setSelectedAsset }) => {
+const DialogAssetList = ({
+  onSelect,
+  visibleAssetDialog,
+  setVisibleAssetDialog,
+  firstAsset,
+  selectedAsset,
+  setSelectedAsset,
+}) => {
   const scrollRef = useRef(null);
   const [chosenAsset, setChosenAsset] = useState(selectedAsset);
   const [totalCount, setTotalCount] = useState(0);
@@ -60,7 +67,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     page: 1,
     pageSize: "20",
     category: "",
-    state: firstAsset ? `${firstAsset.id}` : "Available"
+    state: firstAsset ? `${firstAsset.id}` : "Available",
   });
   const [assets, setAssets] = useState([]);
   const pageSize = filterRequest.pageSize || 1;
@@ -70,28 +77,33 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
       : Math.ceil(totalCount / pageSize);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const getAssets = useCallback(async (filterRequest) => {
-    setLoading(true);
-    if (firstAsset) {
-      const res = await FilterRequestForEdit((selectedAsset === firstAsset) ? firstAsset.id : selectedAsset.id, filterRequest);
-      const fetchedAssets = res.data.data;
-      setTotalCount(res.data.totalCount);
-      setAssets([...fetchedAssets]);
-    }
-    else {
-      const res = await AssetFilterRequest(filterRequest);
-      const fetchedAssets = res.data.data;
-      setTotalCount(res.data.totalCount);
-      setAssets([...fetchedAssets]);
-    }
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-    setLoading(false);
-  }, [firstAsset, selectedAsset]);
+  const getAssets = useCallback(
+    async (filterRequest) => {
+      setLoading(true);
+      if (firstAsset) {
+        const res = await FilterRequestForEdit(
+          selectedAsset === firstAsset ? firstAsset.id : selectedAsset.id,
+          filterRequest
+        );
+        const fetchedAssets = res.data.data;
+        setTotalCount(res.data.totalCount);
+        setAssets([...fetchedAssets]);
+      } else {
+        const res = await AssetFilterRequest(filterRequest);
+        const fetchedAssets = res.data.data;
+        setTotalCount(res.data.totalCount);
+        setAssets([...fetchedAssets]);
+      }
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+      setLoading(false);
+    },
+    [firstAsset, selectedAsset]
+  );
 
   useEffect(() => {
     getAssets(filterRequest);
@@ -107,7 +119,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
-      page: 1
+      page: 1,
     }));
   };
 
@@ -177,21 +189,42 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
     if (filterRequest.sortColumn === column) {
       if (filterRequest.sortOrder === "descend") {
         return (
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
             <CustomArrowDropDown />
           </div>
         );
       }
       return (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <CustomArrowDropUp />
           <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
         </div>
       );
     }
     return (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <CustomArrowDropUp sx={{ color: "#bdbdbd" }} />
         <CustomArrowDropDown sx={{ color: "#bdbdbd" }} />
       </div>
@@ -213,8 +246,14 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
         },
       }}
     >
-      <Paper elevation={3} style={{ padding: "20px" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+      <Paper elevation={3} style={{ padding: "16px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "20px",
+          }}
+        >
           <Typography
             variant="h5"
             sx={{
@@ -226,36 +265,14 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           >
             Select Asset
           </Typography>
-          <TextField
-            variant="outlined"
-            label="Search"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onKeyPress={handleKeyPress}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton sx={{
-                    "& label.Mui-focused": { color: "#000" },
-                    "& .MuiOutlinedInput-root": {
-                      "&.Mui-focused fieldset": { borderColor: "#000" },
-                    },
-                  }} onClick={handleSearchClick}>
-                    <Search />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              width: "300px", "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
-            }}
+          <SearchBar
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+            handleKeyPress={handleKeyPress}
+            handleSearchClick={handleSearchClick}
+            title="Search by Asset Code or Asset Name"
+            placeholder="Asset Code, Asset Name"
+            customWidth={300}
           />
         </Box>
         <TableContainer component={Paper}>
@@ -323,24 +340,29 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                   </TableRow>
                 ) : assets.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} align="center"
+                    <TableCell
+                      colSpan={4}
+                      align="center"
                       sx={{
                         color: "red",
                         textAlign: "center",
                         padding: "28px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       No assets found
                     </TableCell>
                   </TableRow>
                 ) : (
                   assets.map((asset, index) => (
-                    // <CustomTableRow key={index} onClick={() => handleSelectAsset(asset)}>
                     <CustomTableRow
                       key={index}
                       onClick={() => handleSelectAsset(asset)}
                       sx={{
-                        backgroundColor: chosenAsset?.assetCode === asset.assetCode ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
+                        backgroundColor:
+                          chosenAsset?.assetCode === asset.assetCode
+                            ? "#f0f0f0"
+                            : "inherit", // Highlight background for the first user in the list
                       }}
                     >
                       <TableCell>
@@ -348,18 +370,27 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
                           sx={{
                             color: "#000",
                             "&.Mui-checked": { color: "#d32f2f" },
-
                           }}
                           checked={chosenAsset?.assetCode === asset.assetCode}
                           onChange={() => handleSelectAsset(asset)}
                           value={asset.assetCode}
                         />
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{asset.assetCode}</TableCell>
-                      <TableCell sx={{ textAlign: "center", maxWidth: "120px", wordWrap: "break-word" }}>
+                      <TableCell sx={{ textAlign: "center" }}>
+                        {asset.assetCode}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          textAlign: "center",
+                          maxWidth: "120px",
+                          wordWrap: "break-word",
+                        }}
+                      >
                         {asset.assetName}
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{asset.category.name}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>
+                        {asset.category.name}
+                      </TableCell>
                     </CustomTableRow>
                   ))
                 )}
@@ -367,7 +398,13 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
             </Table>
           </Box>
         </TableContainer>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "20px",
+          }}
+        >
           <Pagination
             count={pageCount}
             variant="outlined"
@@ -391,7 +428,6 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           position: "sticky",
           bottom: 0,
           padding: "16px",
-          boxShadow: "0px -2px 10px rgba(0, 0, 0, 0.1)",
           display: "flex",
           justifyContent: "flex-end",
           gap: "8px",
@@ -414,7 +450,7 @@ const DialogAssetList = ({ onSelect, visibleAssetDialog, setVisibleAssetDialog, 
           Cancel
         </Button>
       </DialogActions>
-    </Dialog >
+    </Dialog>
   );
 };
 

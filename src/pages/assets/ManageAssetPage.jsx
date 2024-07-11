@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Typography,
-  TextField,
   Button,
   Table,
   TableContainer,
@@ -13,7 +12,6 @@ import {
   IconButton,
   MenuItem,
   Grid,
-  InputAdornment,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -30,7 +28,6 @@ import {
   ArrowDropDown,
   ArrowDropUp,
   FilterAltOutlined as FilterIcon,
-  Search as SearchIcon,
   DisabledByDefault as CloseIcon,
   CreateTwoTone,
 } from "@mui/icons-material";
@@ -45,7 +42,11 @@ import {
   DeleteAsset,
 } from "../../services/asset.service";
 import { assetStateEnum } from "../../enum/assetStateEnum";
-import { ConfirmationPopup, NotificationPopup } from "../../components";
+import {
+  ConfirmationPopup,
+  NotificationPopup,
+  SearchBar,
+} from "../../components";
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -130,7 +131,10 @@ const ManageAssetPage = () => {
     const fetchCategories = async () => {
       try {
         const res = await GetCategories();
-        setCategories(res.data);
+        const sortedCategories = res.data.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+        setCategories(sortedCategories);
       } catch (error) {
         if (error.UserMessage) {
           setNotiTitle("Error");
@@ -450,47 +454,15 @@ const ManageAssetPage = () => {
             </FormControl>
           </Box>
 
-          {/* Search Box*/}
-          <TextField
-            variant="outlined"
-            label="Search"
-            value={searchTerm}
-            name="search"
-            onChange={handleSearchChange}
-            onKeyPress={handleKeyPress}
-            error={false}
+          <SearchBar
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+            handleKeyPress={handleKeyPress}
+            handleSearchClick={handleSearchClick}
             title="Search by Asset Code or Asset Name"
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    sx={{
-                      "& label.Mui-focused": { color: "#000" },
-                      "& .MuiOutlinedInput-root": {
-                        "&.Mui-focused fieldset": { borderColor: "#000" },
-                      },
-                      width: "120%",
-                    }}
-                    onClick={handleSearchClick}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              marginLeft: "auto",
-              "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-                {
-                  color: "black",
-                },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  borderColor: "black",
-                },
-            }}
+            placeholder="Asset Code, Asset Name"
+            customWidth={"30%"}
           />
-
           {/* Create new Button*/}
           <Button
             variant="contained"

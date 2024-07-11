@@ -4,16 +4,18 @@ import React from "react";
 
 const SearchBar = ({
   title,
+  placeholder,
   searchTerm,
   handleSearchChange,
   handleKeyPress,
   handleSearchClick,
+  customWidth,
 }) => {
   return (
     <TextField
-    title = {title}
+      title={title}
       variant="outlined"
-      label="Search"
+      placeholder={placeholder}
       value={searchTerm}
       name="search"
       onChange={handleSearchChange}
@@ -28,9 +30,10 @@ const SearchBar = ({
                 "& .MuiOutlinedInput-root": {
                   "&.Mui-focused fieldset": { borderColor: "#000" },
                 },
-                width: "120%",
+                width: "100%",
               }}
-              onClick={handleSearchClick}>
+              onClick={handleSearchClick}
+            >
               <SearchIcon />
             </IconButton>
           </InputAdornment>
@@ -39,13 +42,14 @@ const SearchBar = ({
       sx={{
         marginLeft: "auto",
         "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-        {
-          color: "black",
-        },
+          {
+            color: "black",
+          },
         "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-        {
-          borderColor: "black",
-        },
+          {
+            borderColor: "black",
+          },
+        width: customWidth,
       }}
     />
   );

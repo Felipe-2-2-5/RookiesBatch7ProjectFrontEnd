@@ -191,7 +191,7 @@ const CreateAssignment = () => {
     } catch (error) {
       if (error.UserMessage) {
         setTitlePopup("Error");
-        setContentPopup(`error: ${error.UserMessage}`);
+        setContentPopup(`${error.UserMessage}`);
         displayNotificationPopup();
       }
     }

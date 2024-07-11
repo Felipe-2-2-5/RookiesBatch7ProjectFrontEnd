@@ -302,13 +302,13 @@ const EditAssignment = () => {
       if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response));
         setTitlePopup("Notifications");
-        setContentPopup("<b>Assignment</b> has been updated successfully.");
+        setContentPopup("<b>Assignment</b> has been <b>updated</b> successfully.");
         displayNotificationPopup();
       }
     } catch (error) {
       if (error.UserMessage) {
         setTitlePopup("Error");
-        setContentPopup(`error: ${error.UserMessage}`);
+        setContentPopup(`${error.UserMessage}`);
         displayNotificationPopup();
       }
     }

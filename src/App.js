@@ -9,7 +9,6 @@ function App() {
 
   useEffect(() => {
     const showPopupHandler = (message) => {
-      console.log(message);
       setPopupMessage(message);
       setShowPopup(true);
     };

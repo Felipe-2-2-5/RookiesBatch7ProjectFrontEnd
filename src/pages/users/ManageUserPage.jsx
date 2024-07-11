@@ -153,7 +153,6 @@ const ManageUserPage = () => {
     const res = await GetUser(user.id);
     setSelectedUser(res.data);
     setDialogOpen(true);
-    await hubService.send("NotifyUserDisabled", `${user.id}`);
   };
   const handleDialogClose = () => {
     setDialogOpen(false);

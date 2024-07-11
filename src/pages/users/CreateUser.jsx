@@ -66,13 +66,15 @@ const CreateUser = () => {
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
     } else if (!isValid) {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        }  must contain only alphabetical characters and spaces.`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }  must contain only alphabetical characters and spaces.`;
     }
 
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -102,13 +104,15 @@ const CreateUser = () => {
 
     let errorMessage = "";
     if (trimmedValue.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (trimmedValue.length > 20 || trimmedValue.length < 2) {
       errorMessage = "The length of Lastname should be 2-20 characters.";
     } else if (!isValid) {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        }  must contain only alphabetical characters and spaces.`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      }  must contain only alphabetical characters and spaces.`;
     }
     setUsers({ ...users, [name]: trimmedValue.trim() });
     setFormErrors({ ...formErrors, [name]: errorMessage });
@@ -127,8 +131,9 @@ const CreateUser = () => {
 
     setUsers({ ...users, [name]: trimmedValue });
     if (value.trim() === "") {
-      errorMessage = `${name.charAt(0).toUpperCase() + name.slice(1)
-        } is required`;
+      errorMessage = `${
+        name.charAt(0).toUpperCase() + name.slice(1)
+      } is required`;
     } else if (value.length > 20 || value.length < 2) {
       errorMessage = "The length of Firstname should be 2-20 characters.";
     } else if (!isValid) {
@@ -236,9 +241,11 @@ const CreateUser = () => {
           displayNotificationPopup();
         }
       } catch (error) {
-        setTitlePopup("Error");
-        setContentPopup(`${error.userMessage}`);
-        displayNotificationPopup();
+        if (error.userMessage) {
+          setTitlePopup("Error");
+          setContentPopup(`${error.userMessage}`);
+          displayNotificationPopup();
+        }
       }
     } else {
       setTitlePopup("Error");
@@ -266,25 +273,19 @@ const CreateUser = () => {
               color: "#d32f2f",
               fontWeight: "bold",
               fontSize: "20px",
-            }}>
+            }}
+          >
             Create New User
           </Typography>
           <form onSubmit={handleSubmit}>
-            <Grid
-              container
-              spacing={2}>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+            <Grid container spacing={2}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   First Name
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -305,18 +306,13 @@ const CreateUser = () => {
                   <FormHelperText error>{formErrors.firstName}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Last Name
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -336,21 +332,14 @@ const CreateUser = () => {
                   <FormHelperText error>{formErrors.lastName}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Date Of Birth
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDateFns}
-                  locale={vi}>
+              <Grid item xs={9}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     slotProps={{
                       field: { clearable: true },
@@ -388,23 +377,19 @@ const CreateUser = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Gender
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <RadioGroup
                   name="gender"
                   value={users.gender}
                   onChange={handleGenderChange}
-                  row>
+                  row
+                >
                   <FormControlLabel
                     value={2}
                     control={
@@ -431,21 +416,14 @@ const CreateUser = () => {
                   />
                 </RadioGroup>
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Joined Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
-                <LocalizationProvider
-                  dateAdapter={AdapterDateFns}
-                  locale={vi}>
+              <Grid item xs={9}>
+                <LocalizationProvider dateAdapter={AdapterDateFns} locale={vi}>
                   <DatePicker
                     slotProps={{
                       field: { clearable: true },
@@ -471,7 +449,7 @@ const CreateUser = () => {
                         fullWidth
                         margin="dense"
                         required
-                      // error={formErrors.joinedDate !== "" && touched.joinedDate}
+                        // error={formErrors.joinedDate !== "" && touched.joinedDate}
                       />
                     )}
                   />
@@ -480,18 +458,13 @@ const CreateUser = () => {
                   <FormHelperText error>{formErrors.joinedDate}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Type
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <FormControl
                   fullWidth
                   margin="dense"
@@ -502,14 +475,16 @@ const CreateUser = () => {
                     "& .MuiOutlinedInput-root": {
                       "&.Mui-focused fieldset": { borderColor: "#000" },
                     },
-                  }}>
+                  }}
+                >
                   <InputLabel id="type-label">Type</InputLabel>
                   <Select
                     labelId="type-label"
                     name="type"
                     value={users.type}
                     onChange={handleTypeChange}
-                    label="Type">
+                    label="Type"
+                  >
                     <MenuItem value={1}>Admin</MenuItem>
                     <MenuItem value={0}>Staff</MenuItem>
                   </Select>
@@ -518,18 +493,13 @@ const CreateUser = () => {
                   )}
                 </FormControl>
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Location
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <FormControl
                   fullWidth
                   margin="dense"
@@ -540,7 +510,8 @@ const CreateUser = () => {
                     "& .MuiOutlinedInput-root": {
                       "&.Mui-focused fieldset": { borderColor: "#000" },
                     },
-                  }}>
+                  }}
+                >
                   <InputLabel id="location-label">Location</InputLabel>
                   <Select
                     labelId="location-label"
@@ -548,7 +519,8 @@ const CreateUser = () => {
                     value={users.location}
                     onChange={handleLocationChange}
                     label="Location"
-                    disabled={users.type === 0}>
+                    disabled={users.type === 0}
+                  >
                     <MenuItem value="HaNoi">Ha Noi</MenuItem>
                     <MenuItem value="HoChiMinh">Ho Chi Minh</MenuItem>
                   </Select>
@@ -558,11 +530,10 @@ const CreateUser = () => {
                 </FormControl>
               </Grid>
 
-              <Grid
-                item
-                xs={12}>
+              <Grid item xs={12}>
                 <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
+                >
                   <Button
                     variant="contained"
                     type="submit"
@@ -580,13 +551,15 @@ const CreateUser = () => {
                       !users.dateOfBirth ||
                       !users.joinedDate
                     }
-                    onClick={handleSubmit}>
+                    onClick={handleSubmit}
+                  >
                     Save
                   </Button>
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={() => navigate("/manage-user")}>
+                    onClick={() => navigate("/manage-user")}
+                  >
                     Cancel
                   </Button>
                 </Box>

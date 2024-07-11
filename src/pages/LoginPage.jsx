@@ -49,8 +49,10 @@ const LoginPage = () => {
         setAlertOpen(true);
       }
     } catch (err) {
-      setErrorMessage(err?.UserMessage);
-      setAlertOpen(true);
+      if (err.UserMessage) {
+        setErrorMessage(err?.UserMessage);
+        setAlertOpen(true);
+      }
     } finally {
       setLoading(false);
     }

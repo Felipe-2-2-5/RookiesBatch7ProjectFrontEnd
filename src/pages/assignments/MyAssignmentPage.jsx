@@ -165,10 +165,12 @@ const MyAssignmentPage = () => {
         setNotiTitle("Notifications");
         setNotiMessage("Assignment has been <b>accepted</b> successfully.");
         setNoti(true);
-      } catch (err) {
-        setNotiTitle("Error");
-        setNotiMessage(err.UserMessage);
-        setNoti(true);
+      } catch (error) {
+        if (error.UserMessage) {
+          setNotiTitle("Error");
+          setNotiMessage(error.UserMessage);
+          setNoti(true);
+        }
       }
     };
     AcceptRespond(selectedAssignment);
@@ -188,10 +190,12 @@ const MyAssignmentPage = () => {
         setNotiTitle("Notifications");
         setNotiMessage("Assignment has been <b>declined</b> successfully.");
         setNoti(true);
-      } catch (err) {
-        setNotiTitle("Error");
-        setNotiMessage(err.UserMessage);
-        setNoti(true);
+      } catch (error) {
+        if (error.UserMessage) {
+          setNotiTitle("Error");
+          setNotiMessage(error.UserMessage);
+          setNoti(true);
+        }
       }
     };
     DeclineRespond(selectedAssignment);

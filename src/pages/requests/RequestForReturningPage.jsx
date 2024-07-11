@@ -261,11 +261,11 @@ const RequestForReturningPage = () => {
       setReturnRequests(fetchedReturnRequests);
       setSuccess(true);
       setMessage("The request has been successfully cancelled.");
-    } catch (err) {
-      if (err.UserMessage) {
+    } catch (error) {
+      if (error.UserMessage) {
         setSuccess(false);
         setCancelDialogOpen(false);
-        setMessage(err.UserMessage);
+        setMessage(error.UserMessage);
       }
     }
   };
@@ -293,11 +293,11 @@ const RequestForReturningPage = () => {
       setSuccess(true);
       setMessage("The request has been completed successfully.");
       setOpenConfirmPopup(false);
-    } catch (err) {
-      if (err.UserMessage) {
+    } catch (error) {
+      if (error.UserMessage) {
         setSuccess(false);
         setOpenConfirmPopup(false);
-        setMessage(err?.UserMessage);
+        setMessage(error?.UserMessage);
       }
     }
   };

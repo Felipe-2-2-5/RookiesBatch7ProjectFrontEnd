@@ -21,7 +21,8 @@ const AssignmentDetailDialog = ({
       open={dialogOpen}
       onClose={handleDialogClose}
       maxWidth="md"
-      fullWidth={true}>
+      fullWidth={true}
+    >
       <DialogTitle
         sx={{
           bgcolor: "grey.300",
@@ -31,7 +32,8 @@ const AssignmentDetailDialog = ({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-        }}>
+        }}
+      >
         Detailed Assignment Information
         <IconButton
           aria-label="close"
@@ -41,7 +43,8 @@ const AssignmentDetailDialog = ({
             right: 10,
             top: 12,
             color: "#D6001C",
-          }}>
+          }}
+        >
           <DisabledByDefault />
         </IconButton>
       </DialogTitle>
@@ -55,141 +58,113 @@ const AssignmentDetailDialog = ({
           overflowY: "auto",
           wordWrap: "break-word",
           wordBreak: "break-word",
-        }}>
-        <Grid
-          container
-          spacing={2}>
-          <Grid
-            item
-            xs={4}>
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Asset Code:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <Typography variant="body1">
               {selectedAssignment.asset.assetCode}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Asset Name:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <div
               style={{
                 maxHeight: "100px",
                 overflowY: "auto",
                 wordWrap: "break-word",
                 wordBreak: "break-word",
-              }}></div>
+              }}
+            ></div>
             <Typography variant="body1">
               {selectedAssignment.asset.assetName}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Specification:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <div
               style={{
                 maxHeight: "100px",
                 overflowY: "auto",
                 wordWrap: "break-word",
                 wordBreak: "break-word",
-              }}>
-              <Typography variant="body1">
+              }}
+            >
+              <Typography variant="body1" style={{ whiteSpace: "pre-wrap" }}>
                 {selectedAssignment.asset.specification}
               </Typography>
             </div>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Assigned To:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <Typography variant="body1">
               {selectedAssignment.assignedTo.userName}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Assigned By:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <Typography variant="body1">
               {selectedAssignment.assignedBy.userName}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Assigned Date:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <Typography variant="body1">
               {formatDate(selectedAssignment.assignedDate)}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>State:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <Typography variant="body1">
               {assignmentStateEnum[selectedAssignment.state]}
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={4}>
+          <Grid item xs={4}>
             <Typography variant="body1">
               <strong>Note:</strong>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={8}>
+          <Grid item xs={8}>
             <div
               style={{
                 maxHeight: "100px",
                 overflowY: "auto",
                 wordWrap: "break-word",
                 wordBreak: "break-word",
-              }}>
-              <Typography variant="body1">{selectedAssignment.note}</Typography>
+              }}
+            >
+              <Typography variant="body1" style={{ whiteSpace: "pre-wrap" }}>
+                {selectedAssignment.note}
+              </Typography>
             </div>
           </Grid>
         </Grid>

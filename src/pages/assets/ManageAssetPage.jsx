@@ -861,7 +861,10 @@ const ManageAssetPage = () => {
                       wordBreak: "break-word",
                     }}
                   >
-                    <Typography variant="body1">
+                    <Typography
+                      variant="body1"
+                      style={{ whiteSpace: "pre-wrap" }}
+                    >
                       {selectedAsset.specification}
                     </Typography>
                   </div>

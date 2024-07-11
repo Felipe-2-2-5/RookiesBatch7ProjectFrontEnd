@@ -1,12 +1,10 @@
-import { ArrowDropDown, ArrowDropUp, Search } from "@mui/icons-material";
+import { ArrowDropDown, ArrowDropUp } from "@mui/icons-material";
 import {
   Box,
   Button,
   CircularProgress,
   Dialog,
   DialogActions,
-  IconButton,
-  InputAdornment,
   Pagination,
   Paper,
   Radio,
@@ -16,14 +14,13 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
   Typography,
-
   styled,
 } from "@mui/material";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FilterRequest } from "../services/users.service";
 import { FilterRequestForEdit } from "../services/users.service";
+import SearchBar from "./shared/SearchBar";
 
 const CustomTableRow = styled(TableRow)(({ theme }) => ({
   "&:hover": {
@@ -49,7 +46,14 @@ const CustomArrowDropDown = styled(ArrowDropDown)(({ theme }) => ({
   },
 }));
 
-const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, selectedUser, setSelectedUser }) => {
+const DialogUserList = ({
+  onSelect,
+  visibleDialog,
+  setVisibleDialog,
+  firstUser,
+  selectedUser,
+  setSelectedUser,
+}) => {
   const scrollRef = useRef(null);
   const [chosenUser, setChosenUser] = useState(selectedUser);
   const [totalCount, setTotalCount] = useState(0);
@@ -78,28 +82,33 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
       : Math.ceil(totalCount / pageSize);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const getUsers = useCallback(async (filterRequest) => {
-    setLoading(true);
-    if (firstUser) {
-      const res = await FilterRequestForEdit((selectedUser === firstUser) ? firstUser.id : selectedUser.id, filterRequest);
-      const fetchedUsers = res.data.data;
-      setTotalCount(res.data.totalCount);
-      setUsers([...fetchedUsers]);
-    }
-    else {
-      const res = await FilterRequest(filterRequest);
-      const fetchedUsers = res.data.data;
-      setTotalCount(res.data.totalCount);
-      setUsers([...fetchedUsers])
-    }
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    }
-    setLoading(false);
-  }, [firstUser, selectedUser]);
+  const getUsers = useCallback(
+    async (filterRequest) => {
+      setLoading(true);
+      if (firstUser) {
+        const res = await FilterRequestForEdit(
+          selectedUser === firstUser ? firstUser.id : selectedUser.id,
+          filterRequest
+        );
+        const fetchedUsers = res.data.data;
+        setTotalCount(res.data.totalCount);
+        setUsers([...fetchedUsers]);
+      } else {
+        const res = await FilterRequest(filterRequest);
+        const fetchedUsers = res.data.data;
+        setTotalCount(res.data.totalCount);
+        setUsers([...fetchedUsers]);
+      }
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: 0,
+          behavior: "smooth",
+        });
+      }
+      setLoading(false);
+    },
+    [firstUser, selectedUser]
+  );
 
   useEffect(() => {
     getUsers(filterRequest);
@@ -115,7 +124,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
     setFilterRequest((prev) => ({
       ...prev,
       searchTerm: trimmedSearchTerm,
-      page: 1
+      page: 1,
     }));
   };
 
@@ -132,7 +141,7 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
   };
 
   const handleSelectUser = (user) => {
-    setChosenUser(user)
+    setChosenUser(user);
   };
 
   const handleSave = () => {
@@ -228,7 +237,13 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
       }}
     >
       <Paper elevation={3} style={{ padding: "20px" }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "20px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: "20px",
+          }}
+        >
           <Typography
             variant="h5"
             sx={{
@@ -240,41 +255,22 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
           >
             Select User
           </Typography>
-          <TextField
-            variant="outlined"
-            label="Search"
-            value={searchTerm}
-            onChange={handleSearchChange}
-            onKeyPress={handleKeyPress}
-            // inputRef={searchInputRef}  // Set the ref to the TextField
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton sx={{
-                    "& label.Mui-focused": { color: "#000" },
-                    "& .MuiOutlinedInput-root": {
-                      "&.Mui-focused fieldset": { borderColor: "#000" },
-                    },
-                  }} onClick={handleSearchClick}>
-                    <Search />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              width: "300px", "& .MuiInputLabel-root.MuiInputLabel-formControl.MuiInputLabel-animated.MuiInputLabel-shrink.MuiInputLabel-outlined.Mui-focused":
-              {
-                color: "black",
-              },
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-              {
-                borderColor: "black",
-              },
-            }}
+
+          <SearchBar
+            searchTerm={searchTerm}
+            handleSearchChange={handleSearchChange}
+            handleKeyPress={handleKeyPress}
+            handleSearchClick={handleSearchClick}
+            title="Search by Staff Code, Full Name"
+            placeholder="Staff Code, Full Name"
+            customWidth={300}
           />
         </Box>
         <TableContainer component={Paper}>
-          <Box ref={scrollRef} sx={{ overflow: "auto", height: "calc(70vh - 240px)" }}>
+          <Box
+            ref={scrollRef}
+            sx={{ overflow: "auto", height: "calc(70vh - 240px)" }}
+          >
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -339,13 +335,15 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
                 ) : users.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={4} align="center"
+                      colSpan={4}
+                      align="center"
                       sx={{
                         color: "red",
                         textAlign: "center",
                         padding: "28px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       No users found
                     </TableCell>
                   </TableRow>
@@ -356,7 +354,10 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
                       key={index}
                       onClick={() => handleSelectUser(user)}
                       sx={{
-                        backgroundColor: chosenUser?.staffCode === user.staffCode ? "#f0f0f0" : "inherit", // Highlight background for the first user in the list
+                        backgroundColor:
+                          chosenUser?.staffCode === user.staffCode
+                            ? "#f0f0f0"
+                            : "inherit", // Highlight background for the first user in the list
                       }}
                     >
                       <TableCell>
@@ -370,11 +371,15 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
                           value={user.staffCode}
                         />
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{user.staffCode}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>
+                        {user.staffCode}
+                      </TableCell>
                       <TableCell sx={{ textAlign: "center" }}>
                         {user.firstName + " " + user.lastName}
                       </TableCell>
-                      <TableCell sx={{ textAlign: "center" }}>{user.type === 0 ? "Staff" : "Admin"}</TableCell>
+                      <TableCell sx={{ textAlign: "center" }}>
+                        {user.type === 0 ? "Staff" : "Admin"}
+                      </TableCell>
                     </CustomTableRow>
                   ))
                 )}
@@ -382,7 +387,13 @@ const DialogUserList = ({ onSelect, visibleDialog, setVisibleDialog, firstUser, 
             </Table>
           </Box>
         </TableContainer>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginTop: "20px",
+          }}
+        >
           <Pagination
             count={pageCount}
             variant="outlined"

@@ -4,7 +4,7 @@ import { EventEmitter } from "events";
 export const popupEventEmitter = new EventEmitter();
 
 export const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
-//export const baseURL = "https://localhost:7083/api";
+// export const baseURL = "https://localhost:7083/api";
 
 const instance = axios.create({
   baseURL: baseURL,
@@ -35,19 +35,9 @@ instance.interceptors.response.use(
     if (err?.response) {
       switch (err.response.status) {
         case 401:
-          errorMessage = "You are not authorized to access this resource.";
           localStorage.removeItem("token");
           window.location.href = "/login";
-          popupEventEmitter.emit("showPopup", errorMessage);
           break;
-        // case 403: {
-        //   errorMessage =
-        //     "You are not authorized to perform this action or your infomation has been modified.";
-        //   localStorage.removeItem("token");
-        //   window.location.href = "/login";
-        //   popupEventEmitter.emit("showPopup", errorMessage);
-        //   break;
-        // }
         case 404:
           errorMessage = err?.response?.data?.UserMessage;
           popupEventEmitter.emit("showPopup", errorMessage);

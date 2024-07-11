@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
+import { hubService } from "../services/hub.service";
 const AuthContext = createContext({
   isAuthenticated: false,
   setIsAuthenticated: () => {},
@@ -43,7 +44,7 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const UserData = () => {
+    const UserData = async () => {
       if (token) {
         try {
           const decodedToken = jwtDecode(token);
@@ -64,6 +65,7 @@ const AuthProvider = ({ children }) => {
             // Set a timer to log out the user when the token expires
             const expiryTime = (decodedToken.exp - currentTime) * 1000;
             setTimeout(handleTokenExpiry, expiryTime);
+            await hubService.start();
           }
         } catch (error) {
           handleTokenExpiry();

@@ -70,9 +70,10 @@ const Layout = () => {
         navigate("/");
       }
     } catch (error) {
-      console.error("Error 123123123123123 :", error);
-      setShowErrorDialog(true);
-      setErrorMessage(error.UserMessage);
+      if (error.UserMessage) {
+        setShowErrorDialog(true);
+        setErrorMessage(error.UserMessage);
+      }
     }
   };
 

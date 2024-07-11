@@ -82,10 +82,12 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
         setCategory(res.data);
       }
     } catch (error) {
-      setErrApi(true);
-      setTitlePopup("Error");
-      setContentPopup(`${error.DevMessage}`);
-      setOpenPopup(true);
+      if (error.UserMessage) {
+        setErrApi(true);
+        setTitlePopup("Error");
+        setContentPopup(`${error.UserMessage}`);
+        setOpenPopup(true);
+      }
     }
   };
 

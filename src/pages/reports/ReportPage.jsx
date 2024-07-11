@@ -25,7 +25,6 @@ const CustomTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-
 const tableHead = {
   width: "auto",
   paddingLeft: "40px",
@@ -69,7 +68,6 @@ const ReportPage = () => {
         setTotalCount(0);
       }
     } catch (error) {
-      console.error("Failed to fetch reports:", error);
       setReports([]);
       setTotalCount(0);
     } finally {

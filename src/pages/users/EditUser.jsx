@@ -91,9 +91,11 @@ const EditUser = () => {
           });
         }
       } catch (error) {
-        setTitlePopup("Error");
-        setContentPopup(`Failed to fetch user data: ${error.message}`);
-        displayNotificationPopup();
+        if (error.userMessage) {
+          setTitlePopup("Error");
+          setContentPopup(`Failed to fetch user data: ${error.message}`);
+          displayNotificationPopup();
+        }
       }
     };
     fetchUser();
@@ -297,9 +299,11 @@ const EditUser = () => {
           displayNotificationPopup();
         }
       } catch (error) {
-        setTitlePopup("Error");
-        setContentPopup(error.UserMessage);
-        displayNotificationPopup();
+        if (error.UserMessage) {
+          setTitlePopup("Error");
+          setContentPopup(error.UserMessage);
+          displayNotificationPopup();
+        }
       }
     } else {
       setTitlePopup("Error");

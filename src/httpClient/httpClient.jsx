@@ -40,14 +40,14 @@ instance.interceptors.response.use(
           window.location.href = "/login";
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
-        case 403: {
-          errorMessage =
-            "You are not authorized to perform this action or your infomation has been modified.";
-          localStorage.removeItem("token");
-          window.location.href = "/login";
-          popupEventEmitter.emit("showPopup", errorMessage);
-          break;
-        }
+        // case 403: {
+        //   errorMessage =
+        //     "You are not authorized to perform this action or your infomation has been modified.";
+        //   localStorage.removeItem("token");
+        //   window.location.href = "/login";
+        //   popupEventEmitter.emit("showPopup", errorMessage);
+        //   break;
+        // }
         case 404:
           errorMessage = err?.response?.data?.UserMessage;
           popupEventEmitter.emit("showPopup", errorMessage);

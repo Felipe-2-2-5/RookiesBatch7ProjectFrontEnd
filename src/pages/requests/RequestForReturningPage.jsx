@@ -527,7 +527,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -543,7 +543,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -559,7 +559,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -575,7 +575,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -591,7 +591,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -607,7 +607,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -623,7 +623,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -639,7 +639,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >

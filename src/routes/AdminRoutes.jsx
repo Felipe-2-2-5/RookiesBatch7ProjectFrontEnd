@@ -1,8 +1,6 @@
 import { useRoutes } from "react-router-dom";
-import RequireAuth from "../components/RequiredAuth";
 import {
   CreateUser,
-  HomePage,
   LoginPage,
   ManageAssetPage,
   ManageAssignmentPage,
@@ -23,16 +21,12 @@ export const AdminRoutes = () => {
   const element = useRoutes([
     {
       path: path.default,
-      element: <HomePage />,
+      element: <MyAssignmentPage />,
       errorElement: <NotFound />,
     },
     {
       path: path.home,
-      element: (
-        <RequireAuth>
-          <MyAssignmentPage />
-        </RequireAuth>
-      ),
+      element: <MyAssignmentPage />,
       errorElement: <NotFound />,
     },
     {
@@ -42,83 +36,47 @@ export const AdminRoutes = () => {
     },
     {
       path: path.users,
-      element: (
-        <RequireAuth>
-          <ManageUserPage />
-        </RequireAuth>
-      ),
+      element: <ManageUserPage />,
       errorElement: <NotFound />,
     },
     {
       path: path.userCreate,
-      element: (
-        <RequireAuth>
-          <CreateUser />
-        </RequireAuth>
-      ),
+      element: <CreateUser />,
       errorElement: <NotFound />,
     },
     {
       path: path.userEdit,
-      element: (
-        <RequireAuth>
-          <EditUser />
-        </RequireAuth>
-      ),
+      element: <EditUser />,
       errorElement: <NotFound />,
     },
     {
       path: path.assignmentCreate,
-      element: (
-        <RequireAuth>
-          <CreateAssignment />
-        </RequireAuth>
-      ),
+      element: <CreateAssignment />,
       errorElement: <NotFound />,
     },
     {
       path: path.assignmentEdit,
-      element: (
-        <RequireAuth>
-          <EditAssignment />
-        </RequireAuth>
-      ),
+      element: <EditAssignment />,
       errorElement: <NotFound />,
     },
     {
       path: path.assets,
-      element: (
-        <RequireAuth>
-          <ManageAssetPage />
-        </RequireAuth>
-      ),
+      element: <ManageAssetPage />,
       errorElement: <NotFound />,
     },
     {
       path: path.assetCreate,
-      element: (
-        <RequireAuth>
-          <CreateAsset />
-        </RequireAuth>
-      ),
+      element: <CreateAsset />,
       errorElement: <NotFound />,
     },
     {
       path: path.assetEdit,
-      element: (
-        <RequireAuth>
-          <EditAsset />
-        </RequireAuth>
-      ),
+      element: <EditAsset />,
       errorElement: <NotFound />,
     },
     {
       path: path.assignments,
-      element: (
-        <RequireAuth>
-          <ManageAssignmentPage />
-        </RequireAuth>
-      ),
+      element: <ManageAssignmentPage />,
       errorElement: <NotFound />,
     },
     {

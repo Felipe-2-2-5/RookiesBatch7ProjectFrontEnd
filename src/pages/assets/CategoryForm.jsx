@@ -18,6 +18,8 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   const [openPopup, setOpenPopup] = useState(false);
   const [titlePopup, setTitlePopup] = useState(false);
   const [contentPopup, setContentPopup] = useState(false);
+  const [errApi, setErrApi] = useState(null);
+
   const handlePrefixChange = (event) => {
     const input = event.target.value
       .replace(/[^a-zA-Z]/g, "") // Allow both uppercase and lowercase letters
@@ -58,8 +60,11 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
   };
 
   const handleCancel = () => {
-    setVisibleDialog(false);
+    if (errApi !== true) {
+      setVisibleDialog(false);
+    }
     setOpenPopup(false);
+    setErrApi(false);
   };
 
   const handleSubmit = async (e) => {
@@ -77,6 +82,7 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
         setCategory(res.data);
       }
     } catch (error) {
+      setErrApi(true);
       setTitlePopup("Error");
       setContentPopup(`${error.DevMessage}`);
       setOpenPopup(true);
@@ -97,7 +103,8 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
           borderRadius: "1px solid rgba(0, 0, 0, 0.4)",
           width: "25%",
         },
-      }}>
+      }}
+    >
       <Typography
         variant="h5"
         sx={{
@@ -105,25 +112,19 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
           color: "#d32f2f",
           fontWeight: "bold",
           fontSize: "20px",
-        }}>
+        }}
+      >
         Create New Category
       </Typography>
       <form>
-        <Grid
-          container
-          spacing={1}>
-          <Grid
-            item
-            xs={3}
-            sx={{ display: "flex", alignItems: "center" }}>
+        <Grid container spacing={1}>
+          <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
             <Typography>
               Prefix
               <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={9}>
+          <Grid item xs={9}>
             <TextField
               label="Prefix"
               value={prefix}
@@ -133,25 +134,18 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
               error={prefixError}
             />
             {prefixError && (
-              <Typography
-                variant="caption"
-                color="error">
+              <Typography variant="caption" color="error">
                 {prefixError}
               </Typography>
             )}
           </Grid>
-          <Grid
-            item
-            xs={3}
-            sx={{ display: "flex", alignItems: "center" }}>
+          <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
             <Typography>
               Name
               <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
             </Typography>
           </Grid>
-          <Grid
-            item
-            xs={9}>
+          <Grid item xs={9}>
             <TextField
               sx={{ width: "100%" }}
               label="Name"
@@ -161,16 +155,12 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
               error={nameError}
             />
             {nameError && (
-              <Typography
-                variant="caption"
-                color="error">
+              <Typography variant="caption" color="error">
                 {nameError}
               </Typography>
             )}
           </Grid>
-          <Grid
-            item
-            xs={12}>
+          <Grid item xs={12}>
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
               <Button
                 variant="contained"
@@ -183,13 +173,15 @@ const CategoryForm = ({ visibleDialog, setVisibleDialog, setCategory }) => {
                   },
                 }}
                 disabled={!name || !prefix || nameError || prefixError}
-                onClick={handleSubmit}>
+                onClick={handleSubmit}
+              >
                 Save
               </Button>
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={handleCancel}>
+                onClick={handleCancel}
+              >
                 Cancel
               </Button>
             </Box>

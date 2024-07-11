@@ -121,16 +121,11 @@ const EditAssignment = () => {
           });
         }
       } catch (error) {
-        if (error.UserMessage) {
-          setErrApi(true);
-          setTitlePopup("Error");
-          setContentPopup(`Failed to fetch user data: ${error.UserMessage}`);
-          displayNotificationPopup();
-        }
+        navigate("/manage-assignment");
       }
     };
     getAssignmentById(id);
-  }, [id]);
+  }, [id, navigate]);
 
   useEffect(() => {
     let errorMessage = "";

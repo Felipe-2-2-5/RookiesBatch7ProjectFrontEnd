@@ -47,27 +47,32 @@ const EditAsset = () => {
     installedDate: null,
     state: 0,
   });
-  const fetchAsset = async (id) => {
-    const res = await GetAsset(id);
-    const asset = res.data;
-    setAsset({
-      assetName: asset.assetName,
-      category: asset.category,
-      specification: asset.specification,
-      installedDate: new Date(asset.installedDate),
-      state: parseInt(asset.state, 10),
-    });
-    setInitialAsset({
-      assetName: asset.assetName,
-      category: asset.category,
-      specification: asset.specification,
-      installedDate: new Date(asset.installedDate),
-      state: parseInt(asset.state, 10),
-    });
-  };
+
   useEffect(() => {
-    fetchAsset(id);
-  }, [id]);
+    const fetchAsset = async () => {
+      try {
+        const res = await GetAsset(id);
+        const asset = res.data;
+        setAsset({
+          assetName: asset.assetName,
+          category: asset.category,
+          specification: asset.specification,
+          installedDate: new Date(asset.installedDate),
+          state: parseInt(asset.state, 10),
+        });
+        setInitialAsset({
+          assetName: asset.assetName,
+          category: asset.category,
+          specification: asset.specification,
+          installedDate: new Date(asset.installedDate),
+          state: parseInt(asset.state, 10),
+        });
+      } catch (error) {
+        navigate("/manage-asset");
+      }
+    };
+    fetchAsset();
+  }, [id, navigate]);
   useEffect(() => {
     if (touched) {
       let errorMessage = "";
@@ -184,7 +189,9 @@ const EditAsset = () => {
       sessionStorage.setItem("asset_created", JSON.stringify(res.data));
       setOpenPopup(true);
       setTitlePopup("Notifications");
-      setContentPopup(`Asset <b>${asset.assetName}</b>  has been <b>updated</b> successfully.`);
+      setContentPopup(
+        `Asset <b>${asset.assetName}</b>  has been <b>updated</b> successfully.`
+      );
     }
   };
   const handleCancel = () => {
@@ -202,7 +209,8 @@ const EditAsset = () => {
               color: "#d32f2f",
               fontWeight: "bold",
               fontSize: "20px",
-            }}>
+            }}
+          >
             Edit Asset
           </Typography>
           <form
@@ -212,22 +220,16 @@ const EditAsset = () => {
               flexDirection: "column",
               gap: "16px",
               width: "500px",
-            }}>
-            <Grid
-              container
-              spacing={2}>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+            }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Name
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   label="Name"
                   value={asset.assetName}
@@ -247,18 +249,13 @@ const EditAsset = () => {
                   <FormHelperText error>{formErrors.assetName}</FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Category
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   name="category"
                   value={asset.category?.name}
@@ -272,18 +269,13 @@ const EditAsset = () => {
                   }}
                 />
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Specification
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <TextField
                   sx={{
                     "& label.Mui-focused": { color: "#000" },
@@ -307,18 +299,13 @@ const EditAsset = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}
-                sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={3} sx={{ display: "flex", alignItems: "center" }}>
                 <Typography>
                   Installed Date
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     sx={{
@@ -355,24 +342,21 @@ const EditAsset = () => {
                   </FormHelperText>
                 )}
               </Grid>
-              <Grid
-                item
-                xs={3}>
+              <Grid item xs={3}>
                 <Typography>
                   State
                   <span style={{ color: "#d32f2f", marginLeft: "4px" }}>*</span>
                 </Typography>
               </Grid>
-              <Grid
-                item
-                xs={9}>
+              <Grid item xs={9}>
                 <RadioGroup
                   name="state"
                   value={asset.state}
                   column
                   onChange={(e) =>
                     setAsset({ ...asset, state: e.target.value })
-                  }>
+                  }
+                >
                   <FormControlLabel
                     value={0}
                     control={
@@ -423,11 +407,10 @@ const EditAsset = () => {
                   />
                 </RadioGroup>
               </Grid>
-              <Grid
-                item
-                xs={12}>
+              <Grid item xs={12}>
                 <Box
-                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                  sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}
+                >
                   <Button
                     variant="contained"
                     type="submit"
@@ -442,13 +425,15 @@ const EditAsset = () => {
                       Object.values(formErrors).some((error) => error) ||
                       !isSingleFieldChanged()
                     }
-                    onClick={handleSubmit}>
+                    onClick={handleSubmit}
+                  >
                     Save
                   </Button>
                   <Button
                     variant="outlined"
                     color="secondary"
-                    onClick={handleCancel}>
+                    onClick={handleCancel}
+                  >
                     Cancel
                   </Button>
                 </Box>

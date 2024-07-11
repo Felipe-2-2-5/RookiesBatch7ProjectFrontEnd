@@ -272,10 +272,15 @@ const ManageAssignmentPage = () => {
       setOpenReturnPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage("Return request has been created successfully!");
+      setNotiMessage(
+        "<b>Return request</b> has been <b>created</b> successfully."
+      );
     } catch (error) {
-      console.error("Failed to create return request", error);
-      alert(error);
+      if (error.UserMessage) {
+        setNotiTitle("Error");
+        setNotiMessage(error.UserMessage);
+        setNoti(true);
+      }
     }
   };
   const handleDeleteRequest = async () => {
@@ -285,10 +290,13 @@ const ManageAssignmentPage = () => {
       setOpenDeleteConfirmationPopup(false);
       setNoti(true);
       setNotiTitle("Notifications");
-      setNotiMessage(`Assignment has been deleted successfully!`);
+      setNotiMessage(`<b>Assignment</b> has been <b>deleted</b> successfully.`);
     } catch (error) {
-      console.error("Failed to delete assignment", error);
-      alert(error);
+      if (error.UserMessage) {
+        setNotiTitle("Error");
+        setNotiMessage(error.UserMessage);
+        setNoti(true);
+      }
     }
   };
   const handlePopupClose = () => {
@@ -339,12 +347,14 @@ const ManageAssignmentPage = () => {
           padding: "20px",
           width: "100%",
           height: "calc(100vh - 150px)",
-        }}>
+        }}
+      >
         <h2 style={{ color: "#D6001C", height: "35px", marginTop: "0px" }}>
           Assignment List
         </h2>
         <Box
-          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+          sx={{ display: "flex", alignItems: "center", marginBottom: "20px" }}
+        >
           <FormControl
             variant="outlined"
             sx={{
@@ -353,14 +363,16 @@ const ManageAssignmentPage = () => {
                 "&:hover fieldset": { borderColor: "black" },
                 "&.Mui-focused fieldset": { borderColor: "black" },
               },
-            }}>
+            }}
+          >
             <InputLabel
               sx={{
                 color: "black",
                 "&.Mui-focused": {
                   color: "black",
                 },
-              }}>
+              }}
+            >
               {" "}
               State
             </InputLabel>
@@ -369,13 +381,11 @@ const ManageAssignmentPage = () => {
               value={selectedState}
               name="state"
               IconComponent={(props) => (
-                <FilterAltOutlined
-                  {...props}
-                  style={{ transform: "none" }}
-                />
+                <FilterAltOutlined {...props} style={{ transform: "none" }} />
               )}
               onChange={handleStateChange}
-              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}>
+              sx={{ "& .MuiOutlinedInput-input": { color: "black" } }}
+            >
               <MenuItem value="All">All</MenuItem>
               <MenuItem value="Accepted">Accepted</MenuItem>
               <MenuItem value="Waiting for acceptance">
@@ -478,7 +488,8 @@ const ManageAssignmentPage = () => {
                 backgroundColor: "#d32f2f",
               },
             }}
-            onClick={() => navigate(path.assignmentCreate)}>
+            onClick={() => navigate(path.assignmentCreate)}
+          >
             Create new assignment
           </Button>
         </Box>

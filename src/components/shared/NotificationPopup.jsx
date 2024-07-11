@@ -38,7 +38,13 @@ const NotificationPopup = ({
       </DialogTitle>
       <DialogContent>
         {contentLines.map((line, index) => (
-          <Typography key={index} dangerouslySetInnerHTML={{ __html: line }} />
+          <Typography
+            key={index}
+            dangerouslySetInnerHTML={{ __html: line }}
+            sx={{
+              paddingTop: "10px",
+            }}
+          />
         ))}
       </DialogContent>
       <DialogActions>

@@ -91,6 +91,7 @@ const EditUser = () => {
           });
         }
       } catch (error) {
+        navigate("/manage-user");
         if (error.userMessage) {
           setTitlePopup("Error");
           setContentPopup(`Failed to fetch user data: ${error.message}`);
@@ -99,7 +100,7 @@ const EditUser = () => {
       }
     };
     fetchUser();
-  }, [id]);
+  }, [id, navigate]);
 
   const [touched, setTouched] = useState({
     dateOfBirth: false,

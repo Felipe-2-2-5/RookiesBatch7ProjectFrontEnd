@@ -39,7 +39,8 @@ instance.interceptors.response.use(
           window.location.href = "/login";
           break;
         case 404:
-          errorMessage = err?.response?.data?.UserMessage;
+          errorMessage =
+            "The resource not found or has been deleted. Please try again later.";
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
         case 500:

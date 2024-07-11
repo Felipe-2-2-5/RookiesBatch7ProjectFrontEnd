@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { jwtDecode } from "jwt-decode";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NotificationPopup } from "../components";
 import { useAuthContext } from "../context/AuthContext";
@@ -27,8 +27,13 @@ const LoginPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuthenticated } = useAuthContext();
+  const { isAuthenticated, setIsAuthenticated } = useAuthContext();
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(path.home);
+    }
+  });
   const handleLogin = async (event) => {
     event.preventDefault();
     setLoading(true);

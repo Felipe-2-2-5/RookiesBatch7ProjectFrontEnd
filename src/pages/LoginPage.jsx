@@ -81,6 +81,7 @@ const LoginPage = () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          marginLeft: "-16px",
           "& > form": {
             width: "100%",
             display: "flex",

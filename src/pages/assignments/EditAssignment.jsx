@@ -22,44 +22,6 @@ import {
   EditAssignmentAPI,
   GetAssignment,
 } from "../../services/assignments.service";
-// import { format } from 'date-fns';
-
-// const NotificationPopup = ({
-//   open,
-//   handleClose,
-//   title,
-//   content,
-//   closeContent,
-// }) => {
-//   return (
-//     <Dialog
-//       open={open}
-//       onClose={handleClose}
-//       disableBackdropClick
-//       disableEscapeKeyDown
-//     >
-//       <DialogTitle sx={{ color: "#D6001C", fontWeight: "bold", minWidth: 400 }}>
-//         {title}
-//       </DialogTitle>
-//       <DialogContent>
-//         <p>{content}</p>
-//       </DialogContent>
-//       <DialogActions>
-//         <Button
-//           onClick={handleClose}
-//           sx={{
-//             color: "white",
-//             bgcolor: "#D6001C",
-//             "&:hover": { bgcolor: "#D6001C" },
-//           }}
-//         >
-//           {closeContent ? closeContent : "Ok"}
-//         </Button>
-//       </DialogActions>
-//     </Dialog>
-//   );
-// };
-
 const formatDate = (date) => {
   if (!date) return "";
   return format(date, "dd/MM/yyyy");
@@ -76,6 +38,7 @@ const EditAssignment = () => {
   const [contentPopup, setContentPopup] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [errApi, setErrApi] = useState(null);
   const [selectedAssignment, setSelectedAssignment] = useState({
     assignedDate: null,
   });
@@ -159,6 +122,7 @@ const EditAssignment = () => {
         }
       } catch (error) {
         if (error.UserMessage) {
+          setErrApi(true);
           setTitlePopup("Error");
           setContentPopup(`Failed to fetch user data: ${error.UserMessage}`);
           displayNotificationPopup();
@@ -234,10 +198,6 @@ const EditAssignment = () => {
     );
   };
 
-  // const isFormValid = () => {
-  //     return !formErrors.asset && currentValue.asset && !formErrors.user && currentValue.user;
-  // };
-
   const handleDateChange = (name, date) => {
     setSelectedAssignment({ ...selectedAssignment, [name]: date });
     handleFieldChange(name, date);
@@ -302,11 +262,14 @@ const EditAssignment = () => {
       if (response) {
         sessionStorage.setItem("assignment_created", JSON.stringify(response));
         setTitlePopup("Notifications");
-        setContentPopup("<b>Assignment</b> has been <b>updated</b> successfully.");
+        setContentPopup(
+          "<b>Assignment</b> has been <b>updated</b> successfully."
+        );
         displayNotificationPopup();
       }
     } catch (error) {
       if (error.UserMessage) {
+        setErrApi(true);
         setTitlePopup("Error");
         setContentPopup(`${error.UserMessage}`);
         displayNotificationPopup();
@@ -320,7 +283,9 @@ const EditAssignment = () => {
 
   const handleClosePopup = () => {
     setOpenPopup(false);
-    navigate("/manage-assignment");
+    if (errApi !== true) {
+      navigate("/manage-assignment");
+    }
   };
 
   return (

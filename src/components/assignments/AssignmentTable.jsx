@@ -77,10 +77,9 @@ const AssignmentTable = ({
   return (
     <TableContainer
       component={Paper}
-      sx={{ height: "calc(100% - 180px)", position: "relative" }}>
-      <Sheet
-        ref={scrollRef}
-        sx={{ overflow: "auto", height: "100%" }}>
+      sx={{ height: "calc(100% - 180px)", position: "relative" }}
+    >
+      <Sheet ref={scrollRef} sx={{ overflow: "auto", height: "100%" }}>
         <Table stickyHeader>
           <TableHead
             sx={{
@@ -88,7 +87,8 @@ const AssignmentTable = ({
               top: 0,
               backgroundColor: "white",
               zIndex: 1,
-            }}>
+            }}
+          >
             <TableRow>
               <TableCell sx={{ fontWeight: "bold", paddingLeft: "35px" }}>
                 No.
@@ -98,7 +98,8 @@ const AssignmentTable = ({
                   sx={buttonTableHead}
                   variant="text"
                   onClick={() => handleHeaderClick("code")}
-                  endIcon={getSortIcon("code")}>
+                  endIcon={getSortIcon("code")}
+                >
                   Asset Code
                 </Button>
               </TableCell>
@@ -107,7 +108,8 @@ const AssignmentTable = ({
                   sx={buttonTableHead}
                   variant="text"
                   onClick={() => handleHeaderClick("name")}
-                  endIcon={getSortIcon("name")}>
+                  endIcon={getSortIcon("name")}
+                >
                   Asset Name
                 </Button>
               </TableCell>
@@ -116,7 +118,8 @@ const AssignmentTable = ({
                   sx={buttonTableHead}
                   variant="text"
                   onClick={() => handleHeaderClick("receiver")}
-                  endIcon={getSortIcon("receiver")}>
+                  endIcon={getSortIcon("receiver")}
+                >
                   Assigned To
                 </Button>
               </TableCell>
@@ -125,7 +128,8 @@ const AssignmentTable = ({
                   sx={buttonTableHead}
                   variant="text"
                   onClick={() => handleHeaderClick("provider")}
-                  endIcon={getSortIcon("provider")}>
+                  endIcon={getSortIcon("provider")}
+                >
                   Assigned By
                 </Button>
               </TableCell>
@@ -134,7 +138,8 @@ const AssignmentTable = ({
                   variant="text"
                   onClick={() => handleHeaderClick("date")}
                   endIcon={getSortIcon("date")}
-                  sx={buttonTableHead}>
+                  sx={buttonTableHead}
+                >
                   Assigned Date
                 </Button>
               </TableCell>
@@ -143,7 +148,8 @@ const AssignmentTable = ({
                   sx={buttonTableHead}
                   variant="text"
                   onClick={() => handleHeaderClick("state")}
-                  endIcon={getSortIcon("state")}>
+                  endIcon={getSortIcon("state")}
+                >
                   State
                 </Button>
               </TableCell>
@@ -155,7 +161,8 @@ const AssignmentTable = ({
                   minWidth: "auto",
                   color: "black",
                   padding: "16px",
-                }}></TableCell>
+                }}
+              ></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -163,7 +170,8 @@ const AssignmentTable = ({
               <TableRow>
                 <TableCell
                   colSpan={7}
-                  sx={{ textAlign: "center", padding: "28px" }}>
+                  sx={{ textAlign: "center", padding: "28px" }}
+                >
                   <CircularProgress />
                 </TableCell>
               </TableRow>
@@ -172,13 +180,14 @@ const AssignmentTable = ({
                 {assignments.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={7}
+                      colSpan={8}
                       sx={{
                         color: "red",
                         textAlign: "center",
                         padding: "28px",
                         fontWeight: "bold",
-                      }}>
+                      }}
+                    >
                       No assignment found
                     </TableCell>
                   </TableRow>
@@ -186,7 +195,8 @@ const AssignmentTable = ({
                   assignments.map((assignment, index) => (
                     <CustomTableRow
                       key={assignment.id}
-                      onClick={() => handleDetailDialog(assignment)}>
+                      onClick={() => handleDetailDialog(assignment)}
+                    >
                       <TableCell sx={{ paddingLeft: "40px", width: "5%" }}>
                         {index + 1}
                       </TableCell>
@@ -200,7 +210,8 @@ const AssignmentTable = ({
                           whiteSpace: "nowrap",
                           maxWidth: 150,
                           width: "12%",
-                        }}>
+                        }}
+                      >
                         {assignment.asset.assetName}
                       </TableCell>
                       <TableCell sx={{ width: "10%" }}>
@@ -216,7 +227,8 @@ const AssignmentTable = ({
                         sx={{
                           color: stateStyles[assignment.state],
                           width: "14%",
-                        }}>
+                        }}
+                      >
                         {assignmentStateEnum[assignment.state]}
                       </TableCell>
                       <TableCell>
@@ -236,7 +248,8 @@ const AssignmentTable = ({
                             );
                             e.stopPropagation();
                           }}
-                          title="Edit assignment">
+                          title="Edit assignment"
+                        >
                           <CreateTwoTone />
                         </IconButton>
                         <IconButton
@@ -254,7 +267,8 @@ const AssignmentTable = ({
                             setOpenDeleteConfirmationPopup(true);
                             setSelectedAssignment(assignment);
                           }}
-                          title="Delete assignment">
+                          title="Delete assignment"
+                        >
                           <DeleteIcon />
                         </IconButton>
                         <IconButton
@@ -273,7 +287,8 @@ const AssignmentTable = ({
                             setOpenReturnPopup(true);
                             setSelectedAssignment(assignment);
                           }}
-                          title="Create return request">
+                          title="Create return request"
+                        >
                           <RestartAltRounded />
                         </IconButton>
                       </TableCell>

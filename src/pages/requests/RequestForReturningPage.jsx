@@ -678,7 +678,7 @@ const RequestForReturningPage = () => {
                     {returnRequests.length === 0 ? (
                       <TableRow>
                         <TableCell
-                          colSpan={6}
+                          colSpan={10}
                           sx={{
                             color: "red",
                             textAlign: "center",

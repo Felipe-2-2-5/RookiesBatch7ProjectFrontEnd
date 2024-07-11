@@ -7,7 +7,7 @@ import {
   Grid,
   IconButton,
   TextField,
-  Typography
+  Typography,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
@@ -191,7 +191,7 @@ const CreateAssignment = () => {
     } catch (error) {
       if (error.UserMessage) {
         setTitlePopup("Error");
-        setContentPopup(`error: ${error.UserMessage}`);
+        setContentPopup(`${error.UserMessage}`);
         displayNotificationPopup();
       }
     }

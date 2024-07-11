@@ -37,6 +37,7 @@ instance.interceptors.response.use(
         case 401:
           errorMessage = "You are not authorized to access this resource.";
           localStorage.removeItem("token");
+          window.location.href = "/login";
           popupEventEmitter.emit("showPopup", errorMessage);
           break;
         case 403: {

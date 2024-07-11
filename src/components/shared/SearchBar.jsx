@@ -3,6 +3,7 @@ import { IconButton, InputAdornment, TextField } from "@mui/material";
 import React from "react";
 
 const SearchBar = ({
+  title,
   searchTerm,
   handleSearchChange,
   handleKeyPress,
@@ -10,6 +11,7 @@ const SearchBar = ({
 }) => {
   return (
     <TextField
+    title = {title}
       variant="outlined"
       label="Search"
       value={searchTerm}

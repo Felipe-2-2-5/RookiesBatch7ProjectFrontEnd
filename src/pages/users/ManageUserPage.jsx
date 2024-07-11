@@ -346,6 +346,7 @@ const ManageUserPage = () => {
             onChange={handleSearchChange}
             onKeyPress={handleKeyPress}
             error={false}
+            title="Search by Staff Code or Full Name"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

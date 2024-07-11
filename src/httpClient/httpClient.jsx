@@ -3,8 +3,8 @@ import { EventEmitter } from "events";
 
 export const popupEventEmitter = new EventEmitter();
 
-// export const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
-export const baseURL = "https://localhost:7083/api";
+export const baseURL = "https://test1-team2rookiesbatch7.azurewebsites.net/api";
+//export const baseURL = "https://localhost:7083/api";
 
 const instance = axios.create({
   baseURL: baseURL,

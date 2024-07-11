@@ -169,7 +169,7 @@ const AssignmentTable = ({
             {loading ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   sx={{ textAlign: "center", padding: "28px" }}
                 >
                   <CircularProgress />

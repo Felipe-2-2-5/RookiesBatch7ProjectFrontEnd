@@ -59,7 +59,8 @@ const CreateUser = () => {
 
   const handleLastNameChange = (event) => {
     const { name, value } = event.target;
-    const trimmedValue = value.replace(/\s+/g, " ");
+    let trimmedValue = value.replace(/[^a-zA-Z\s]/g, "");
+    trimmedValue = trimmedValue.replace(/\s+/g, " ");
     setUsers({ ...users, [name]: trimmedValue });
     const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
 
@@ -79,9 +80,25 @@ const CreateUser = () => {
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
+  
+  const handleTypeChange = (event) => {
+    const { name, value } = event.target;
+    //type staff: set as admin
+    if (value === 0) {
+      setUsers({
+        ...users,
+        [name]: value,
+        location: localStorage.getItem("location"),
+      });
+    } else {
+      setUsers({ ...users, [name]: value });
+    }
+  };
+
   const handleLastNameBlur = (event) => {
     const { name, value } = event.target;
-    const trimmedValue = value.replace(/\s+/g, " ");
+    // const trimmedValue = value.replace(/\s+/g, " ");
+    let trimmedValue = value.replace(/[^a-zA-Z]/g, "");
     setUsers({ ...users, [name]: trimmedValue });
     const isValid = /^[a-zA-Z\s]{2,20}$/.test(trimmedValue);
 
@@ -101,19 +118,6 @@ const CreateUser = () => {
     setFormErrors({ ...formErrors, [name]: errorMessage });
   };
 
-  const handleTypeChange = (event) => {
-    const { name, value } = event.target;
-    //type staff: set as admin
-    if (value === 0) {
-      setUsers({
-        ...users,
-        [name]: value,
-        location: localStorage.getItem("location"),
-      });
-    } else {
-      setUsers({ ...users, [name]: value });
-    }
-  };
   const handleGenderChange = (event) => {
     const { name, value } = event.target;
     setUsers({ ...users, [name]: value });

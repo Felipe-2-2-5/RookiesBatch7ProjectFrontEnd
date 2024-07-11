@@ -460,6 +460,7 @@ const RequestForReturningPage = () => {
 
           {/* Search Box*/}
           <TextField
+          title = "Seach by Asset Code or Asset Name or Assigned To"
             variant="outlined"
             label="Search"
             value={searchTerm}
@@ -526,7 +527,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -542,7 +543,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -558,7 +559,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -574,7 +575,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -590,7 +591,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -606,7 +607,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -622,7 +623,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >
@@ -638,7 +639,7 @@ const RequestForReturningPage = () => {
                   <TableCell
                     sx={{
                       fontWeight: "bold",
-                      width: "15%",
+                      width: "11%",
                       paddingLeft: "10px",
                     }}
                   >

@@ -32,8 +32,3 @@ export const GetMyAssignments = async (body) => {
 export const AcceptRespondAPI = async (id, dto) => {
   await httpClient.put(`/assignments/${id}/respond`, dto);
 };
-
-// export const DeclineRespondAPI = async (id) => {
-//   var declineState = { state: getAssignmentState("Declined") };
-//   await httpClient.put(`/assignments/${id}/respond`, declineState)
-// }

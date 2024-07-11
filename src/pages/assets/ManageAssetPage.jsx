@@ -454,6 +454,7 @@ const ManageAssetPage = () => {
             onChange={handleSearchChange}
             onKeyPress={handleKeyPress}
             error={false}
+            title="Search by Asset Code or Asset Name"
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

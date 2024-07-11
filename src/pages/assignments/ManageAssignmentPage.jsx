@@ -465,7 +465,9 @@ const ManageAssignmentPage = () => {
             handleSearchChange={handleSearchChange}
             handleKeyPress={handleKeyPress}
             handleSearchClick={handleSearchClick}
+            title="Search by Asset Code or Asset Name or Assigned To"
           />
+
           <Button
             variant="contained"
             sx={{

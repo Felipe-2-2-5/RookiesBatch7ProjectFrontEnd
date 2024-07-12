@@ -273,29 +273,30 @@ const EditUser = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const hasErrors = Object.values(formErrors).some((error) => error);
+    let updatedUsers = {...users};
     if (!hasErrors) {
-      if (!users.location) {
-        users.location = currentUser.locality;
+      if (!updatedUsers.location) {
+        updatedUsers.location = currentUser.locality;
       }
-      if (users.location) {
-        users.location === "HaNoi"
-          ? (users.location = 1)
-          : (users.location = 0);
+      if (updatedUsers.location) {
+        updatedUsers.location === "HaNoi"
+          ? (updatedUsers.location = 1)
+          : (updatedUsers.location = 0);
       }
-      if (users.gender) {
-        users.gender = +users.gender;
+      if (updatedUsers.gender) {
+        updatedUsers.gender = +updatedUsers.gender;
       }
       try {
         const response = await UpdateUser(id, {
-          ...users,
-          dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
-          joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+          ...updatedUsers,
+          dateOfBirth: updatedUsers.dateOfBirth ? formatDate(updatedUsers.dateOfBirth) : null,
+          joinedDate: updatedUsers.joinedDate ? formatDate(updatedUsers.joinedDate) : null,
         });
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
           setContentPopup(
-            `User <b>${users.firstName} ${users.lastName}</b> has been <b>updated</b> successfully.`
+            `User <b>${updatedUsers.firstName} ${updatedUsers.lastName}</b> has been <b>updated</b> successfully.`
           );
           displayNotificationPopup();
         }

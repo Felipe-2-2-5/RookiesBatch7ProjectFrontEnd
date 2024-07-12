@@ -476,7 +476,7 @@ const ManageAssignmentPage = () => {
             handleKeyPress={handleKeyPress}
             handleSearchClick={handleSearchClick}
             title="Search by Asset Code or Asset Name or Assigned To"
-            placeholder="Asset Code, Asset Name, Assiged To"
+            placeholder="Asset Code, Asset Name, Assigned To"
             customWidth={"30%"}
           />
 

@@ -212,33 +212,78 @@ const CreateUser = () => {
     }));
   }, [users.dateOfBirth, touched.dateOfBirth, formErrors.dateOfBirth]);
 
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   const hasErrors = Object.values(formErrors).some((error) => error);
+  //   if (!hasErrors) {
+  //     if (!users.location) {
+  //       users.location = currentUser.locality;
+  //     }
+  //     if (users.location) {
+  //       users.location === "HaNoi"
+  //         ? (users.location = 1)
+  //         : (users.location = 0);
+  //     }
+  //     if (users.gender) {
+  //       users.gender = +users.gender;
+  //     }
+  //     try {
+  //       const response = await CreateUserAPI({
+  //         ...users,
+  //         dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
+  //         joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+  //       });
+  //       if (response) {
+  //         sessionStorage.setItem("user_created", JSON.stringify(response.data));
+  //         setTitlePopup("Notifications");
+  //         setContentPopup(
+  //           `User <b>${users.firstName} ${users.lastName}</b> has been <b>created</b> successfully.`
+  //         );
+  //         displayNotificationPopup();
+  //       }
+  //     } catch (error) {
+  //       if (error.userMessage) {
+  //         setTitlePopup("Error");
+  //         setContentPopup(`${error.userMessage}`);
+  //         displayNotificationPopup();
+  //       }
+  //     }
+  //   } else {
+  //     setTitlePopup("Error");
+  //     setContentPopup("Form has errors. Please fill all required fields.");
+  //     displayNotificationPopup();
+  //   }
+  // };
   const handleSubmit = async (event) => {
     event.preventDefault();
     const hasErrors = Object.values(formErrors).some((error) => error);
+  
     if (!hasErrors) {
-      if (!users.location) {
-        users.location = currentUser.locality;
+      let updatedUsers = { ...users };
+  
+      if (!updatedUsers.location) {
+        updatedUsers.location = currentUser.locality;
       }
-      if (users.location) {
-        users.location === "HaNoi"
-          ? (users.location = 1)
-          : (users.location = 0);
+  
+      if (updatedUsers.location) {
+        updatedUsers.location = updatedUsers.location === "HaNoi" ? 1 : 0;
       }
-      if (users.gender) {
-        users.gender = +users.gender;
+  
+      if (updatedUsers.gender) {
+        updatedUsers.gender = +updatedUsers.gender;
       }
+  
       try {
         const response = await CreateUserAPI({
-          ...users,
-          dateOfBirth: users.dateOfBirth ? formatDate(users.dateOfBirth) : null,
-          joinedDate: users.joinedDate ? formatDate(users.joinedDate) : null,
+          ...updatedUsers,
+          dateOfBirth: updatedUsers.dateOfBirth ? formatDate(updatedUsers.dateOfBirth) : null,
+          joinedDate: updatedUsers.joinedDate ? formatDate(updatedUsers.joinedDate) : null,
         });
+  
         if (response) {
           sessionStorage.setItem("user_created", JSON.stringify(response.data));
           setTitlePopup("Notifications");
-          setContentPopup(
-            `User <b>${users.firstName} ${users.lastName}</b> has been <b>created</b> successfully.`
-          );
+          setContentPopup(`User <b>${updatedUsers.firstName} ${updatedUsers.lastName}</b> has been <b>created</b> successfully.`);
           displayNotificationPopup();
         }
       } catch (error) {
@@ -254,6 +299,7 @@ const CreateUser = () => {
       displayNotificationPopup();
     }
   };
+  
 
   const displayNotificationPopup = () => {
     setOpenPopup(true);

@@ -391,7 +391,7 @@ const EditAsset = () => {
                         }}
                       />
                     }
-                    label="Wating for recycling"
+                    label="Waiting for recycling"
                   />
                   <FormControlLabel
                     value={3}
